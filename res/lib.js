@@ -105,7 +105,8 @@ function timeConverter(UNIX_timestamp){
   var ampm = hour >= 12 ? 'pm' : 'am';
   hour = hour % 12;
   hour = hour ? hour : 12; // convert 0 to 12
-  var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + (min < 10 ? '0' : '') + min + ' ' + ampm;
+  // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + (min < 10 ? '0' : '') + min + ' ' + ampm;
+  var time = `${hour}:${(min<10? '0': '') + min + ampm} ${month} ${date}, ${year}`;
   return time;
 }
 
