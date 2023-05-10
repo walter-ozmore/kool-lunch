@@ -1,0 +1,63 @@
+.topSec p {
+  margin-bottom: 1em;
+}
+
+.question {
+  width: 100%;
+  padding-top: 1em;
+  padding-bottom: 1.2em;
+}
+.question label {
+  margin-right: 1em;
+}
+.question p {
+  font-weight: bold;
+}
+
+.error {
+    font-weight: bold;
+    font-size: 0.95em;
+    color: firebrick;
+    width: 100%;
+    display: none;
+}
+
+.subsec {
+  /* display: flex;
+  flex-wrap: wrap; */
+  margin-top: 1em;
+  margin-bottom: .5em;
+  background-color: rgba(0,0,0,0.05);
+}
+
+/* .subsec p { width: 50%; } */
+/* .subsec input[type=text], .subsec select { width: 50%; } */
+/* .subsec input[type=radio] { margin-right: 2em; } */
+.subsec input[type=text] {
+  width: 75%;
+}
+
+.subsec button {
+  float: right;
+}
+
+.bCon {
+  width: 100%;
+}
+.bCon h2 {
+  display: inline;
+}
+
+.content.backdrop {
+  background-color:lightgray;
+}
+
+hr.solid {
+  border-top: 4px solid silver;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+button {
+  margin-top: 0.4em;
+}
