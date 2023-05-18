@@ -10,39 +10,6 @@
    * 2 - No user is logged in
    */
 
-  function checkUser() {
-    // TODO Check the user's
-    $msg = "";
-    $currentUser = getCurrentUser();
-
-    if($currentUser == null) {
-      echo json_encode([
-        "message"=>"ERROR: User is not logged in",
-        "code"=>2
-      ]);
-      exit();
-    }
-
-    $cuid = $currentUser["uid"];
-    $validUsers = [8, 19]; // Users that are allowed TODO use database
-    $isUserValid = false;
-    foreach($validUsers as $validUserId) {
-      if($cuid == $validUserId) {
-        $isUserValid = true;
-        break;
-      }
-    }
-
-    if($isUserValid) return;
-
-    // User is not valid return an error
-    echo json_encode([
-      "message"=>"ERROR: User is not vaid",
-      "code"=>1
-    ]);
-    exit();
-  }
-
   function grabData() {
     global $db_conn, $args;
 
@@ -57,18 +24,19 @@
       $query .= "WHERE Pickup".$args["day"]."=1";
     }
 
-
     $result = $db_conn->query($query);
     while ($row = $result->fetch_assoc()) {
       $id = $row["FormId"];
-      unset($row["FormId"]);
+      // unset($row["FormId"]);
       $formIds .= "$id,";
 
       $data["forms"][$id] = $row;
+      $data["forms"][$id]["pickedUp"] = false;
     }
 
     $formIds = substr($formIds, 0, -1);
 
+    // Fill in individuals
     $query = "SELECT * FROM Individual WHERE FormId IN ($formIds)";
     // echo $query;
     $result = $db_conn->query($query);
@@ -79,14 +47,21 @@
       if($row["IsAdult"] == 0) $data["totalChildren"] += 1;
     }
 
+    // Check pickup
+    $today = strtotime('today');
+    $query = "SELECT formId, pickupTime, amount FROM Pickup WHERE FormId IN ($formIds) AND pickupTime>$today";
+    $result = $db_conn->query($query);
+    while ($row = $result->fetch_assoc()) {
+      $formId = $row["formId"];
+      $data["forms"][$formId]["pickedUp"] = true;
+    }
+
     $data["code"] = 0;
     echo json_encode( $data );
   }
 
-
-
   // Runner Code
-  $args = $_GET["q"];
+  $args = $_POST["q"];
   checkUser();
   grabData();
 ?>

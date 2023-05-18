@@ -126,7 +126,7 @@ function getAdults(form) {
   return individuals;
 }
 
-var data;
+var data = {};
 var windowLoadedFunctions = [];
 var windowLoaded = false;
 

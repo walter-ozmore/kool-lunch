@@ -35,9 +35,6 @@
        * Creates a row and adds it to the page
        */
       function addPickup(form) {
-        console.log(form);
-        // if("individuals" in form == false) return;
-
         // Grab adults
         let individuals = "";
         for(let ind of form["individuals"]) {
@@ -45,14 +42,18 @@
             individuals += ind["IndividualName"] + "<br>";
         }
 
+        let checked = (form.pickedUp)? "checked": "";
+
         let innerHTML = `
           <p>${individuals}</p>
-          <input type="checkbox" onchange="checkboxUpdate(this);">
+          <input type="checkbox" onchange="checkboxUpdate(this, ${form["FormId"]});" ${checked}>
         `;
 
         let row = mkEle("div", innerHTML);
         row.classList.add("row");
         document.getElementById("idk").appendChild( row );
+
+        data["forms"][form["FormId"]]["rowEle"] = row;
       }
 
 
@@ -60,15 +61,46 @@
        * Called when a check box is clicked then updates the database the
        * checked rows will be moved to the bottom
        */
-      function checkboxUpdate(checkbox) {
-        if (checkbox.checked) {
-          console.log("Checkbox is checked");
-        } else {
-          console.log("Checkbox is not checked");
+      function checkboxUpdate(checkbox, formId) {
+        let args = {
+          hasPickedUp: checkbox.checked,
+          formId: formId
+        };
+
+        ajaxJson(
+          "/ajax/tracker",
+          function(obj) {
+
+          },
+          args
+        );
+      }
+
+      function submit() {
+        let args = [];
+
+        for(let formId in data["forms"]) {
+          let form = data["forms"][formId];
+          console.log(form);
         }
       }
 
-      // Grab info
+
+      /**
+       * Bubble sort algorithm to sort the data by
+       */
+      function sort(data) {
+        for(let i=0;i<n;i++) {
+          for(let j=0;j<n-1;j++) {
+            // Compare
+            if(arr[j] < arr[j+1]) {
+              let temp = arr[j];
+              arr[j] = arr[j+1];
+              arr[j+1] = temp;
+            }
+          }
+        }
+      }
 
       // Get the day of the week
       let args = {
@@ -79,6 +111,8 @@
       ajaxJson(
         "/ajax/fetch-data",
         function(obj) {
+          data = obj;
+          console.log(data);
           for(let formId in obj["forms"]) {
             let form = obj["forms"][formId];
 
@@ -95,6 +129,7 @@
   </header>
 
   <body>
+    <center><button onclick="submit()">Submit Changes</button></center>
     <div class="content" id="idk"></div>
   </body>
 
