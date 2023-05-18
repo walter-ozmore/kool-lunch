@@ -66,12 +66,14 @@ function ajaxJson(url, fun, args={}) {
     if (this.readyState != 4 || this.status != 200) return;
     let obj = {};
     try {
-      obj = JSON.parse(this.responseText);
+      obj = (this.responseText.length > 0)? JSON.parse(this.responseText) : {};
     } catch {
       console.error(this.responseText);
       return null;
     }
-    fun(obj);
+
+    if(fun != null)
+      fun(obj);
   };
 
   xhttp.open("POST", url, true);
