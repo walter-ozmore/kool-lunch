@@ -21,6 +21,7 @@ function createLogin() {
  */
 function showForm(formId) {
   let form = data["forms"][formId];
+  // console.log(form);
 
   let div = mkEle("div");
   div.classList.add("content");
@@ -190,7 +191,6 @@ function drawData(obj) {
     // Show allergies
     let html = "";
     for(let allergyObj of daily[key]["allergies"]) {
-      console.log(allergyObj);
       let allergies = allergyObj.allergies;
       let formId    = allergyObj.formId;
       html += `<a style="margin-right: .25em" onclick="showForm(${formId})">${allergies}</a>`;
