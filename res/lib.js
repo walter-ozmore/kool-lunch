@@ -1,5 +1,5 @@
 function blink() {
-  console.log("Blink");
+  // console.log("Blink");
   closeEyes();
   setTimeout(function() {openEyes(); }, 200);
 }
@@ -115,6 +115,15 @@ function fetchData(obj = null, returnFunction = null) {
   if(obj === null)
     ajaxJson("/ajax/fetch-data.php", drawData);
   data = obj;
+}
+
+function getAdults(form) {
+  let individuals = [];
+  for(let ind of form["individuals"]) {
+    if(ind["isAdult"] == 1)
+      individuals.push(ind);
+  }
+  return individuals;
 }
 
 var data;
