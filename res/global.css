@@ -129,7 +129,7 @@ iframe {
   padding: 0px 1em;
 }
 
-.login {
+.grid {
   display: grid;
   width: 100%;
   max-width: 20em;

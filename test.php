@@ -10,10 +10,32 @@
 
     <style>
       .row {
-        display: flex;
+        display: grid;
+        grid-template-columns: 90% 10%;
         width: 100%;
       }
+
+      .row p {
+        margin: 0em;
+        padding: 0em;
+      }
+
+      .row input {
+        transform: scale(1.5);
+        margin: auto;
+      }
     </style>
+
+    <script>
+      function addPickup(form) {
+        let ele = mkEle("p", "test");
+        document.body.appendChild( ele );
+      }
+
+      onWindowLoad(function() {
+        addPickup({formId: 12, });
+      });
+    </script>
   </head>
 
   <header>
@@ -21,10 +43,11 @@
   </header>
 
   <body>
-    <div class="content row">
-      <p>Lorem ipsum</p>
-      <div style="text-align: right;">
-        <button>Picked Up</button>
+    <div class="content">
+      <div class="row">
+        <p>Lorem ipsum</p>
+        <!-- <button>Picked Up</button> -->
+        <input type="checkbox">
       </div>
     </div>
   </body>

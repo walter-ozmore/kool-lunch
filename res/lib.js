@@ -110,6 +110,14 @@ function timeConverter(UNIX_timestamp){
   return time;
 }
 
+
+function fetchData(obj = null, returnFunction = null) {
+  if(obj === null)
+    ajaxJson("/ajax/fetch-data.php", drawData);
+  data = obj;
+}
+
+var data;
 var windowLoadedFunctions = [];
 var windowLoaded = false;
 

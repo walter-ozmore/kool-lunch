@@ -15,6 +15,7 @@ function createLogin() {
   `;
 }
 
+
 /**
  * Draw the form with the given id to the screen
  */
@@ -33,6 +34,9 @@ function showForm(formId) {
 
   var formattedTime = timeConverter(form["TimeSubmited"]);
   div.appendChild(mkEle("p", "Time Submited: " +formattedTime ));
+
+  div.appendChild(mkEle("p", "Pickup Location: " + form["Location"]));
+  div.appendChild(mkEle("p", "Pickup Location: " + form["FormId"]));
 
   // Draw users
   let table, row, header;
