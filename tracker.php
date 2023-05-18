@@ -67,22 +67,7 @@
           formId: formId
         };
 
-        ajaxJson(
-          "/ajax/tracker",
-          function(obj) {
-
-          },
-          args
-        );
-      }
-
-      function submit() {
-        let args = [];
-
-        for(let formId in data["forms"]) {
-          let form = data["forms"][formId];
-          console.log(form);
-        }
+        ajaxJson("/ajax/tracker", null, args);
       }
 
 
@@ -104,8 +89,7 @@
 
       // Get the day of the week
       let args = {
-        // day: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]
-        day: "Monday"
+        day: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]
       }
 
       ajaxJson(
@@ -129,7 +113,6 @@
   </header>
 
   <body>
-    <center><button onclick="submit()">Submit Changes</button></center>
     <div class="content" id="idk"></div>
   </body>
 
