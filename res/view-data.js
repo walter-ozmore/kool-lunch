@@ -26,6 +26,8 @@ function showForm(formId) {
   let div = mkEle("div");
   div.classList.add("content");
 
+  div.appendChild(mkEle("p", "Form ID: " + formId));
+
   let days = "Pickup Days: ";
   if( form["PickupMonday"]    == 1 ) days += "M ";
   if( form["PickupTuesday"]   == 1 ) days += "T ";
@@ -37,7 +39,7 @@ function showForm(formId) {
   div.appendChild(mkEle("p", "Time Submited: " +formattedTime ));
 
   div.appendChild(mkEle("p", "Pickup Location: " + form["Location"]));
-  div.appendChild(mkEle("p", "Pickup Location: " + form["FormId"]));
+
 
   // Draw users
   let table, row, header;
