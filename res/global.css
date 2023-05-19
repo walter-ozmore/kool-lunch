@@ -77,25 +77,24 @@ iframe {
 }
 
 /* Header */
-.title {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0%);
-  max-width: 70vw;
-  height: inherit;
 
-  min-height: inherit;
-
-  max-height: inherit;
+/* Header */
+.title-img {
   max-width: 100%;
+  height: auto;
+  width: auto;
+  max-height: inherit;
+  min-height: inherit;
+  margin: 0 auto;
 }
 
-.title-bar {
-  max-height: 10vh;
+
+header {
+  max-height: min(10vh, 10em);
   min-height: 5em;
-  display: flex;
   width: 100%;
   margin-bottom: .5vh;
+  text-align: center;
 }
 
 .links {
