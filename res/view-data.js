@@ -21,10 +21,11 @@ function createLogin() {
  */
 function showForm(formId) {
   let form = data["forms"][formId];
-  // console.log(form);
+  if(form == undefined) return null;
 
+  // Create a container to hold elements
   let div = mkEle("div");
-  div.classList.add("content");
+  // div.classList.add("content");
 
   div.appendChild(mkEle("p", "Form ID: " + formId));
 
@@ -100,10 +101,17 @@ function showForm(formId) {
     row.appendChild( mkEle("td", str) );
     table.appendChild(row);
   }
-  document.getElementById("form-area").appendChild( div );
-
-  alertTo(div);
+  // document.getElementById("form-area").appendChild( div );
+  return div;
 }
+
+function drawFormAlert(formId) {
+  let formEle = showForm(formId);
+  formEle.classList.add("content");
+  document.getElementById("form-area").appendChild(formEle);
+  alertTo(formEle);
+}
+
 
 /**
  * Alert the user to the element by scrolling to it and flashing the boxShadow
@@ -195,10 +203,17 @@ function drawData(obj) {
     for(let allergyObj of daily[key]["allergies"]) {
       let allergies = allergyObj.allergies;
       let formId    = allergyObj.formId;
-      html += `<a style="margin-right: .25em" onclick="showForm(${formId})">${allergies}</a>`;
+      html += `<a style="margin-right: .25em" onclick="drawFormAlert(${formId})">${allergies}</a>`;
     }
     row.appendChild(mkEle("td", html));
     table.appendChild(row);
+  }
+
+  // Draw forms
+  for(let formId in data["forms"]) {
+    let formEle = showForm(formId);
+    formEle.classList.add("content");
+    document.getElementById("form-area").appendChild(formEle);
   }
 }
 
