@@ -8,8 +8,10 @@
 
 <!-- Import Style Sheets -->
 <link rel ="stylesheet" type ="text/css" href ="/res/global.css">
+<link rel ="stylesheet" type ="text/css" href ="/res/notification.css">
 
 <!-- Import Scripts -->
 <script src="/res/lib.js"></script>
+<script src="/res/data.js"></script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">

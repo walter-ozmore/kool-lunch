@@ -112,30 +112,6 @@ function drawFormAlert(formId) {
   alertTo(formEle);
 }
 
-
-/**
- * Alert the user to the element by scrolling to it and flashing the boxShadow
- *
- * @param {HTMLElement} ele
- */
-function alertTo(ele) {
-  // Scroll to the div
-  ele.scrollIntoView({ behavior: "smooth" });
-
-  let toggle = false;
-  // ele.style.border = "2px solid yellow";
-  ele.style.boxShadow = '0 0 5px yellow';
-  const intervalId = setInterval(() => {
-    ele.style.boxShadow = ((toggle)? "": "0 0 5px yellow");
-    toggle = !toggle;
-  }, 275);
-
-  setTimeout(() => {
-    clearInterval(intervalId);
-    ele.style.boxShadow = "";
-  }, 2000);
-}
-
 function drawData(obj) {
   data = obj;
 
@@ -203,7 +179,7 @@ function drawData(obj) {
     for(let allergyObj of daily[key]["allergies"]) {
       let allergies = allergyObj.allergies;
       let formId    = allergyObj.formId;
-      html += `<a style="margin-right: .25em" onclick="drawFormAlert(${formId})">${allergies}</a>`;
+      html += `<a style="margin-right: .25em" onclick="createFormElement(${formId})">${allergies}</a>`;
     }
     row.appendChild(mkEle("td", html));
     table.appendChild(row);

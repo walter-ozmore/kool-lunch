@@ -97,6 +97,14 @@ header {
   text-align: center;
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+td {
+  border: 1px solid;
+}
+
 .links {
   position: relative;
   display: none;
@@ -131,9 +139,10 @@ header {
 .grid {
   display: grid;
   width: 100%;
-  max-width: 20em;
-  margin: 0em auto;
+  /* max-width: 20em; */
+  margin: 0em auto 1em auto;
   grid-template-columns: 1fr 2fr;
+  grid-gap: 1em;
 }
 
 @media only screen and (max-width: 1000px) {

@@ -128,6 +128,30 @@ function getAdults(form) {
   return individuals;
 }
 
+
+/**
+ * Alert the user to the element by scrolling to it and flashing the boxShadow
+ *
+ * @param {HTMLElement} ele
+ */
+function alertTo(ele) {
+  // Scroll to the div
+  ele.scrollIntoView({ behavior: "smooth" });
+
+  let toggle = false;
+  // ele.style.border = "2px solid yellow";
+  ele.style.boxShadow = '0 0 5px yellow';
+  const intervalId = setInterval(() => {
+    ele.style.boxShadow = ((toggle)? "": "0 0 5px yellow");
+    toggle = !toggle;
+  }, 275);
+
+  setTimeout(() => {
+    clearInterval(intervalId);
+    ele.style.boxShadow = "";
+  }, 2000);
+}
+
 var data = {};
 var windowLoadedFunctions = [];
 var windowLoaded = false;

@@ -34,6 +34,7 @@
       }
     </style>
 
+    <script src="/res/data.js"></script>
     <script>
       /**
        * Creates a row and adds it to the page
@@ -49,7 +50,7 @@
         let checked = (form.pickedUp)? "checked": "";
 
         let innerHTML = `
-          <p>${individuals}</p>
+          <p onclick="createFormElement(${form["FormId"]})">${individuals}</p>
           <input type="checkbox" onchange="checkboxUpdate(this, ${form["FormId"]});" ${checked}>
         `;
 
