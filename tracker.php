@@ -51,7 +51,9 @@
 
         let row = mkEle("div", innerHTML);
         row.classList.add("row");
-        document.getElementById("idk").appendChild( row );
+
+        let location = form["Location"];
+        document.getElementById(location).appendChild( row );
 
         data["forms"][form["FormId"]]["rowEle"] = row;
       }
@@ -87,6 +89,40 @@
         }
       }
 
+      /**
+       * Draws the rows to the screen
+       */
+      function drawRows() {
+        for(let formId in data["forms"]) {
+          let form = data["forms"][formId];
+
+          addPickup(form);
+        }
+      }
+
+      function addLocation(location) {
+        let option = mkEle("option", location);
+        option.value = location;
+        document.getElementById("location-selector").appendChild(option);
+
+        let group = mkEle("div");
+        group.classList.add("content");
+        group.id = location;
+        group.style.display = "none";
+        document.getElementById("display").appendChild(group);
+      }
+
+      function checkSelector() {
+        let selector = document.getElementById("location-selector");
+        // Hide all
+        let children = document.getElementById("display").childNodes;
+        for(let child of children) {
+          child.style.display = "none";
+        }
+
+        document.getElementById( selector.value ).style.display = "block";
+      }
+
       // Get the day of the week
       let args = {
         day: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]
@@ -97,11 +133,11 @@
         function(obj) {
           data = obj;
           console.log(data);
-          for(let formId in obj["forms"]) {
-            let form = obj["forms"][formId];
-
-            addPickup(form);
+          for(let location of data["locations"]) {
+            addLocation(location);
           }
+          checkSelector();
+          drawRows();
         },
         args
       );
@@ -113,7 +149,10 @@
   </header>
 
   <body>
-    <div class="content" id="idk"></div>
+    <select id="location-selector" onchange="checkSelector()"></select>
+
+
+    <div id="display"></div>
   </body>
 
   <?php require realpath($_SERVER["DOCUMENT_ROOT"])."/res/footer.php"; ?>

@@ -15,7 +15,14 @@
 
     $data = [];
     $data["totalChildren"] = 0;
-    $formIds = "";
+
+    // Load locations
+    $data["locations"] = [];
+    $query = "SELECT DISTINCT Location FROM Form";
+    $result = $db_conn->query($query);
+    while ($row = $result->fetch_assoc()) {
+      $data["locations"][] = $row["Location"];
+    }
 
     // Create query
     $query = "SELECT * FROM Form";
@@ -23,6 +30,9 @@
     if( isset($args["day"]) ) {
       $query .= "WHERE Pickup".$args["day"]."=1";
     }
+
+    // List of form IDs to check later
+    $formIds = "";
 
     $result = $db_conn->query($query);
     while ($row = $result->fetch_assoc()) {
