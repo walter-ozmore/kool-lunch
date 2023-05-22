@@ -14,8 +14,14 @@
 }
 
 .notification h1, h2, h3 {
-  margin-top: 0em;
+  margin: 0em;
   text-align: center;
+  border-bottom: solid 1px black;
+}
+
+.notification p {
+  margin: 0em;
+  padding: 0em;
 }
 
 /* CSS */

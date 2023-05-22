@@ -16,6 +16,10 @@ function createFormElement(formId) {
   closeButton.style.float = "right";
   div.appendChild(closeButton);
 
+
+  /************************************************
+   * Draw header information
+   ***********************************************/
   let form = data["forms"][formId];
   if(form == undefined) return null;
 
@@ -35,9 +39,12 @@ function createFormElement(formId) {
   div.appendChild(mkEle("p", "Pickup Location: " + form["Location"]));
 
 
-  // Draw users
+  /************************************************
+   * Draw adult table
+   ***********************************************/
   let table, row, header;
 
+  div.appendChild( mkEle("br") );
   header = mkEle("h3", "Adults");
   header.style.textAlign = "center";
   div.appendChild( header );
@@ -60,13 +67,27 @@ function createFormElement(formId) {
     row = mkEle("tr");
     row.appendChild( mkEle("td", individual["IndividualName"]) );
     row.appendChild( mkEle("td", individual["PhoneNumber"]) );
-    row.appendChild( mkEle("td", individual["RemindStatus"]) );
+
+    // Remind
+    let str = "";
+    switch( Number(individual["RemindStatus"]) ) {
+      case 0: str = "Not requested"; break;
+      case 1: str = "Requested"; break;
+      case 2: str = "Sent request"; break;
+      default: str = individual["RemindStatus"];
+    }
+    row.appendChild(mkEle("td", str));
 
     // let str = (individual["AllowPhotos"] == 0)? false: true;
     // row.appendChild( mkEle("td", str) );
     table.appendChild(row);
   }
 
+
+  /************************************************
+   * Draw children table
+   ***********************************************/
+  div.appendChild( mkEle("br") );
   header = mkEle("h3", "Children");
   header.style.textAlign = "center";
   div.appendChild( header );
@@ -90,7 +111,7 @@ function createFormElement(formId) {
     row.appendChild( mkEle("td", individual["IndividualName"]) );
     row.appendChild( mkEle("td", individual["Allergies"]) );
 
-    let str = (individual["AllowPhotos"] == 0)? false: true;
+    let str = (individual["AllowPhotos"] == 0)? "Yes": "No";
     row.appendChild( mkEle("td", str) );
     table.appendChild(row);
   }
