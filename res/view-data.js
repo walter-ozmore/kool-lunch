@@ -4,7 +4,7 @@ function createLogin() {
   loginDiv.classList.add("content");
   document.body.appendChild(loginDiv);
   loginDiv.innerHTML = `
-  <div class="login" id="login">
+  <div class="grid" id="login">
     <label>Username</label>
     <input type="text" name="uname">
 
