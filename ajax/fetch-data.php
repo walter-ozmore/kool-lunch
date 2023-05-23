@@ -10,6 +10,30 @@
    * 2 - No user is logged in
    */
 
+  function getFormQuery() {
+    global $args;
+
+    $cutOff = strtotime('September 1st');
+
+    if( isset($args["cutOff"]) ) {
+      $cutOff = $args["cutOff"];
+    }
+
+    // Check if cut off is a number
+    if( !is_numeric($cutOff) ) exit();
+
+    // Create query
+    $query = "SELECT * FROM Form WHERE TimeSubmited<$cutOff";
+
+    // Filter by days
+    if( isset($args["day"]) ) {
+      $query .= " AND Pickup".$args["day"]."=1";
+    }
+
+    // echo $query;
+    return $query;
+  }
+
   function grabData() {
     global $db_conn, $args;
 
@@ -24,20 +48,15 @@
       $data["locations"][] = $row["Location"];
     }
 
-    // Create query
-    $query = "SELECT * FROM Form";
-
-    if( isset($args["day"]) ) {
-      $query .= "WHERE Pickup".$args["day"]."=1";
-    }
 
     // List of form IDs to check later
     $formIds = "";
 
+    // Create query
+    $query = getFormQuery();
     $result = $db_conn->query($query);
     while ($row = $result->fetch_assoc()) {
       $id = $row["FormId"];
-      // unset($row["FormId"]);
       $formIds .= "$id,";
 
       $data["forms"][$id] = $row;
@@ -48,7 +67,6 @@
 
     // Fill in individuals
     $query = "SELECT * FROM Individual WHERE FormId IN ($formIds)";
-    // echo $query;
     $result = $db_conn->query($query);
     while ($row = $result->fetch_assoc()) {
       $formId = $row["FormId"];
@@ -72,6 +90,10 @@
 
   // Runner Code
   $args = $_POST["q"];
+
+  // Check to see if the user is valid
   checkUser();
+
+  // Grab the data from the database
   grabData();
 ?>
