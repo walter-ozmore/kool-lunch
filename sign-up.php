@@ -39,7 +39,9 @@
       </center>
 
       <p>Sack lunches will be prepared for pick up at local parks and areas in Bonham. Lunches will be four days a week, Monday through Thursday, with the exception of July 4th in order to observe Independence Day.</p>
+
       <p>If you are interested in your child or children participating please fill out the questionnaire at the bottom and submit.</p>
+
       <p>If you have any questions, please contact The Kool Lunches Program at thekoollunchesprogram@gmail.com or message us on Facebook @ Kool Lunches.</p>
 
       <div id="understand">
@@ -72,7 +74,7 @@
     </div> <!-- Form -->
 
     <div class="content" id="submission" style="display: none;">
-      Thank you for your submission
+      Thank you for your submission.
     </div>
   </body>
 
