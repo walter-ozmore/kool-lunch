@@ -1,110 +1,3 @@
-function createLogin() {
-  // Create login page
-  let loginDiv = mkEle("div");
-  loginDiv.classList.add("content");
-  document.body.appendChild(loginDiv);
-  loginDiv.innerHTML = `
-  <div class="grid" id="login">
-    <label>Username</label>
-    <input type="text" name="uname">
-
-    <label>Password</label>
-    <input type="password" name="pword">
-  </div>
-  <center><button onclick="account_login(draw)">Login</button></center>
-  `;
-}
-
-
-/**
- * Draw the form with the given id to the screen
- */
-function showForm(formId) {
-  let form = data["forms"][formId];
-  if(form == undefined) return null;
-
-  // Create a container to hold elements
-  let div = mkEle("div");
-  // div.classList.add("content");
-
-  div.appendChild(mkEle("p", "Form ID: " + formId));
-
-  let days = "Pickup Days: ";
-  if( form["PickupMonday"]    == 1 ) days += "M ";
-  if( form["PickupTuesday"]   == 1 ) days += "T ";
-  if( form["PickupWednesday"] == 1 ) days += "W ";
-  if( form["PickupThursday"]  == 1 ) days += "Th ";
-  div.appendChild( mkEle("p", days) );
-
-  var formattedTime = timeConverter(form["TimeSubmited"]);
-  div.appendChild(mkEle("p", "Time Submited: " +formattedTime ));
-
-  div.appendChild(mkEle("p", "Pickup Location: " + form["Location"]));
-
-
-  // Draw users
-  let table, row, header;
-
-  header = mkEle("h3", "Adults");
-  header.style.textAlign = "center";
-  div.appendChild( header );
-
-  table = mkEle("table");
-  div.appendChild(table);
-
-  // Build header
-  row = mkEle("tr");
-  row.appendChild( mkEle("th", "Name") );
-  row.appendChild( mkEle("th", "Phone Number") );
-  row.appendChild( mkEle("th", "Remind Status") );
-  table.appendChild(row);
-
-  // Build rows adults
-  for(let key in form["individuals"]) {
-    let individual = form["individuals"][key];
-    if(individual["IsAdult"] == 0) continue;
-
-    row = mkEle("tr");
-    row.appendChild( mkEle("td", individual["IndividualName"]) );
-    row.appendChild( mkEle("td", individual["PhoneNumber"]) );
-    row.appendChild( mkEle("td", individual["RemindStatus"]) );
-
-    // let str = (individual["AllowPhotos"] == 0)? false: true;
-    // row.appendChild( mkEle("td", str) );
-    table.appendChild(row);
-  }
-
-  header = mkEle("h3", "Children");
-  header.style.textAlign = "center";
-  div.appendChild( header );
-
-  table = mkEle("table");
-  div.appendChild(table);
-
-  // Build header
-  row = mkEle("tr");
-  row.appendChild( mkEle("th", "Name") );
-  row.appendChild( mkEle("th", "Allergies") );
-  row.appendChild( mkEle("th", "Allow Photos") );
-  table.appendChild(row);
-
-  // Build rows children
-  for(let key in form["individuals"]) {
-    let individual = form["individuals"][key];
-    if(individual["IsAdult"] == 1) continue;
-
-    row = mkEle("tr");
-    row.appendChild( mkEle("td", individual["IndividualName"]) );
-    row.appendChild( mkEle("td", individual["Allergies"]) );
-
-    let str = (individual["AllowPhotos"] == 0)? false: true;
-    row.appendChild( mkEle("td", str) );
-    table.appendChild(row);
-  }
-  // document.getElementById("form-area").appendChild( div );
-  return div;
-}
-
 function drawFormAlert(formId) {
   let formEle = showForm(formId);
   formEle.classList.add("content");
@@ -112,14 +5,9 @@ function drawFormAlert(formId) {
   alertTo(formEle);
 }
 
-function drawData(obj) {
-  data = obj;
-
+function authenticateUser() {
   // If the user does not have permission then show error message
-  if(obj.code != 0) {
-    let str = `<p style="text-align: center">${obj.message}</p>`;
-    document.getElementById("stats").innerHTML = str;
-
+  if(data === undefined || data.code != 0) {
     createLogin();
     return;
   }
@@ -130,71 +18,115 @@ function drawData(obj) {
     document.getElementById("stats").innerHTML = "";
     document.body.removeChild( loginEle.parentElement );
   }
+}
 
-  // Draw stats
-  let daily = {
-    Monday   : {lunches: 0, allergies: []},
-    Tuesday  : {lunches: 0, allergies: []},
-    Wednesday: {lunches: 0, allergies: []},
-    Thursday : {lunches: 0, allergies: []}
-  };
+function calculateStats() {
+  // Create counter object for the stats
+  let counter = {};
 
-  // Load form and create stats
-  for(let formId in obj["forms"]) {
-    let form = obj["forms"][formId];
+  // Create lists of information to track
+  let days = ["Monday", "Tuesday", "Wednesday", "Thursday"];
+  let locations = data["locations"];
 
-    // Build rows children
-    for(let key in form["individuals"]) {
-      let individual = form["individuals"][key];
-      if(individual["IsAdult"] == 1) continue;
+  // Create counter obj
 
-      let allergies = individual["Allergies"];
+  for(let day of days) {
+    counter[day] = {};
+    counter[day].lunches = 0;
+    for(let location of locations) {
+      counter[day][location] = {};
+      counter[day][location]["lunches"] = 0;
+    }
+  }
 
-      for(let key in daily) {
-        if( form["Pickup"+key] == 1 ) {
-          let day = daily[key];
-          day.lunches += 1;
+  // Go though the data and fill up the counter object
+  for(let form of data["forms"]) {
+    let location = form["Location"];
 
-          if(allergies !== undefined && allergies.length > 0)
-            day.allergies.push({allergies: allergies, formId: formId});
+    for(let ind of form["individuals"]) {
+      // Individual is adult
+      if(ind.IsAdult == 1) {
+        continue;
+      }
+
+      // Individual is child
+      let allergies = ind["Allergies"];
+
+      for(let day of days) {
+        if( form["Pickup"+day] == 1 ) {
+          counter[day].lunches += 1;
+          counter[day][location].lunches += 1;
+
+          // if(allergies !== undefined && allergies.length > 0)
+          //   day.allergies.push({allergies: allergies, formId: form["FormId"]});
         }
       }
     }
   }
-  // Create stats screen
-  table = mkEle("table");
-  row = mkEle("tr");
-  row.appendChild( mkEle("th", "Day") );
-  row.appendChild( mkEle("th", "# Lunches") );
-  row.appendChild( mkEle("th", "Allergies") );
-  table.appendChild( row );
-  document.getElementById("stats").appendChild(table);
+  return counter;
+}
 
-  for(let key in daily) {
-    row = mkEle("tr");
-    row.appendChild( mkEle("td", key) );
-    row.appendChild( mkEle("td", daily[key]["lunches"]) );
-    // Show allergies
-    let html = "";
-    for(let allergyObj of daily[key]["allergies"]) {
-      let allergies = allergyObj.allergies;
-      let formId    = allergyObj.formId;
-      html += `<a style="margin-right: .25em" onclick="createFormElement(${formId})">${allergies}</a>`;
+function drawStats(counter) {
+  // Create lists of information to track
+  let days = ["Monday", "Tuesday", "Wednesday", "Thursday"];
+  let locations = data["locations"];
+
+  console.log( counter );
+  // drawObjectToHTML(counter);
+
+  for(let day of days) {
+    let table = $("<table>")
+      .append($("<tr>")
+        .append( $("<th>").text("Location") )
+        .append( $("<th>").text("Lunches" ) )
+      )
+    ;
+
+    let divEle = $("<div>")
+      .append( $("<h2>").text(day) )
+      .append( table )
+    ;
+
+
+
+    for(let location of locations) {
+      // divEle.appendChild( mkTab(location+": "+counter[day][location].lunches, 1) );
+      // $(divEle).append( mkTab(location+": "+counter[day][location].lunches, 1) );
+
+      table.append($("<tr>")
+        .append( $("<td>").text(location ) )
+        .append( $("<td>").text(counter[day][location].lunches) )
+      );
     }
-    row.appendChild(mkEle("td", html));
-    table.appendChild(row);
-  }
 
-  // Draw forms
-  for(let formId in data["forms"]) {
-    let formEle = showForm(formId);
-    formEle.classList.add("content");
-    document.getElementById("form-area").appendChild(formEle);
+    table.append($("<tr>")
+      .append( $("<td>").text("Total") )
+      .append( $("<td>").text(counter[day].lunches) )
+    );
+
+    $("#stats").append(divEle);
   }
 }
 
+function mkTab(innerHTML, tabs=0) {
+  let ele = mkEle("p", innerHTML);
+  ele.style.marginLeft = tabs*2 + "em";
+  // document.getElementById("stats").appendChild(ele);
+  return ele;
+}
+
 function draw() {
-  ajaxJson("/ajax/fetch-data.php", drawData);
+  // ajaxJson("/ajax/fetch-data.php", drawData);
+  fetchData( function() {
+    let counter = calculateStats();
+    drawStats(counter);
+
+    // Draw forms
+    for(let index in data["forms"]) {
+      let formEle = createFormElement(index, false);
+      document.getElementById("form-area").appendChild(formEle);
+    }
+  });
 }
 
 var data;

@@ -113,10 +113,52 @@ function timeConverter(UNIX_timestamp){
 }
 
 
-function fetchData(obj = null, returnFunction = null) {
-  if(obj === null)
-    ajaxJson("/ajax/fetch-data.php", drawData);
-  data = obj;
+/**
+ * Fetches data from the database according to the user's permissions
+ */
+function fetchData(returnFunction = null) {
+  if(data != null)
+    returnFunction(data);
+
+  console.log("Fetching data");
+  ajaxJson("/ajax/fetch-data.php", function(obj) {
+    // Create an array from the json in data
+    let forms = [];
+    for(let formId in obj.forms) {
+      forms.push( obj.forms[formId] );
+    }
+
+    // Sort forms
+    forms = sortForms(forms);
+
+    // Set forms back to the object
+    obj.forms = forms;
+
+    data = obj;
+
+    returnFunction(obj);
+  });
+}
+
+function compare(a, b) {
+  return a.individuals[0]["IndividualName"] < b.individuals[0]["IndividualName"]
+}
+
+
+/**
+ * Sorts the given array and returns the array
+ */
+function sortForms(forms) {
+  // Bubble sort
+  for(let i = 0; i < forms.length; i++) {
+    for(let j = 0; j < forms.length - i - 1; j++) {
+      if( compare(forms[j+1], forms[j]) ) {
+        // Swap
+        [forms[j+1], forms[j]] = [forms[j], forms[j+1]];
+      }
+    }
+  }
+  return forms;
 }
 
 function getAdults(form) {
@@ -152,7 +194,26 @@ function alertTo(ele) {
   }, 2000);
 }
 
-var data = {};
+function createLogin() {
+  // Create login page
+  let loginDiv = mkEle("div");
+  loginDiv.classList.add("content");
+  loginDiv.classList.add("notification");
+  document.body.appendChild(loginDiv);
+  loginDiv.innerHTML = `
+    <h2 style="margin-bottom: 1em;">Login</h2>
+    <div class="grid" id="login">
+      <label>Username</label>
+      <input type="text" name="uname">
+
+      <label>Password</label>
+      <input type="password" name="pword">
+    </div>
+    <center><button onclick="account_login(draw)">Login</button></center>
+  `;
+}
+
+var data = null;
 var windowLoadedFunctions = [];
 var windowLoaded = false;
 

@@ -1,4 +1,4 @@
-function createFormElement(formId) {
+function createFormElement(formId, isNotification = true) {
   if(data == undefined) {
     console.log("Data is not found");
     fetchData(null, createFormElement(formId));
@@ -8,13 +8,14 @@ function createFormElement(formId) {
   // Create a container to hold elements
   let div = mkEle("div");
   div.classList.add("content");
-  div.classList.add("notification");
-
-  // Add close button
-  let closeButton = mkEle("button", "X");
-  closeButton.onclick = function() {div.parentElement.removeChild(div); }
-  closeButton.style.float = "right";
-  div.appendChild(closeButton);
+  if(isNotification) {
+    div.classList.add("notification");
+    // Add close button
+    let closeButton = mkEle("button", "X");
+    closeButton.onclick = function() {div.parentElement.removeChild(div); }
+    closeButton.style.float = "right";
+    div.appendChild(closeButton);
+  }
 
 
   /************************************************
@@ -23,7 +24,7 @@ function createFormElement(formId) {
   let form = data["forms"][formId];
   if(form == undefined) return null;
 
-  div.appendChild(mkEle("h2", "Form #" + formId));
+  div.appendChild(mkEle("h2", "Form #" + form["FormId"]));
 
   // Convert days to a string for the user
   let days = "Pickup Days: ";
@@ -38,6 +39,15 @@ function createFormElement(formId) {
 
   div.appendChild(mkEle("p", "Pickup Location: " + form["Location"]));
 
+  // Check box for enabled
+  // let inputEle = mkEle("input");
+  // inputEle.type = "checkbox";
+  // inputEle.checked = form["isEnabled"];
+  // div.appendChild(inputEle);
+
+  // let labelEle = mkEle("p", "Enabled");
+  // labelEle.style.display = "inline";
+  // div.appendChild(labelEle);
 
   /************************************************
    * Draw adult table

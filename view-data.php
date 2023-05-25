@@ -15,6 +15,10 @@
         border: 1px solid;
       }
 
+      .stats h2 {
+        margin-top: 1em;
+      }
+
       .content h2, h3 {
         margin-bottom: 0em;
       }
@@ -36,7 +40,9 @@
   </header>
 
   <body>
-    <div id="stats" class="content"></div>
+    <div id="stats" class="content stats">
+      <pre id="output"></pre>
+    </div>
     <div id="form-area"></div>
   </body>
 </html>
