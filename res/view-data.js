@@ -5,21 +5,6 @@ function drawFormAlert(formId) {
   alertTo(formEle);
 }
 
-function authenticateUser() {
-  // If the user does not have permission then show error message
-  if(data === undefined || data.code != 0) {
-    createLogin();
-    return;
-  }
-
-  // Remove the login div and reset the stats div if they exist
-  let loginEle = document.getElementById("login");
-  if( loginEle != undefined ) {
-    document.getElementById("stats").innerHTML = "";
-    document.body.removeChild( loginEle.parentElement );
-  }
-}
-
 function calculateStats() {
   // Create counter object for the stats
   let counter = {};

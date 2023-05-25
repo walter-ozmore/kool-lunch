@@ -39,7 +39,9 @@
       /**
        * Creates a row and adds it to the page
        */
-      function addPickup(form) {
+      function addPickup(index) {
+        let form = data["forms"][index];
+
         // Grab adults
         let individuals = "";
         for(let ind of form["individuals"]) {
@@ -60,7 +62,7 @@
         let location = form["Location"];
         document.getElementById(location).appendChild( row );
 
-        data["forms"][form["FormId"]]["rowEle"] = row;
+        data["forms"][index]["rowEle"] = row;
       }
 
 
@@ -98,10 +100,9 @@
        * Draws the rows to the screen
        */
       function drawRows() {
-        for(let formId in data["forms"]) {
-          let form = data["forms"][formId];
+        for(let index in data["forms"]) {
 
-          addPickup(form);
+          addPickup(index);
         }
       }
 
@@ -133,19 +134,27 @@
         day: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]
       }
 
-      ajaxJson(
-        "/ajax/fetch-data",
-        function(obj) {
-          data = obj;
-          console.log(data);
-          for(let location of data["locations"]) {
-            addLocation(location);
-          }
-          checkSelector();
-          drawRows();
-        },
-        args
-      );
+      // ajaxJson(
+      //   "/ajax/fetch-data",
+      //   function(obj) {
+      //     data = obj;
+      //     console.log(data);
+      //     for(let location of data["locations"]) {
+      //       addLocation(location);
+      //     }
+      //     checkSelector();
+      //     drawRows();
+      //   },
+      //   args
+      // );
+      fetchData( function() {
+        authenticateUser();
+        for(let location of data["locations"]) {
+          addLocation(location);
+        }
+        checkSelector();
+        drawRows();
+      });
     </script>
   </head>
 
