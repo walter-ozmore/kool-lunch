@@ -209,7 +209,7 @@ function createLogin() {
       <label>Password</label>
       <input type="password" name="pword">
     </div>
-    <center><button onclick="account_login(draw)">Login</button></center>
+    <center><button onclick="account_login(function() {window.location.reload();})">Login</button></center>
   `;
 }
 

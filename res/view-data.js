@@ -118,6 +118,8 @@ function mkTab(innerHTML, tabs=0) {
 function draw() {
   // ajaxJson("/ajax/fetch-data.php", drawData);
   fetchData( function() {
+    authenticateUser();
+
     let counter = calculateStats();
     drawStats(counter);
 
