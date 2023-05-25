@@ -1,7 +1,7 @@
-function createFormElement(formId, isNotification = true) {
+function createFormElement(index, isNotification = true) {
   if(data == undefined) {
     console.log("Data is not found");
-    fetchData(null, createFormElement(formId));
+    fetchData(null, createFormElement(index));
     return;
   }
 
@@ -21,7 +21,7 @@ function createFormElement(formId, isNotification = true) {
   /************************************************
    * Draw header information
    ***********************************************/
-  let form = data["forms"][formId];
+  let form = data["forms"][index];
   if(form == undefined) return null;
 
   div.appendChild(mkEle("h2", "Form #" + form["FormId"]));
@@ -39,7 +39,25 @@ function createFormElement(formId, isNotification = true) {
 
   div.appendChild(mkEle("p", "Pickup Location: " + form["Location"]));
 
+  let $div = $(div);
   // Check box for enabled
+  let checkbox = $("<input>", {
+      type: "checkbox",
+      checked: (form["isEnabled"] == 1)? true: false
+    })
+    .change(function() {
+      let args = {
+        formId: form["FormId"],
+        isEnabled: ((this.checked)? 1: 0)
+      };
+
+      ajaxJson("/ajax/update-form.php", null, args);
+    }
+  )
+
+  $div.append( checkbox )
+      .append( $("<label>").text("Enabled") );
+
   // let inputEle = mkEle("input");
   // inputEle.type = "checkbox";
   // inputEle.checked = form["isEnabled"];
