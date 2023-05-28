@@ -89,6 +89,13 @@ function createFormElement(index, isNotification = true) {
 
   let deleteButton = $("<button>").click(function() {
     let args = {formId: form["FormId"]};
+
+    let inputFormId = prompt("Please enter the form id", "");
+
+    if (args.formId != inputFormId) {
+      return;
+    }
+
     window.location.reload();
     ajaxJson("/ajax/delete-form.php", null, args);
   }).text("Delete Form");
