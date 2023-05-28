@@ -46,26 +46,44 @@ function createFormElement(index, isNotification = true) {
       checked: (form["isEnabled"] == 1)? true: false
     })
     .change(function() {
-      let args = {
-        formId: form["FormId"],
-        isEnabled: ((this.checked)? 1: 0)
-      };
-
+      let args = { formId: form["FormId"], isEnabled: ((this.checked)? 1: 0) };
       ajaxJson("/ajax/update-form.php", null, args);
     }
-  )
+  );
 
   $div.append( checkbox )
-      .append( $("<label>").text("Enabled") );
+      .append( $("<label>").text("Enabled") )
+      .append( $("<br>") );
 
-  // let inputEle = mkEle("input");
-  // inputEle.type = "checkbox";
-  // inputEle.checked = form["isEnabled"];
-  // div.appendChild(inputEle);
 
-  // let labelEle = mkEle("p", "Enabled");
-  // labelEle.style.display = "inline";
-  // div.appendChild(labelEle);
+  // Lunch overide
+  let numInput = $("<input>", {type: "number", value: form["lunchOverideAmount"]}).hide();
+  numInput.change(function() {
+    let args = { formId: form["FormId"], lunchOverideAmount: this.value };
+    ajaxJson("/ajax/update-form.php", null, args);
+  });
+
+  checkbox = $("<input>", {
+    type: "checkbox",
+    checked: (form["lunchOverideAmount"] == null)? false: true
+  }).change(function() {
+    if(this.checked) {
+      numInput.show();
+      return;
+    }
+    numInput.hide();
+
+    let args = { formId: form["FormId"], lunchOverideAmount: "NULL" };
+    ajaxJson("/ajax/update-form.php", null, args);
+  });
+
+  if(checkbox.prop('checked')) numInput.show();
+
+  $div.append( checkbox )
+      .append( $("<label>").text("Lunch Overide") )
+      .append( numInput );
+
+
 
   /************************************************
    * Draw adult table
