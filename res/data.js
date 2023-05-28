@@ -81,8 +81,18 @@ function createFormElement(index, isNotification = true) {
 
   $div.append( checkbox )
       .append( $("<label>").text("Lunch Overide") )
-      .append( numInput );
+      .append( numInput )
+      .append( $("<br>") );
 
+
+  // Delete form
+
+  let deleteButton = $("<button>").click(function() {
+    let args = {formId: form["FormId"]};
+    window.location.reload();
+    ajaxJson("/ajax/delete-form.php", null, args);
+  }).text("Delete Form");
+  $div.append(deleteButton);
 
 
   /************************************************
