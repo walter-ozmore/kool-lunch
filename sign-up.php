@@ -55,13 +55,13 @@
     <div id="form" class="content" style="margin-top: 1em; display: none;">
       <div>
         <p># Of Adults That Will Pickup</p>
-        <input type="number" id="adultNumber" min=1 max=5 value=1 onchange="renderAdults()">
+        <input type="number" id="adultNumber" min=1 value=1 onchange="renderAdults()">
       </div>
       <div id="adults"></div>
 
       <div>
         <p># Of Lunches Needed</p>
-        <input type="number" id="childNumber" min=1 max=5 value=1 onchange="renderChildren()">
+        <input type="number" id="childNumber" min=1 value=1 onchange="renderChildren()">
       </div>
       <div id="children"></div>
 
