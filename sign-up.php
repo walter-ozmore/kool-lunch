@@ -8,7 +8,7 @@
       require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
     ?>
 
-    <script src="/sign-up.js"></script>
+    <script src="/scripts/sign-up.js"></script>
 
     <style>
       .subdiv {

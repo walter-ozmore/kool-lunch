@@ -12,7 +12,8 @@
 
 <!-- Import Scripts -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="/res/lib.js"></script>
-<script src="/res/data.js"></script>
+<script src="/scripts/lib.js"></script>
+<script src="/scripts/data.js"></script>
+<script src="/account/version-3/lib.js"></script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
