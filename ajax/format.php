@@ -2,6 +2,7 @@
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
 
   function formatPhoneNumber($phoneNumber) {
+
     // Remove any non-numeric characters from the phone number
     $phoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
 
@@ -10,8 +11,16 @@
     $prefix = substr($phoneNumber, 3, 3);
     $lineNumber = substr($phoneNumber, 6, 4);
 
+    $formattedNumber = "($areaCode) $prefix-$lineNumber";
+
+    // if(
+    //   $formattedNumber === "() -" ||
+    //   strlen($formattedNumber) != strlen("(xxx) xxx-xxxx") ||
+    //   $formattedNumber === $phoneNumber
+    // ) return $phoneNumber;
+
     // Return the formatted phone number
-    return "($areaCode) $prefix-$lineNumber";
+    return $formattedNumber;
   }
 
   $count = 0;
