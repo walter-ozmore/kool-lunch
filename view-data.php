@@ -29,8 +29,7 @@
       }
     </style>
 
-    <script src="/account/version-3/lib.js"></script>
-    <script src="/res/view-data.js"></script>
+    <script src="/scripts/view-data.js"></script>
   </head>
 
   <header>
