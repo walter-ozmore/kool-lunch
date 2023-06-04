@@ -47,6 +47,7 @@ function createFormElement(index, isNotification = true) {
     })
     .change(function() {
       let args = { formId: form["FormId"], isEnabled: ((this.checked)? 1: 0) };
+      console.log(args);
       ajaxJson("/ajax/update-form.php", null, args);
     }
   );
@@ -174,7 +175,7 @@ function createFormElement(index, isNotification = true) {
     row.appendChild( mkEle("td", individual["IndividualName"]) );
     row.appendChild( mkEle("td", individual["Allergies"]) );
 
-    let str = (individual["AllowPhotos"] == 0)? "Yes": "No";
+    let str = (individual["AllowPhotos"] == 1)? "Yes": "No";
     row.appendChild( mkEle("td", str) );
     table.appendChild(row);
   }

@@ -10,6 +10,44 @@
    * 2 - No user is logged in
    */
 
+
+  function getCount($str) {
+    global $db_conn;
+
+    $min = strtotime($str);
+    $max = strtotime("+1 day", $min);
+    $query = "SELECT SUM(amount) AS count FROM Pickup WHERE pickupTime>$min AND pickupTime<$max";
+    $result = $db_conn->query($query);
+    while ($row = $result->fetch_assoc()) {
+      return $row["count"];
+    }
+  }
+
+  function mkCounts() {
+    global $db_conn, $data;
+
+    // Grab unique dates
+    $query = "SELECT pickupTime FROM Pickup";
+    $result = $db_conn->query($query);
+
+    // Make an array of unique dates
+    $uniqueDates = array();
+    while ($row = $result->fetch_assoc()) {
+      $date = date('F d', $row["pickupTime"]);
+      $uniqueDates[$date] = 1; // Using an associative array to store unique dates
+    }
+
+    // Convert associative array to normal array
+    $datesList = array_keys($uniqueDates);
+
+    $data["counts"] = [];
+    foreach($datesList as $date) {
+      $count = getCount($date);
+
+      $data["counts"][] = ["date"=>$date, "count"=>$count];
+    }
+  }
+
   function getFormQuery() {
     global $args;
 
@@ -35,9 +73,8 @@
   }
 
   function grabData() {
-    global $db_conn, $args;
+    global $db_conn, $data;
 
-    $data = [];
     $data["totalChildren"] = 0;
 
     // Load locations
@@ -85,15 +122,20 @@
     }
 
     $data["code"] = 0;
-    echo json_encode( $data );
   }
 
   // Runner Code
   $args = $_POST["q"];
+  $data = [];
 
   // Check to see if the user is valid
   checkUser();
 
   // Grab the data from the database
   grabData();
+
+  // Count
+  mkCounts();
+
+  echo json_encode( $data );
 ?>

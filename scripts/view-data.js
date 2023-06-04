@@ -137,8 +137,11 @@ function drawStats(counter) {
     display.append(divEle);
   }
 
-  let str = "Test";
-  $("#stats").append($("<p>").text(str))
+  for(let x of data.counts) {
+    let str = `${x.date}: ${x.count}`;
+    $("#stats").append($("<p>").text(str))
+  }
+
 }
 
 function mkTab(innerHTML, tabs=0) {
