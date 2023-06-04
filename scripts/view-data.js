@@ -84,7 +84,6 @@ function createAllergyEle(objList) {
   let allergyEle = $("<td>");
 
   for(let obj of objList) {
-    console.log(obj);
     allergyEle.append(
       $("<p>")
         .text(obj.allergies)
@@ -101,8 +100,8 @@ function drawStats(counter) {
   // Create lists of information to track
   let days = ["Monday", "Tuesday", "Wednesday", "Thursday"];
   let locations = data["locations"];
+  let display = $("#stats");
 
-  // console.log( counter );
   // drawObjectToHTML(counter);
 
   for(let day of days) {
@@ -135,8 +134,11 @@ function drawStats(counter) {
       .append( createAllergyEle(counter[day].allergies) )
     );
 
-    $("#stats").append(divEle);
+    display.append(divEle);
   }
+
+  let str = "Test";
+  $("#stats").append($("<p>").text(str))
 }
 
 function mkTab(innerHTML, tabs=0) {
