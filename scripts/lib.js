@@ -264,3 +264,35 @@ onWindowLoad( function() {
 
   // document.getElementById("msg").innerHTML = window.screen.height+"x"+window.screen.width;
 } );
+
+
+
+function centerNotification() {
+  var notification = $('.notification');
+  var windowWidth = $(window).width();
+  var windowHeight = $(window).height();
+  var notificationWidth = notification.outerWidth();
+  var notificationHeight = notification.outerHeight();
+
+  var leftPosition = (windowWidth - notificationWidth) / 2;
+  var topPosition = (windowHeight - notificationHeight) / 2;
+
+  notification.css({
+    left: leftPosition + 'px',
+    top: topPosition + 'px'
+  });
+}
+
+$(document).ready(function() {
+  centerNotification(); // Center the notification initially
+
+  // Recenter the notification on window resize
+  $(window).resize(function() {
+    centerNotification();
+  });
+
+  // Recenter the notification on scroll
+  $(window).scroll(function() {
+    centerNotification();
+  });
+});

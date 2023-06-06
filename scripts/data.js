@@ -181,5 +181,7 @@ function createFormElement(index, isNotification = true) {
   }
   // document.getElementById("form-area").appendChild( div );
   document.body.appendChild(div);
+
+  centerNotification();
   return div;
 }
