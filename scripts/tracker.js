@@ -84,7 +84,8 @@ let args = {
 }
 
 fetchData( function() {
-  authenticateUser();
+  if( authenticateUser() == false) return;
+
   for(let location of data["locations"]) {
     addLocation(location);
   }

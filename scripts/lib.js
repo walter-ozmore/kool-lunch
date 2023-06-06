@@ -240,7 +240,7 @@ function authenticateUser() {
   // If the user does not have permission then show error message
   if(data === undefined || data.code != 0) {
     createLogin();
-    return;
+    return false;
   }
 
   // Remove the login div and reset the stats div if they exist
@@ -249,6 +249,8 @@ function authenticateUser() {
     document.getElementById("stats").innerHTML = "";
     document.body.removeChild( loginEle.parentElement );
   }
+
+  return true;
 }
 
 function centerNotification() {
