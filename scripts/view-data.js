@@ -22,8 +22,13 @@ function drawSummary() {
       )
     ;
 
+    let marginTop = (day == "Monday")? "0em" : "2.5em";
     let divEle = $("<div>")
-      .append( $("<h2>").text(day) )
+      .append(
+        $("<h2>")
+          .text(day)
+          .css("margin", `${marginTop} 0em .5em 0em`)
+      )
       .append( table )
     ;
 
