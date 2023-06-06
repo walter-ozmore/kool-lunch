@@ -7,6 +7,7 @@ function createFormElement(index, isNotification = true) {
 
   // Create a container to hold elements
   let div = mkEle("div");
+  let $div = $(div);
   div.classList.add("content");
   if(isNotification) {
     div.classList.add("notification");
@@ -37,9 +38,27 @@ function createFormElement(index, isNotification = true) {
   var formattedTime = timeConverter(form["TimeSubmited"]);
   div.appendChild(mkEle("p", "Time Submited: " +formattedTime ));
 
-  div.appendChild(mkEle("p", "Pickup Location: " + form["Location"]));
+  // Location
+  let selector = $("<select>");
+  for(let location of data.locations) {
+    selector.append( $("<option>", {value: location, text: location}));
+  }
+  // Set the default value
+  selector.val( form.Location );
+  selector.on("change", function() {
+    // Update value in SQL
+    let args = { formId: form["FormId"], Location: this.value };
+    ajaxJson("/ajax/update-form.php", null, args);
+  });
 
-  let $div = $(div);
+  $div
+    .append( $("<label>").text("Pickup Location: ") )
+    .append( selector )
+    .append( "<br>" )
+  ;
+
+  // div.appendChild(mkEle("p", "Pickup Location: " + form["Location"]));
+
   // Check box for enabled
   let checkbox = $("<input>", {
       type: "checkbox",
@@ -87,7 +106,6 @@ function createFormElement(index, isNotification = true) {
 
 
   // Delete form
-
   let deleteButton = $("<button>").click(function() {
     let args = {formId: form["FormId"]};
 

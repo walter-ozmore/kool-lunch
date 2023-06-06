@@ -2,6 +2,9 @@
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/version-3/lib.php";
 
+  error_reporting(E_ALL);
+  ini_set('display_errors', '1');
+
   checkUser();
 
   $args = json_decode( $_POST["q"], true );
@@ -10,6 +13,12 @@
 
   $set = "";
   foreach ($args as $key => $value) {
+    if($key === "Location") {
+      $value = addslashes($value);
+      $set .= "$key='$value'";
+      continue;
+    }
+
     $set .= "$key=$value";
   }
 
