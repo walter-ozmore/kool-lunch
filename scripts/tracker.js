@@ -4,6 +4,8 @@
 function addPickup(index) {
   let form = data["forms"][index];
 
+  if(form.isEnabled != 1) return;
+
   // Grab adults
   let individuals = "";
   for(let ind of form["individuals"]) {
@@ -14,12 +16,14 @@ function addPickup(index) {
   let checked = (form.pickedUp)? "checked": "";
 
   let innerHTML = `
-    <p onclick="createFormElement(${form["FormId"]})">${individuals}</p>
+    <a onclick="createFormElement(${index})">${individuals}</a>
     <input type="checkbox" onchange="checkboxUpdate(this, ${form["FormId"]});" ${checked}>
   `;
 
   let row = mkEle("div", innerHTML);
   row.classList.add("row");
+
+  console.log(form);
 
   let location = form["Location"];
   document.getElementById(location).appendChild( row );
