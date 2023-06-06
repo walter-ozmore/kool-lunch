@@ -188,7 +188,7 @@ $(document).ready(function() {
 
   // Grab the data from the database
   fetchData( function() {
-    authenticateUser();
+    if( authenticateUser() == false ) return;
 
     drawSummary();
     drawForms();
