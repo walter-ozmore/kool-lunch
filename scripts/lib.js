@@ -119,7 +119,6 @@ function fetchData(returnFunction = null) {
   if(data != null)
     returnFunction(data);
 
-  console.log("Fetching data");
   ajaxJson("/ajax/fetch-data.php", function(obj) {
     // Create an array from the json in data
     let forms = [];
