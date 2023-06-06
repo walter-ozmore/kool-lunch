@@ -28,7 +28,7 @@
         margin: auto;
       }
 
-      .filter select {
+      select {
         font-size: 1.5em;
       }
     </style>
@@ -41,9 +41,9 @@
   </header>
 
   <body>
-    <div class="content filter" style="text-align: center;">
+    <center>
       <select id="location-selector" onchange="checkSelector()"></select>
-    </div>
+    </center>
 
 
     <div id="display"></div>

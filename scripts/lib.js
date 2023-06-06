@@ -219,6 +219,19 @@ function createLogin() {
           })
       )
     )
+
+    // Access code
+    // .append(
+    //   $("<span>")
+    //     .addClass("separator")
+    // )
+    // .append( $("<h2>").text("Access Code") )
+    // .append(
+    //   $("<center>")
+    //     .append( $("<input>", {type: "number", name: "uname"}) )
+    //     .append( $("<br>") )
+    //     .append( $("<button>").text("Submit") )
+    // )
   );
   centerNotification();
 }
