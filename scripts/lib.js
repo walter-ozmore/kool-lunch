@@ -97,18 +97,17 @@ function mkEle(type, innerHTML=null) {
 }
 
 function timeConverter(UNIX_timestamp){
-  var a = new Date(UNIX_timestamp * 1000);
-  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var year = a.getFullYear();
-  var month = months[a.getMonth()];
-  var date = a.getDate();
-  var hour = a.getHours();
-  var min = a.getMinutes();
-  var ampm = hour >= 12 ? 'pm' : 'am';
+  let a = new Date(UNIX_timestamp * 1000);
+  let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let year = a.getFullYear();
+  let month = months[a.getMonth()];
+  let date = a.getDate();
+  let hour = a.getHours();
+  let min = a.getMinutes();
+  let ampm = hour >= 12 ? 'pm' : 'am';
   hour = hour % 12;
   hour = hour ? hour : 12; // convert 0 to 12
-  // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + (min < 10 ? '0' : '') + min + ' ' + ampm;
-  var time = `${hour}:${(min<10? '0': '') + min + ampm} ${month} ${date}, ${year}`;
+  let time = `${hour}:${(min<10? '0': '') + min + ampm} ${month} ${date}, ${year}`;
   return time;
 }
 
@@ -143,7 +142,6 @@ function fetchData(returnFunction = null) {
 function compare(a, b) {
   return a.individuals[0]["IndividualName"] < b.individuals[0]["IndividualName"]
 }
-
 
 /**
  * Sorts the given array and returns the array
@@ -195,25 +193,34 @@ function alertTo(ele) {
 }
 
 function createLogin() {
-  // Create login page
-  let loginDiv = mkEle("div");
-  loginDiv.classList.add("content");
-  loginDiv.classList.add("notification");
-  document.body.appendChild(loginDiv);
-  loginDiv.innerHTML = `
-    <h2 style="margin-bottom: 1em;">Login</h2>
-    <div class="grid" id="login">
-      <label>Username</label>
-      <input type="text" name="uname">
-
-      <label>Password</label>
-      <input type="password" name="pword">
-
-      <label>Stay Logged In</label>
-      <input type="checkbox" name="sli">
-    </div>
-    <center><button onclick="account_login(function() {window.location.reload();})">Login</button></center>
-  `;
+  $("body").append($("<div>")
+    .addClass("content")
+    .addClass("notification")
+    .append($("<h2>").text("Login").css("margin-bottom", "1em"))
+    .append(
+      $("<div>", {id: "login"})
+        .addClass("grid")
+        .append( $("<label>").text("Username") )
+        .append( $("<input>", {type: "text", name: "uname"}) )
+        .append( $("<label>").text("Password") )
+        .append( $("<input>", {type: "password", name: "pword"}) )
+    )
+    .append(
+      $("<center>")
+        .append( $("<input>", {type: "checkbox", name: "sli"}) )
+        .append( $("<label>").text("Remember me") )
+    )
+    .append(
+      $("<center>").append(
+        $("<button>")
+          .text("Login")
+          .on("click", function() {
+            account_login(function() {window.location.reload();})
+          })
+      )
+    )
+  );
+  centerNotification();
 }
 
 function authenticateUser() {
@@ -230,42 +237,6 @@ function authenticateUser() {
     document.body.removeChild( loginEle.parentElement );
   }
 }
-
-var data = null;
-var windowLoadedFunctions = [];
-var windowLoaded = false;
-
-/**
- * Runs the given function when the window loads, if the
- * window is already loaded it will just run the function
- *
- * @param {function} func
- */
-function onWindowLoad(func) {
-  if(windowLoaded == false) {
-    windowLoadedFunctions.push(func);
-    return;
-  }
-  func();
-}
-
-
-window.onload = function() {
-  windowLoaded = true;
-  for(let i=0; i<windowLoadedFunctions.length; i++) {
-    windowLoadedFunctions[i]();
-  }
-};
-
-onWindowLoad( function() {setInterval( blink(), 1000 );} );
-onWindowLoad( function() {
-  let height = window.screen.height;
-  let width = window.screen.width;
-
-  // document.getElementById("msg").innerHTML = window.screen.height+"x"+window.screen.width;
-} );
-
-
 
 function centerNotification() {
   var notification = $('.notification');
@@ -284,15 +255,9 @@ function centerNotification() {
 }
 
 $(document).ready(function() {
-  centerNotification(); // Center the notification initially
-
-  // Recenter the notification on window resize
-  $(window).resize(function() {
-    centerNotification();
-  });
-
-  // Recenter the notification on scroll
-  $(window).scroll(function() {
-    centerNotification();
-  });
+  // Recenter notifications on window resize or scroll
+  $(window).resize(centerNotification);
+  $(window).scroll(centerNotification);
 });
+
+var data = null;
