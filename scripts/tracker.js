@@ -22,8 +22,9 @@ function addPickup(index) {
 
   let row = mkEle("div", innerHTML);
   row.classList.add("row");
-
-  console.log(form);
+  if(form.hasAllergies) {
+    row.style.backgroundColor = "#fdff32";
+  }
 
   let location = form["Location"];
   document.getElementById(location).appendChild( row );

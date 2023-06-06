@@ -98,6 +98,7 @@
 
       $data["forms"][$id] = $row;
       $data["forms"][$id]["pickedUp"] = false;
+      $data["forms"][$id]["hasAllergies"] = false;
     }
 
     $formIds = substr($formIds, 0, -1);
@@ -109,6 +110,8 @@
       $formId = $row["FormId"];
       unset($row["FormId"]);
       $data["forms"][$formId]["individuals"][] = $row;
+      if( $row["Allergies"] != null )
+        $data["forms"][$formId]["hasAllergies"] = true;
       if($row["IsAdult"] == 0) $data["totalChildren"] += 1;
     }
 

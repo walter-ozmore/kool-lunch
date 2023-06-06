@@ -12,8 +12,7 @@
       .row {
         display: grid;
         grid-template-columns: 90% 10%;
-        width: 100%;
-        margin: 1em 0em;
+        padding: .5em .25em;
         border-bottom: 1px solid black;
         font-size: 1.5em;
         /* min-height: 5em; */
