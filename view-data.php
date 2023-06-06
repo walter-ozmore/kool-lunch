@@ -27,6 +27,15 @@
         margin: 0em;
         padding: 0em;
       }
+
+      .page {
+        display: none;
+      }
+
+      .big {
+        font-size: 1.5em;
+        padding: .01em 1em;
+      }
     </style>
 
     <script src="/scripts/view-data.js"></script>
@@ -39,9 +48,14 @@
   </header>
 
   <body>
-    <div id="stats" class="content stats">
-      <pre id="output"></pre>
-    </div>
-    <div id="form-area"></div>
+    <center>
+      <select id="selector" class="big">
+        <option value="forms-page">Forms</option>
+        <option value="stats-page">Overview</option>
+      </select>
+    </center>
+
+    <div id="stats-page" class="page"></div>
+    <div id="forms-page" class="page"></div>
   </body>
 </html>
