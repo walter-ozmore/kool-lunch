@@ -68,18 +68,18 @@
       $query .= " AND Pickup".$args["day"]."=1";
     }
 
-    // echo $query;
     return $query;
   }
 
   function grabData() {
-    global $db_conn, $data;
+    global $db_conn, $data, $args;
 
     $data["totalChildren"] = 0;
 
     // Load locations
     $data["locations"] = [];
     $query = "SELECT DISTINCT Location FROM Form";
+
     $result = $db_conn->query($query);
     while ($row = $result->fetch_assoc()) {
       $data["locations"][] = $row["Location"];
@@ -128,7 +128,7 @@
   }
 
   // Runner Code
-  $args = $_POST["q"];
+  $args = json_decode( $_POST["q"], true);
   $data = [];
 
   // Check to see if the user is valid

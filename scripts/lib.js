@@ -115,7 +115,7 @@ function timeConverter(UNIX_timestamp){
 /**
  * Fetches data from the database according to the user's permissions
  */
-function fetchData(returnFunction = null) {
+function fetchData(returnFunction = null, args = {}) {
   if(data != null)
     returnFunction(data);
 
@@ -135,7 +135,7 @@ function fetchData(returnFunction = null) {
     data = obj;
 
     returnFunction(obj);
-  });
+  }, args);
 }
 
 function compare(a, b) {

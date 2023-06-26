@@ -83,6 +83,7 @@ function checkSelector() {
 let args = {
   day: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]
 }
+console.log( args );
 
 fetchData( function() {
   if( authenticateUser() == false) return;
@@ -96,4 +97,4 @@ fetchData( function() {
   for(let index in data["forms"]) {
     addPickup(index);
   }
-});
+}, args);
