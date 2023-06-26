@@ -36,6 +36,14 @@
         font-size: 1.5em;
         padding: .01em 1em;
       }
+
+      .sidebar {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+
+        margin: 0px;
+      }
     </style>
 
     <script src="/scripts/view-data.js"></script>
@@ -48,12 +56,12 @@
   </header>
 
   <body>
-    <center>
+    <div class="sidebar content">
       <select id="selector" class="big">
         <option value="forms-page">Forms</option>
         <option value="stats-page">Overview</option>
       </select>
-    </center>
+    </div>
 
     <div id="stats-page" class="page"></div>
     <div id="forms-page" class="page"></div>
