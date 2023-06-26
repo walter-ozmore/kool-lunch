@@ -192,46 +192,51 @@ function alertTo(ele) {
 }
 
 function createLogin() {
-  $("body").append($("<div>")
+  let noti = $("<div>");
+
+  noti
     .addClass("content")
     .addClass("notification")
-    .append($("<h2>").text("Login").css("margin-bottom", "1em"))
-    .append(
-      $("<div>", {id: "login"})
-        .addClass("grid")
-        .append( $("<label>").text("Username") )
-        .append( $("<input>", {type: "text", name: "uname"}) )
-        .append( $("<label>").text("Password") )
-        .append( $("<input>", {type: "password", name: "pword"}) )
-    )
-    .append(
-      $("<center>")
-        .append( $("<input>", {type: "checkbox", name: "sli"}) )
-        .append( $("<label>").text("Remember me") )
-    )
-    .append(
-      $("<center>").append(
-        $("<button>")
-          .text("Login")
-          .on("click", function() {
-            account_login(function() {window.location.reload();})
-          })
-      )
-    )
+  ;
 
+  if( code ) {
     // Access code
-    // .append(
-    //   $("<span>")
-    //     .addClass("separator")
-    // )
-    // .append( $("<h2>").text("Access Code") )
-    // .append(
-    //   $("<center>")
-    //     .append( $("<input>", {type: "number", name: "uname"}) )
-    //     .append( $("<br>") )
-    //     .append( $("<button>").text("Submit") )
-    // )
-  );
+    noti
+      .append( $("<h2>").text("Access Code") )
+      .append(
+        $("<center>")
+          .append( $("<input>", {type: "number", name: "uname"}) )
+          .append( $("<br>") )
+          .append( $("<button>").text("Submit") )
+      )
+  } else {
+    noti
+      .append($("<h2>").text("Login").css("margin-bottom", "1em"))
+      .append(
+        $("<div>", {id: "login"})
+          .addClass("grid")
+          .append( $("<label>").text("Username") )
+          .append( $("<input>", {type: "text", name: "uname"}) )
+          .append( $("<label>").text("Password") )
+          .append( $("<input>", {type: "password", name: "pword"}) )
+      )
+      .append(
+        $("<center>")
+          .append( $("<input>", {type: "checkbox", name: "sli"}) )
+          .append( $("<label>").text("Remember me") )
+      )
+      .append(
+        $("<center>").append(
+          $("<button>")
+            .text("Login")
+            .on("click", function() {
+              account_login(function() {window.location.reload();})
+            })
+        )
+      )
+  }
+
+  $("body").append(noti);
   centerNotification();
 }
 
@@ -275,3 +280,4 @@ $(document).ready(function() {
 });
 
 var data = null;
+var code = false;

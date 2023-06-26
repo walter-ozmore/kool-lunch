@@ -17,3 +17,9 @@
 <script src="/account/version-3/lib.js"></script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+
+<script>
+  <?php
+    echo "code = ". ((isset($_GET["code"]))? "true": "false") .";";
+  ?>
+</script>
