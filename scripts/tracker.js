@@ -54,6 +54,7 @@ function addLocation(location) {
   let option = mkEle("option", location);
   option.value = location;
   document.getElementById("location-selector").appendChild(option);
+  $("#location-selector").show();
 
   let group = mkEle("div");
   group.classList.add("content");

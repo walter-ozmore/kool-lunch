@@ -42,7 +42,7 @@
 
   <body>
     <center>
-      <select id="location-selector" onchange="checkSelector()"></select>
+      <select id="location-selector" onchange="checkSelector()" style="display: none"></select>
     </center>
 
 
