@@ -10,20 +10,28 @@
    * 2 - No user is logged in
    */
 
-
-  function getCount($str) {
+  /**
+   * Counts the number of lunches picked up after the given string date and
+   * returns it
+   *
+   * @param str Date in the form of a string ie. "last Monday"
+   *
+   * @return number Amount of lunches that were picked up on that given day
+   */
+  function getPickupCount($str) {
     global $db_conn;
 
-    $min = strtotime($str);
-    $max = strtotime("+1 day", $min);
-    $query = "SELECT SUM(amount) AS count FROM Pickup WHERE pickupTime>$min AND pickupTime<$max";
-    $result = $db_conn->query($query);
-    while ($row = $result->fetch_assoc()) {
-      return $row["count"];
-    }
-  }
+      $min = strtotime($str);
+      $max = strtotime("+1 day", $min);
+      $query = "SELECT SUM(amount) AS count FROM Pickup WHERE pickupTime>$min AND pickupTime<$max";
+      $result = $db_conn->query($query);
+      while ($row = $result->fetch_assoc()) {
+        return $row["count"];
+      }
+   }
 
-  function mkCounts() {
+
+  function getPickupCounts() {
     global $db_conn, $data;
 
     // Grab unique dates
@@ -40,14 +48,27 @@
     // Convert associative array to normal array
     $datesList = array_keys($uniqueDates);
 
+    // Counts the amount of lunches per day
     $data["counts"] = [];
     foreach($datesList as $date) {
-      $count = getCount($date);
+      $count = getPickupCount($date);
 
       $data["counts"][] = ["date"=>$date, "count"=>$count];
     }
   }
 
+  function fetchSummary() {
+    global $db_conn;
+
+  }
+
+
+  /**
+   * Makes the form query of the forms that should be recived using the
+   * arguments that were given
+   *
+   * @return string The query
+   */
   function getFormQuery() {
     global $args;
 
@@ -138,7 +159,7 @@
   grabData();
 
   // Count
-  mkCounts();
+  getPickupCounts();
 
   echo json_encode( $data );
 ?>
