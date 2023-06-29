@@ -12,6 +12,7 @@
 
 <!-- Import Scripts -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script src="/scripts/lib.js"></script>
 <script src="/scripts/data.js"></script>
 <script src="/account/version-3/lib.js"></script>
