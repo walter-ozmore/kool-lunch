@@ -1,4 +1,4 @@
-onWindowLoad( function() {
+$(document).ready(function() {
   addFaq(
     "Where are the pick-up/drop-off locations?",
     `Simpson Park - <span class="subtle">Simpson Park is the park by I.W.Evans and L.H.Rather. You can meet us near the pavilion.</span><br><br>
