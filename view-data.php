@@ -43,6 +43,11 @@
         left: 10px;
 
         margin: 0px;
+        padding: .5em;
+      }
+
+      .sidebar select {
+        font-size: max(1em, 25%);
       }
     </style>
 
@@ -57,7 +62,7 @@
 
   <body>
     <div class="sidebar content">
-      <select id="selector" class="big">
+      <select id="selector">
         <option value="forms-page">Forms</option>
         <option value="stats-page">Overview</option>
       </select>
