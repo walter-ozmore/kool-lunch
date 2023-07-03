@@ -69,10 +69,17 @@ function createFormElement(index, isNotification = true) {
     let name = pickupDetails[index].name;
     checkbox = $("<input>", {
         type: "checkbox",
-        checked: (form.pickupDays.indexOf(index) != -1),
-        disabled: true
+        checked: (form.pickupDays.indexOf(index) != -1)
       }
     );
+
+    checkbox.on("change", function() {
+      // Update value in SQL
+      let args = { formId: form["FormId"] };
+      let newName = "Pickup"+ index.charAt(0).toUpperCase() + index.slice(1);
+      args[newName] = ((this.checked)? 1: 0);
+      ajaxJson("/ajax/update-form.php", null, args);
+    });
 
     $div.append( checkbox )
         .append( $("<label>").text(name).css("margin-right", "1em") )
@@ -87,7 +94,6 @@ function createFormElement(index, isNotification = true) {
     })
     .change(function() {
       let args = { formId: form["FormId"], isEnabled: ((this.checked)? 1: 0) };
-      console.log(args);
       ajaxJson("/ajax/update-form.php", null, args);
     }
   );
