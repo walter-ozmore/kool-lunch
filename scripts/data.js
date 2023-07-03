@@ -1,9 +1,22 @@
+var pickupDetails = {
+  monday   : {name: "Monday"   , abbreviation: "M" },
+  tuesday  : {name: "Tuesday"  , abbreviation: "T" },
+  wednesday: {name: "Wednesday", abbreviation: "W" },
+  thursday : {name: "Thursday" , abbreviation: "Th"},
+  friday   : {name: "Friday"   , abbreviation: "F" }
+}
+
 function createFormElement(index, isNotification = true) {
   if(data == undefined) {
     console.log("Data is not found");
     fetchData(null, createFormElement(index));
     return;
   }
+
+  // Grab the form from our data list
+  let form = data["forms"][index];
+  if(form == undefined) return null;
+  // console.log(form);
 
   // Create a container to hold elements
   let div = mkEle("div");
@@ -22,18 +35,8 @@ function createFormElement(index, isNotification = true) {
   /************************************************
    * Draw header information
    ***********************************************/
-  let form = data["forms"][index];
-  if(form == undefined) return null;
 
   div.appendChild(mkEle("h2", "Form #" + form["FormId"]));
-
-  // Convert days to a string for the user
-  let days = "Pickup Days: ";
-  if( form["PickupMonday"]    == 1 ) days += "M ";
-  if( form["PickupTuesday"]   == 1 ) days += "T ";
-  if( form["PickupWednesday"] == 1 ) days += "W ";
-  if( form["PickupThursday"]  == 1 ) days += "Th ";
-  div.appendChild( mkEle("p", days) );
 
   var formattedTime = timeConverter(form["TimeSubmited"]);
   div.appendChild(mkEle("p", "Time Submited: " +formattedTime ));
@@ -59,8 +62,26 @@ function createFormElement(index, isNotification = true) {
 
   // div.appendChild(mkEle("p", "Pickup Location: " + form["Location"]));
 
+  let checkbox;
+  // Pickup days
+  $div.append( $("<label>").text("Pickup Days: ") );
+  for(let index in pickupDetails) {
+    let name = pickupDetails[index].name;
+    checkbox = $("<input>", {
+        type: "checkbox",
+        checked: (form.pickupDays.indexOf(index) != -1),
+        disabled: true
+      }
+    );
+
+    $div.append( checkbox )
+        .append( $("<label>").text(name).css("margin-right", "1em") )
+        // .append( $("<br>") );
+  }
+  $div.append( $("<br>") );
+
   // Check box for enabled
-  let checkbox = $("<input>", {
+  checkbox = $("<input>", {
       type: "checkbox",
       checked: (form["isEnabled"] == 1)? true: false
     })

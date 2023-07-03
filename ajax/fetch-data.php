@@ -117,9 +117,23 @@
       $id = $row["FormId"];
       $formIds .= "$id,";
 
+      // Create an array for the pickup days rather than individual varibles
+      $pickupDays = [];
+      if($row["PickupMonday"]    == 1) $pickupDays[] = "monday";
+      if($row["PickupTuesday"]   == 1) $pickupDays[] = "tuesday";
+      if($row["PickupWednesday"] == 1) $pickupDays[] = "wednesday";
+      if($row["PickupThursday"]  == 1) $pickupDays[] = "thursday";
+
+      unset($row["PickupMonday"]);
+      unset($row["PickupTuesday"]);
+      unset($row["PickupWednesday"]);
+      unset($row["PickupThursday"]);
+
+
       $data["forms"][$id] = $row;
       $data["forms"][$id]["pickedUp"] = false;
       $data["forms"][$id]["hasAllergies"] = false;
+      $data["forms"][$id]["pickupDays"] = $pickupDays;
     }
 
     $formIds = substr($formIds, 0, -1);
