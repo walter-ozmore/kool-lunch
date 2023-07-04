@@ -3,7 +3,7 @@ var pickupDetails = {
   tuesday  : {name: "Tuesday"  , abbreviation: "T" },
   wednesday: {name: "Wednesday", abbreviation: "W" },
   thursday : {name: "Thursday" , abbreviation: "Th"},
-  friday   : {name: "Friday"   , abbreviation: "F" }
+  // friday   : {name: "Friday"   , abbreviation: "F" },
 }
 
 /**
