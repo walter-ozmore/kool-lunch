@@ -28,10 +28,6 @@
         padding: 0em;
       }
 
-      .page {
-        display: none;
-      }
-
       .big {
         font-size: 1.5em;
         padding: .01em 1em;
@@ -51,12 +47,12 @@
       }
     </style>
 
+    <!-- Main page file -->
+    <script src="/scripts/view-data.js"></script>
+
     <!-- Include script for pages -->
     <script src="/scripts/vd-forms.js"></script>
     <script src="/scripts/vd-overview.js"></script>
-
-    <!-- Main page file -->
-    <script src="/scripts/view-data.js"></script>
   </head>
 
   <header>
@@ -67,13 +63,9 @@
 
   <body>
     <div class="sidebar content">
-      <select id="selector">
-        <option value="forms-page">Forms</option>
-        <option value="stats-page">Overview</option>
-      </select>
+      <select id="selector"></select>
     </div>
 
-    <div id="stats-page" class="page"></div>
-    <div id="forms-page" class="page"></div>
+    <div id="pages"></div>
   </body>
 </html>

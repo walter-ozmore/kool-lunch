@@ -62,30 +62,121 @@ function calculateStats() {
 //   alertTo(formEle);
 // }
 
+
+
+/**
+ * Adds a page to the HTML document, and the page list after data is loaded. If
+ * data has not be loaded then the page's initalization will be saved till data
+ * is loaded.
+ *
+ * @param {*} page
+ */
+function addPage(page) {
+  if(dataLoaded == false) {
+    // Save to load later
+    pagesToAddLater.push(page);
+    return;
+  }
+
+  // Add to the drop down
+  let option = $("<option>")
+    .val(page.id)
+    .text(page.name)
+  ;
+  $("#selector").append(option);
+
+  // Add page div
+  let div = $("<div>")
+    .attr("id", page.id)
+    .hide()
+  ;
+  $("#pages").append(div);
+
+  // Initalize page
+  if("init" in page) page.init();
+
+  // Add to page object
+  page.div = div;
+  pages[page.id] = page;
+}
+
+/**
+ * Hides all pages using JQuery
+ */
+function hidePages() {
+  for(let pageId in pages)
+    $("#"+pageId).hide();
+}
+
+
+/**
+ * Shows the given page using JQuery and their ID
+ *
+ * @param pageId
+ */
+function showPage(pageId) {
+  $("#"+pageId).show();
+}
+
+var dataLoaded = false;
 var days = ["monday", "tuesday", "wednesday", "thursday"];
+var pages = {};
+var pagesToAddLater = [];
 
 $(document).ready(function() {
-  let checkSelector = function() {
-    let selected = $("#selector").val();
-    var pages = ["stats-page", "forms-page"];
 
-    // Hide all pages
-    for(let pageId of pages) {
-      document.getElementById(pageId).style.display = "none";
+  fetchData( function() {
+    if( authenticateUser() == false ) return;
+    dataLoaded = true;
+    for(let page of pagesToAddLater) {
+      addPage(page);
     }
 
-    document.getElementById(selected).style.display = "block";
+    // addPage({
+    //   id: "stats-page",
+    //   name: "Overview",
+    //   draw: drawSummary
+    // });
+
+    // addPage({
+    //   id: "forms-page",
+    //   name: "Forms",
+    //   draw: drawForms
+    // });
+
+    checkSelector();
+  });
+
+  let checkSelector = function() {
+    hidePages();
+    showPage( $("#selector").val() );
   };
 
   $("#selector").on("change", checkSelector);
-
-  checkSelector();
-
-  // Grab the data from the database
-  fetchData( function() {
-    if( authenticateUser() == false ) return;
-
-    drawSummary();
-    drawForms();
-  });
 });
+
+// $(document).ready(function() {
+//   let checkSelector = function() {
+//     let selected = $("#selector").val();
+//     var pages = ["stats-page", "forms-page"];
+
+//     // Hide all pages
+//     for(let pageId of pages) {
+//       document.getElementById(pageId).style.display = "none";
+//     }
+
+//     document.getElementById(selected).style.display = "block";
+//   };
+
+//   $("#selector").on("change", checkSelector);
+
+//   checkSelector();
+
+//   // Grab the data from the database
+//   fetchData( function() {
+//     if( authenticateUser() == false ) return;
+
+//     drawSummary();
+//     drawForms();
+//   });
+// });
