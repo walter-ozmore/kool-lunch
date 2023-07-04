@@ -60,21 +60,13 @@
     }
   }
 
-  function fetchSummary() {
-    global $db_conn;
-
-  }
-
-
   /**
    * Makes the form query of the forms that should be recived using the
    * arguments that were given
    *
    * @return string The query
    */
-  function getFormQuery() {
-    global $args;
-
+  function getFormQuery($args) {
     $cutOff = strtotime('September 1st');
 
     if( isset($args["cutOff"]) ) {
@@ -95,32 +87,28 @@
     return $query;
   }
 
-  function grabData() {
-    global $db_conn, $data, $args;
+  function fetchData($args) {
+    $defaultArgs = [
 
-    $data["totalChildren"] = 0;
+    ];
+
+    // Open SQL Connection
+    $conn = connectDB("lunch");
+
+    // Initialized Data Object
+    $data = [];
 
     // Load locations
-    $data["locations"] = [];
-    $query = "SELECT DISTINCT Location FROM Form";
-
-    $result = $db_conn->query($query);
-    while ($row = $result->fetch_assoc()) {
+    $data["locations"] = []; // Initialize Array
+    $result = $conn->query("SELECT DISTINCT Location FROM Form");
+    while ($row = $result->fetch_assoc())
       $data["locations"][] = $row["Location"];
-    }
 
-
-    // List of form IDs to check later
-    $formIds = "";
-    $formIdArray = [];
-
-    // Create query
-    $query = getFormQuery();
-    $result = $db_conn->query($query);
+    // Load all forms that are valid
+    $query = getFormQuery($args);
+    $result = $conn->query($query);
     while ($row = $result->fetch_assoc()) {
-      $id = $row["FormId"];
-      $formIdArray[] = $id;
-      $formIds .= "$id,";
+      $formId = $row["FormId"];
 
       // Create an array for the pickup days rather than individual varibles
       $pickupDays = [];
@@ -129,51 +117,66 @@
       if($row["PickupWednesday"] == 1) $pickupDays[] = "wednesday";
       if($row["PickupThursday"]  == 1) $pickupDays[] = "thursday";
 
+      // Remove this data as we are using an array for the front end
       unset($row["PickupMonday"]);
       unset($row["PickupTuesday"]);
       unset($row["PickupWednesday"]);
       unset($row["PickupThursday"]);
 
+      $data["forms"][$formId] = $row;
+      $data["forms"][$formId]["pickupDays"] = $pickupDays;
+      $data["forms"][$formId]["totalChildren"] = 0; // Temporary variable
 
-      $data["forms"][$id] = $row;
-      $data["forms"][$id]["pickedUp"] = false;
-      $data["forms"][$id]["hasAllergies"] = false;
-      $data["forms"][$id]["pickupDays"] = $pickupDays;
+      // Set these to null, they will be set later as we go though the individuals
+      $data["forms"][$formId]["pickedUp"] = false;
+      $data["forms"][$formId]["hasAllergies"] = false;
     }
 
-    $formIds = substr($formIds, 0, -1);
+    // Create a query with all the forms
+    // This is faster than many smaller queries
+    $multiselect = "";
+    foreach($data["forms"] as $formId => $form)
+      $multiselect .= "$formId, ";
+    $multiselect = substr($multiselect, 0, -2); // Cut off the last ", "
+    // echo $multiselect;
 
-    // Fill in individuals
-    $query = "SELECT * FROM Individual WHERE FormId IN ($formIds)";
-    $result = $db_conn->query($query);
+    // Run our query and loop though all inviduals in valid forms
+    $result = $conn->query("SELECT * FROM Individual WHERE FormId IN ($multiselect)");
     while ($row = $result->fetch_assoc()) {
       $formId = $row["FormId"];
+
+      // Remove unneeded data
       unset($row["FormId"]);
+
+      // Append the row to the form in our data object
       $data["forms"][$formId]["individuals"][] = $row;
-      if( $row["Allergies"] != null )
+
+      // Set the form's allergy notice
+      if($row["Allergies"] != null)
         $data["forms"][$formId]["hasAllergies"] = true;
-      if($row["IsAdult"] == 0) $data["totalChildren"] += 1;
+
+      if($row["IsAdult"] == 0)
+        $data["forms"][$formId]["totalChildren"] += 1;
     }
 
-    // Check if they have pickuped today
-    $today = strtotime('today');
-    $query = "SELECT formId, pickupTime, amount FROM Pickup WHERE FormId IN ($formIds) AND pickupTime>$today";
-    $result = $db_conn->query($query);
-    while ($row = $result->fetch_assoc()) {
-      $formId = $row["formId"];
-      $data["forms"][$formId]["pickedUp"] = true;
+    // Clean up data
+
+    foreach($data["forms"] as $formId => $form) {
+      // Set the lunches needed to the correct value
+      $lunchOveride = $form["lunchOverideAmount"];
+      $lunchesNeeded = ($lunchOveride == null)? $form["totalChildren"]: $lunchOveride;
+      $data["forms"][$formId]["lunchesNeeded"] = $lunchesNeeded;
+
+      // Clear our temp varibles
+      unset( $data["forms"][$formId]["totalChildren"] );
     }
 
 
-    // Count the amount of lunches they are going to pickup
-    foreach($formIdArray as $formId) {
-      $data["forms"][$formId]["amount"] = getLunchAmount($formId);
-    }
-    // echo getCount($formId);
 
-    // Set code to success
+
     $data["code"] = 0;
-  } // End of function
+    return $data;
+  }
 
   // Runner Code
   $args = json_decode( $_POST["q"], true);
@@ -183,7 +186,7 @@
   checkUser();
 
   // Grab the data from the database
-  grabData();
+  $data = fetchData($args);
 
   // Count
   getPickupCounts();

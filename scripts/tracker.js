@@ -18,7 +18,7 @@ function addPickup(index) {
   let innerHTML = `
     <a onclick="createFormElement(${index})">${individuals}</a>
     <span>
-      <span style="margin-right: 1em;text-align: right;">${("amount" in form)? form.amount + "x": "-"}</span>
+      <span style="margin-right: 1em;text-align: right;">${("lunchesNeeded" in form)? form.lunchesNeeded + "x": "-"}</span>
       <input type="checkbox" onchange="checkboxUpdate(this, ${form["FormId"]});" ${checked}>
     </span>
   `;
