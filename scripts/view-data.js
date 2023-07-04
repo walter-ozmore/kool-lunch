@@ -1,82 +1,9 @@
 /**
- * Draws an overall summary that contains no PII
+ * Using the global variable data it will attempt to calculate various stats
+ * about the data
+ *
+ * @returns Object containing all stats about the loaded data
  */
-function drawSummary() {
-  // Calculate stats client side
-  let counter = calculateStats();
-
-  // Create lists of information to track
-  let locations = data["locations"];
-  let display = $("<div>").addClass("content");
-  $("#stats-page").append(display);
-
-  // drawObjectToHTML(counter);
-
-  for(let day of days) {
-    let table = $("<table>")
-      .append($("<tr>")
-        .append( $("<th>").text("Location") )
-        .append( $("<th>").text("Lunches" ) )
-        .append( $("<th>").text("Allergies" ) )
-      )
-    ;
-
-    let marginTop = (day == "monday")? "0em" : "2.5em";
-    let divEle = $("<div>")
-      .append(
-        $("<h2>")
-          .text(day)
-          .css("margin", `${marginTop} 0em .5em 0em`)
-      )
-      .append( table )
-    ;
-
-
-
-    for(let location of locations) {
-      table.append($("<tr>")
-        .append( $("<td>").text(location ) )
-        .append( $("<td>").text(counter[day][location].lunches) )
-        .append( createAllergyEle(counter[day][location].allergies) )
-      );
-    }
-
-    table.append($("<tr>")
-      .append( $("<td>").text("Total") )
-      .append( $("<td>").text(counter[day].lunches) )
-      .append( createAllergyEle(counter[day].allergies) )
-    );
-
-    display.append(divEle);
-  }
-
-  for(let x of data.counts) {
-    let str = `${x.date}: ${x.count}`;
-    $("#stats").append($("<p>").text(str))
-  }
-
-}
-
-
-/**
- * Draws all the forms loaded in the form area
- */
-function drawForms() {
-  // Draw forms
-  for(let index in data["forms"]) {
-    let formEle = createFormElement(index, false);
-    $("#forms-page").append(formEle);
-  }
-}
-
-
-function drawFormAlert(index) {
-  let formEle = showForm(index);
-  formEle.classList.add("content");
-  document.getElementById("forms").appendChild(formEle);
-  alertTo(formEle);
-}
-
 function calculateStats() {
   // Create counter object for the stats
   let counter = {};
@@ -116,8 +43,6 @@ function calculateStats() {
           counter[day]["allergies"].push( allergyObject );
           counter[day][location]["allergies"].push( allergyObject );
         }
-
-        console.log( counter );
       }
     }
 
@@ -129,21 +54,13 @@ function calculateStats() {
   return counter;
 }
 
-function createAllergyEle(objList) {
-  let allergyEle = $("<td>");
-
-  for(let obj of objList) {
-    allergyEle.append(
-      $("<p>")
-        .text(obj.allergies)
-        .click(function() {
-          createFormElement(obj.formIndex);
-        })
-    );
-  }
-
-  return allergyEle;
-}
+// Not sure if this is used anymore
+// function drawFormAlert(index) {
+//   let formEle = showForm(index);
+//   formEle.classList.add("content");
+//   document.getElementById("forms").appendChild(formEle);
+//   alertTo(formEle);
+// }
 
 var days = ["monday", "tuesday", "wednesday", "thursday"];
 

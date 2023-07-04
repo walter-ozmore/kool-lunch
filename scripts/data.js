@@ -6,6 +6,14 @@ var pickupDetails = {
   friday   : {name: "Friday"   , abbreviation: "F" }
 }
 
+/**
+ * This is called when a form is inspected. It will draw all data we have with
+ * that form
+ *
+ * @param {*} index
+ * @param {*} isNotification
+ * @returns
+ */
 function createFormElement(index, isNotification = true) {
   if(data == undefined) {
     console.log("Data is not found");

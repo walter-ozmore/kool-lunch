@@ -51,6 +51,11 @@
       }
     </style>
 
+    <!-- Include script for pages -->
+    <script src="/scripts/vd-forms.js"></script>
+    <script src="/scripts/vd-overview.js"></script>
+
+    <!-- Main page file -->
     <script src="/scripts/view-data.js"></script>
   </head>
 
