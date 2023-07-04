@@ -5,8 +5,8 @@
   position: fixed;
   /* top: 50%; left: 50%; */
   /* transform: translate(-50%, -50%); */
-  width: 30em;
-  max-width: 30em;
+  width: 40em;
+  max-width: 40em;
 
   padding: 1em;
 
@@ -15,6 +15,10 @@
   border: 1px solid #ccc;
   padding: 10px;
   text-align: center; */
+}
+
+.notification h2 {
+  margin-top: .25em;
 }
 
 .notification h1, h2, h3 {
