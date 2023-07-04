@@ -54,15 +54,6 @@ function calculateStats() {
   return counter;
 }
 
-// Not sure if this is used anymore
-// function drawFormAlert(index) {
-//   let formEle = showForm(index);
-//   formEle.classList.add("content");
-//   document.getElementById("forms").appendChild(formEle);
-//   alertTo(formEle);
-// }
-
-
 
 /**
  * Adds a page to the HTML document, and the page list after data is loaded. If
@@ -100,6 +91,7 @@ function addPage(page) {
   pages[page.id] = page;
 }
 
+
 /**
  * Hides all pages using JQuery
  */
@@ -132,18 +124,6 @@ $(document).ready(function() {
       addPage(page);
     }
 
-    // addPage({
-    //   id: "stats-page",
-    //   name: "Overview",
-    //   draw: drawSummary
-    // });
-
-    // addPage({
-    //   id: "forms-page",
-    //   name: "Forms",
-    //   draw: drawForms
-    // });
-
     checkSelector();
   });
 
@@ -154,29 +134,3 @@ $(document).ready(function() {
 
   $("#selector").on("change", checkSelector);
 });
-
-// $(document).ready(function() {
-//   let checkSelector = function() {
-//     let selected = $("#selector").val();
-//     var pages = ["stats-page", "forms-page"];
-
-//     // Hide all pages
-//     for(let pageId of pages) {
-//       document.getElementById(pageId).style.display = "none";
-//     }
-
-//     document.getElementById(selected).style.display = "block";
-//   };
-
-//   $("#selector").on("change", checkSelector);
-
-//   checkSelector();
-
-//   // Grab the data from the database
-//   fetchData( function() {
-//     if( authenticateUser() == false ) return;
-
-//     drawSummary();
-//     drawForms();
-//   });
-// });
