@@ -6,7 +6,6 @@ function drawSummary() {
   let counter = calculateStats();
 
   // Create lists of information to track
-  let days = ["Monday", "Tuesday", "Wednesday", "Thursday"];
   let locations = data["locations"];
   let display = $("<div>").addClass("content");
   $("#stats-page").append(display);
@@ -22,7 +21,7 @@ function drawSummary() {
       )
     ;
 
-    let marginTop = (day == "Monday")? "0em" : "2.5em";
+    let marginTop = (day == "monday")? "0em" : "2.5em";
     let divEle = $("<div>")
       .append(
         $("<h2>")
@@ -83,71 +82,48 @@ function calculateStats() {
   let counter = {};
 
   // Create lists of information to track
-  let days = ["Monday", "Tuesday", "Wednesday", "Thursday"];
   let locations = data["locations"];
 
   // Create counter obj
 
   for(let day of days) {
-    counter[day] = {
-      lunches: 0,
-      allergies: []
-    };
+    counter[day] = { lunches: 0, allergies: [] };
     for(let location of locations) {
-      counter[day][location] = {
-        lunches: 0,
-        allergies: []
-      };
+      counter[day][location] = { lunches: 0, allergies: [] };
     }
   }
 
   // Go though the data and fill up the counter object
   for(let index in data["forms"]) {
     let form = data["forms"][index];
-    if(form["isEnabled"] == 0) continue;
+
+    // Skip enabled
+    if(form["isEnabled"] != 1) continue;
 
     let location = form["Location"];
-    let lunchOverideAmount = form["lunchOverideAmount"];
 
     for(let ind of form["individuals"]) {
       // Individual is adult
-      if(ind.IsAdult == 1) {
-        continue;
-      }
+      if(ind.IsAdult == 1) continue;
 
-      // Individual is child
-      let allergies = ind["Allergies"];
+      if(ind.Allergies != null && ind.Allergies.length > 0) {
+        let allergyObject = {
+          allergies: ind["Allergies"],
+          formIndex: index
+        };
 
-      for(let day of days) {
-        if( form["Pickup"+day] == 1 ) {
-          if(lunchOverideAmount == null || lunchOverideAmount <= 0) {
-            counter[day].lunches += 1;
-            counter[day][location].lunches += 1;
-          }
-
-          if(allergies !== undefined && allergies.length > 0) {
-            let obj = {
-              allergies: allergies,
-              formIndex: index
-            };
-
-            counter[day].allergies.push( obj );
-            counter[day][location].allergies.push( obj );
-          }
+        for(let day of form["pickupDays"]) {
+          counter[day]["allergies"].push( allergyObject );
+          counter[day][location]["allergies"].push( allergyObject );
         }
+
+        console.log( counter );
       }
     }
 
-    // Override amount
-    if(lunchOverideAmount == null || lunchOverideAmount <= 0)
-      continue;
-
-    lunchOverideAmount = Number(lunchOverideAmount);
-    for(let day of days) {
-      if( form["Pickup"+day] == 1 ) {
-        counter[day].lunches += lunchOverideAmount;
-        counter[day][location].lunches += lunchOverideAmount;
-      }
+    for(let day of form["pickupDays"]) {
+      counter[day].lunches += Number(form["lunchesNeeded"]);
+      counter[day][location].lunches += Number(form["lunchesNeeded"]);
     }
   }
   return counter;
@@ -168,6 +144,8 @@ function createAllergyEle(objList) {
 
   return allergyEle;
 }
+
+var days = ["monday", "tuesday", "wednesday", "thursday"];
 
 $(document).ready(function() {
   let checkSelector = function() {
