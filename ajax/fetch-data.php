@@ -10,6 +10,9 @@
    * 2 - No user is logged in
    */
 
+  error_reporting(E_ALL);
+  ini_set('display_errors', '1');
+
   /**
    * Counts the number of lunches picked up after the given string date and
    * returns it
@@ -109,12 +112,14 @@
 
     // List of form IDs to check later
     $formIds = "";
+    $formIdArray = [];
 
     // Create query
     $query = getFormQuery();
     $result = $db_conn->query($query);
     while ($row = $result->fetch_assoc()) {
       $id = $row["FormId"];
+      $formIdArray[] = $id;
       $formIds .= "$id,";
 
       // Create an array for the pickup days rather than individual varibles
@@ -150,7 +155,7 @@
       if($row["IsAdult"] == 0) $data["totalChildren"] += 1;
     }
 
-    // Check pickup
+    // Check if they have pickuped today
     $today = strtotime('today');
     $query = "SELECT formId, pickupTime, amount FROM Pickup WHERE FormId IN ($formIds) AND pickupTime>$today";
     $result = $db_conn->query($query);
@@ -159,8 +164,16 @@
       $data["forms"][$formId]["pickedUp"] = true;
     }
 
+
+    // Count the amount of lunches they are going to pickup
+    foreach($formIdArray as $formId) {
+      $data["forms"][$formId]["amount"] = getLunchAmount($formId);
+    }
+    // echo getCount($formId);
+
+    // Set code to success
     $data["code"] = 0;
-  }
+  } // End of function
 
   // Runner Code
   $args = json_decode( $_POST["q"], true);

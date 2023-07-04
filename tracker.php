@@ -11,7 +11,7 @@
     <style>
       .row {
         display: grid;
-        grid-template-columns: 90% 10%;
+        grid-template-columns: 80% 20%;
         padding: .5em .25em;
         border-bottom: 1px solid black;
         font-size: 1.5em;
@@ -26,6 +26,12 @@
       .row input {
         transform: scale(2);
         margin: auto;
+        height: 100%;
+      }
+
+      .row > span {
+        padding: 0em .5em; /* This is kind of a bandaid fix, need to be better */
+        text-align: right;
       }
 
       select {

@@ -1,6 +1,6 @@
 /**
-       * Creates a row and adds it to the page
-       */
+ * Creates a row and adds it to the page
+ */
 function addPickup(index) {
   let form = data["forms"][index];
 
@@ -17,7 +17,10 @@ function addPickup(index) {
 
   let innerHTML = `
     <a onclick="createFormElement(${index})">${individuals}</a>
-    <input type="checkbox" onchange="checkboxUpdate(this, ${form["FormId"]});" ${checked}>
+    <span>
+      <span style="margin-right: 1em;text-align: right;">${("amount" in form)? form.amount + "x": "-"}</span>
+      <input type="checkbox" onchange="checkboxUpdate(this, ${form["FormId"]});" ${checked}>
+    </span>
   `;
 
   let row = mkEle("div", innerHTML);
@@ -83,7 +86,6 @@ function checkSelector() {
 let args = {
   day: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]
 }
-console.log( args );
 
 fetchData( function() {
   if( authenticateUser() == false) return;

@@ -119,7 +119,10 @@ function fetchData(returnFunction = null, args = {}) {
   if(data != null)
     returnFunction(data);
 
+  console.time("fetchData");
   ajaxJson("/ajax/fetch-data.php", function(obj) {
+    console.log(obj);
+
     // Create an array from the json in data
     let forms = [];
     for(let formId in obj.forms) {
@@ -133,6 +136,8 @@ function fetchData(returnFunction = null, args = {}) {
     obj.forms = forms;
 
     data = obj;
+    console.log(data);
+    console.timeEnd("fetchData");
 
     returnFunction(obj);
   }, args);

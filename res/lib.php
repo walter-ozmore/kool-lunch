@@ -91,4 +91,25 @@
 
     return $str;
   }
+
+  function getLunchAmount($formId) {
+    global $db_conn;
+
+    // Check if there is a lunch override
+    $query = "SELECT lunchOverideAmount FROM Form WHERE FormId=$formId";
+    $result = $db_conn->query($query);
+    while ($row = $result->fetch_assoc()) {
+      if( $row["lunchOverideAmount"] != null )
+        return $row["lunchOverideAmount"];
+    }
+
+    $query = "SELECT COUNT(IndividualId) AS lunches FROM Individual INNER JOIN Form ON Individual.FormId = Form.FormId WHERE Individual.FormId = $formId AND IsAdult = 0";
+    // echo $query;
+
+    $result = $db_conn->query($query);
+    while ($row = $result->fetch_assoc()) {
+      if( $row["lunches"] != null )
+        return $row["lunches"];
+    }
+  }
 ?>
