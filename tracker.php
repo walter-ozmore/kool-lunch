@@ -34,7 +34,7 @@
         text-align: right;
       }
 
-      select {
+      #location-selector {
         font-size: 1.5em;
       }
     </style>
