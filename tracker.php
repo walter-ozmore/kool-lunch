@@ -34,7 +34,7 @@
         text-align: right;
       }
 
-      #location-selector {
+      #selectors {
         font-size: 1.5em;
       }
     </style>
@@ -47,9 +47,10 @@
   </header>
 
   <body>
-    <center>
-      <select id="location-selector" onchange="checkSelector()" style="display: none"></select>
-    </center>
+    <div id="selectors" style="text-align: center">
+      <select id="location-selector" onchange="checkSelector()" style="display: none"></select><br>
+      <input type="date" id="date-selector">
+    </div>
 
 
     <div id="display"></div>
