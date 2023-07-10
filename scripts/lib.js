@@ -143,14 +143,15 @@ function fetchData(returnFunction = null, args = {}) {
   }, args);
 }
 
-function compare(a, b) {
-  return a.individuals[0]["IndividualName"] < b.individuals[0]["IndividualName"]
-}
 
 /**
  * Sorts the given array and returns the array
  */
 function sortForms(forms) {
+  let compare = function(a, b) {
+    return a.individuals[0]["IndividualName"] < b.individuals[0]["IndividualName"];
+  };
+
   // Bubble sort
   for(let i = 0; i < forms.length; i++) {
     for(let j = 0; j < forms.length - i - 1; j++) {
