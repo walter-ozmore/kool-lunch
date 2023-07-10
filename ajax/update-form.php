@@ -2,8 +2,8 @@
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/version-3/lib.php";
 
-  error_reporting(E_ALL);
-  ini_set('display_errors', '1');
+  // error_reporting(E_ALL);
+  // ini_set('display_errors', '1');
 
   checkUser();
 
