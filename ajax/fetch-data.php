@@ -44,7 +44,7 @@
     // Make an array of unique dates
     $uniqueDates = array();
     while ($row = $result->fetch_assoc()) {
-      $date = date('F d', $row["pickupTime"]);
+      $date = date('M j', $row["pickupTime"]);
       $uniqueDates[$date] = 1; // Using an associative array to store unique dates
     }
 

@@ -2,6 +2,8 @@ addPage({
   id: "stats-page",
   name: "Overview",
   init: function() {
+    let page = $("#stats-page");
+
     /**
      * Draws the given object in to a table with clickable links
      *
@@ -30,7 +32,7 @@ addPage({
     // Create lists of information to track
     let locations = data["locations"];
     let display = $("<div>").addClass("content");
-    $("#stats-page").append(display);
+    page.append(display);
 
     // drawObjectToHTML(counter);
 
@@ -72,9 +74,66 @@ addPage({
       display.append(divEle);
     }
 
+    let stats = $("<div>", {id: "stats"});
+    page.append( stats );
+
+    stats.append(
+      $("<div>")
+        .addClass("content")
+        .append( $("<canvas>", {id: "nameofgraph"}) )
+    );
+
+
+    // Draw the counts per day
+    var lunchData = [];
     for(let x of data.counts) {
-      let str = `${x.date}: ${x.count}`;
-      $("#stats").append($("<p>").text(str))
+      lunchData.push( {x: x.date, y: x.count} );
     }
+
+    // Draw graphs
+    const DateTime = luxon.DateTime; // Reference the DateTime class from Luxon
+
+    var scatterChart = new Chart("nameofgraph", {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'Recorded',
+          data: lunchData,
+          showLine: true,
+          // borderColor: 'rgb(100, 100, 255)',
+          pointRadius: 5,
+          backgroundColor: "rgb(155, 0, 0)",
+          borderColor: "rgb(100, 0, 0)"
+        },
+        {
+          label: 'Expected',
+          data: {},
+          showLine: true,
+          // borderColor: 'rgb(100, 100, 255)',
+          pointRadius: 5,
+          backgroundColor: "rgb(0, 155, 0)",
+          borderColor: "rgb(0, 100, 0)"
+        }
+        ],
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              parser: function(value) {
+                return DateTime.fromFormat(value, 'MMM dd');
+              },
+              unit: 'day',
+              displayFormats: {
+                day: 'MMM d' // Modify the format to display only month and day
+              }
+            }
+          }
+        }
+      }
+    });
+
+
   }
 });
