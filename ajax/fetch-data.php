@@ -10,8 +10,8 @@
    * 2 - No user is logged in
    */
 
-  error_reporting(E_ALL);
-  ini_set('display_errors', '1');
+  // error_reporting(E_ALL);
+  // ini_set('display_errors', '1');
 
   /**
    * Counts the number of lunches picked up after the given string date and
