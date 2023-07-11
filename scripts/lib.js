@@ -132,8 +132,6 @@ function fetchData(returnFunction = null, args = {}) {
     data: JSON.stringify(args),
     contentType: "application/json",
     success: function(str) {
-      console.log(str);
-
       // Decode JSON
       let obj = JSON.parse(str);
 
