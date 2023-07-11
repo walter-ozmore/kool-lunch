@@ -57,7 +57,7 @@
     foreach($datesList as $date) {
       $count = getPickupCount($date);
 
-      $data["counts"][] = ["date">=$date, "count"=>$count];
+      $data["counts"][] = ["date"=>$date, "count"=>$count];
     }
   }
 
