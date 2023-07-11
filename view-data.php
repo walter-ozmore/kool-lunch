@@ -47,11 +47,16 @@
       }
     </style>
 
+    <!-- Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.1/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.1.0/dist/chartjs-adapter-luxon.min.js"></script>
+
     <!-- Main page file -->
     <script src="/scripts/view-data.js"></script>
 
     <!-- Include script for pages -->
-    <script src="/scripts/vd-day.js"></script>
+    <!-- <script src="/scripts/vd-day.js"></script> -->
     <script src="/scripts/vd-overview.js"></script>
     <script src="/scripts/vd-forms.js"></script>
   </head>
