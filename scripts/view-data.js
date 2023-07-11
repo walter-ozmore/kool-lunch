@@ -116,7 +116,7 @@ var pages = {};
 var pagesToAddLater = [];
 
 $(document).ready(function() {
-
+  showLoading();
   fetchData( function() {
     if( authenticateUser() == false ) return;
     dataLoaded = true;
@@ -125,6 +125,7 @@ $(document).ready(function() {
     }
 
     checkSelector();
+    doneLoading();
   });
 
   let checkSelector = function() {

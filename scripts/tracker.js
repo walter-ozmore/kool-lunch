@@ -35,11 +35,11 @@ function createRow(index) {
                 data: JSON.stringify({
                   hasPickedUp: $(this).is(':checked'),
                   formId: form["FormId"],
-                  date: $('#date-selector').val() // TODO: MAKE THIS WORK IN BACKEND
+                  date: $('#date-selector').val()
                 }),
                 contentType: "application/json",
                 success: function(data) {
-                  console.log(data);
+                  // console.log(data);
                 }
               });
             })
@@ -49,25 +49,56 @@ function createRow(index) {
 }
 
 
-function showLoading() {
+function drawData() {
+  // Clear data
+  $("#display").empty();
 
-}
+  if( authenticateUser() == false) return;
 
-function doneLoading() {
+  // Show the selectors
+  $("#selectors").show();
 
-}
+  for(let index in data["locations"]) {
+    let location = data["locations"][index];
 
+    // Add a display div
+    $("#display").append(
+      $("<div>", {id: "location"+index})
+        .addClass("content")
+        .append(
+          $("<h2>").text( location )
+        )
+    );
 
-function init(selectedDate = null) {
-  let date, day;
-  if( selectedDate == null ) {
-    date = new Date();
-    day = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][date.getDay()];
-  } else {
-    // For some reason when I get the date this way it is always behind by 1 day
-    date = new Date(selectedDate);
-    day = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][date.getDay()+1];
+    // Add to drop down
+    $("#location-selector").append(
+      $("<option>")
+        .text(location)
+        .val(index)
+    );
   }
+
+  for(let index in data["forms"]) {
+    let row = createRow( index );
+    if(row == null) continue;
+    // div.append(row);
+    let locationIndex = data["locations"].indexOf( data["forms"][index]["Location"] );
+    $("#location"+locationIndex).append( row );
+  }
+
+  // Remove loading screen
+  doneLoading();
+}
+
+function loadData(selectedDate = null) {
+  showLoading();
+
+  let date, day, weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  let dayIndex;
+
+  date     = (selectedDate == null)? new Date()    : new Date(selectedDate);
+  dayIndex = (selectedDate == null)? date.getDay() : date.getDay() + 1;
+  day      = weekdays[dayIndex];
 
   // Args for fetching data
   let args = {
@@ -76,56 +107,12 @@ function init(selectedDate = null) {
     enabled: true
   }
 
-  if(selectedDate != null)
-    args["date"] = selectedDate;
+  if(selectedDate != null) args["date"] = selectedDate;
 
-  console.log( args );
-
-  showLoading();
-
-  fetchData( function() {
-    // Clear data
-    $("#display").empty();
-    if( authenticateUser() == false) return;
-
-    // Show the selectors
-    $("#selectors").show();
-
-    for(let index in data["locations"]) {
-      let location = data["locations"][index];
-
-      // Add a display div
-      $("#display").append(
-        $("<div>", {id: "location"+index})
-          .addClass("content")
-          .append(
-            $("<h2>").text( location )
-          )
-      );
-
-      // Add to drop down
-      $("#location-selector").append(
-        $("<option>")
-          .text(location)
-          .val(index)
-      );
-    }
-
-    for(let index in data["forms"]) {
-      let row = createRow( index );
-      if(row == null) continue;
-      // div.append(row);
-      let locationIndex = data["locations"].indexOf( data["forms"][index]["Location"] );
-      $("#location"+locationIndex).append( row );
-    }
-
-    doneLoading();
-  }, args);
+  fetchData(drawData, args);
 }
 
-$(document).ready(function() {
-  init();
-
+function setUpDate() {
   // Set the date input to today by default
   var today = new Date();
 
@@ -136,14 +123,18 @@ $(document).ready(function() {
   var formattedDate = year + '-' + month + '-' + day;
 
   let dateSelector = $('#date-selector');
-  dateSelector.val(formattedDate);
+  dateSelector
+    .val(formattedDate)
+    .change(function() {
+      let selectedDate = $(this).val();
+      $("#display").empty();
+      loadData(selectedDate);
+    })
+  ;
+}
 
-  // Check of date change
-  dateSelector.change(function() {
-    let selectedDate = $(this).val();
-    console.log('Selected date: ' + selectedDate);
-    // Reload tracker information using the new date
+$(document).ready(function() {
+  loadData();
 
-    init(selectedDate);
-  });
+  setUpDate();
 });
