@@ -51,6 +51,7 @@
     <script src="/scripts/view-data.js"></script>
 
     <!-- Include script for pages -->
+    <script src="/scripts/vd-day.js"></script>
     <script src="/scripts/vd-overview.js"></script>
     <script src="/scripts/vd-forms.js"></script>
   </head>
