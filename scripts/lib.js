@@ -60,6 +60,9 @@ function addFaq(question, answer) {
   faqDiv.appendChild(div);
 }
 
+/**
+ * @deprecated
+ */
 function ajaxJson(url, fun, args={}) {
   let xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -88,6 +91,8 @@ function ajaxJson(url, fun, args={}) {
  * @param {string} type
  * @param {string} innerHTML
  * @returns The created element
+ *
+ * @deprecated
  */
 function mkEle(type, innerHTML=null) {
   let ele = document.createElement(type);
@@ -119,28 +124,46 @@ function fetchData(returnFunction = null, args = {}) {
   if(data != null)
     returnFunction(data);
 
-  console.time("fetchData");
-  ajaxJson("/ajax/fetch-data.php", function(obj) {
-    console.log(obj);
+  let url = "/ajax/fetch-data.php";
 
-    // Create an array from the json in data
-    let forms = [];
-    for(let formId in obj.forms) {
-      forms.push( obj.forms[formId] );
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: JSON.stringify(args),
+    contentType: "application/json",
+    success: function(str) {
+      console.log(str);
+
+      // Decode JSON
+      let obj = JSON.parse(str);
+
+      // Set the data to our object
+      data = obj;
+
+      sortData();
+
+      // Call return function if its available
+      if(returnFunction != null) returnFunction(data);
     }
+  });
+}
 
-    // Sort forms
-    forms = sortForms(forms);
 
-    // Set forms back to the object
-    obj.forms = forms;
+/**
+ * Sorts the form that is in the data
+ */
+function sortData() {
+  // Create an array from the json in data
+  let forms = [];
+  for(let formId in data.forms) {
+    forms.push( data.forms[formId] );
+  }
 
-    data = obj;
-    console.log(data);
-    console.timeEnd("fetchData");
+  // Sort forms
+  forms = sortForms(forms);
 
-    returnFunction(obj);
-  }, args);
+  // Set forms back to the object
+  data.forms = forms;
 }
 
 

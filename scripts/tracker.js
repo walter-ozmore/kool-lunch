@@ -1,103 +1,149 @@
 /**
- * Creates a row and adds it to the page
+ * Creates a row and adds it to the page, each row is a form
  */
-function addPickup(index) {
+function createRow(index) {
   let form = data["forms"][index];
 
+  if(form == undefined) return;
+
+  // Skip disabled forms
   if(form.isEnabled != 1) return;
 
-  // Grab adults
+  // Create a list of adults that we can display in HTML
   let individuals = "";
   for(let ind of form["individuals"]) {
     if(ind["IsAdult"] == 1)
       individuals += ind["IndividualName"] + "<br>";
   }
 
-  let checked = (form.pickedUp)? "checked": "";
-
-  let innerHTML = `
-    <a onclick="createFormElement(${index})">${individuals}</a>
-    <span>
-      <span style="margin-right: 1em;text-align: right;">${("lunchesNeeded" in form)? form.lunchesNeeded + "x": "-"}</span>
-      <input type="checkbox" onchange="checkboxUpdate(this, ${form["FormId"]});" ${checked}>
-    </span>
-  `;
-
-  let row = mkEle("div", innerHTML);
-  row.classList.add("row");
-  if(form.hasAllergies) {
-    row.style.backgroundColor = "#fdff32";
-  }
-
-  let location = form["Location"];
-  document.getElementById(location).appendChild( row );
-
-  data["forms"][index]["rowEle"] = row;
+  return $("<div>")
+    .addClass( "row" )
+    .append( $("<a>", {onclick: `createFormElement(${index})`}).html(individuals) )
+    .append(
+      $("<span>")
+        .append(
+          $("<span>")
+            .text(("lunchesNeeded" in form)? form.lunchesNeeded + "x": "-")
+            .addClass("quantity")
+        )
+        .append(
+          $("<input>", {type: "checkbox", checked: form.pickedUp})
+            .change(function() {
+              $.ajax({
+                type: "POST",
+                url: "/ajax/tracker",
+                data: JSON.stringify({
+                  hasPickedUp: $(this).is(':checked'),
+                  formId: form["FormId"],
+                  date: $('#date-selector').val() // TODO: MAKE THIS WORK IN BACKEND
+                }),
+                contentType: "application/json",
+                success: function(data) {
+                  console.log(data);
+                }
+              });
+            })
+        )
+    )
+  ;
 }
 
 
-/**
- * Called when a check box is clicked then updates the database the
- * checked rows will be moved to the bottom
- */
-function checkboxUpdate(checkbox, formId) {
+function showLoading() {
+
+}
+
+function doneLoading() {
+
+}
+
+
+function init(selectedDate = null) {
+  let date, day;
+  if( selectedDate == null ) {
+    date = new Date();
+    day = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][date.getDay()];
+  } else {
+    // For some reason when I get the date this way it is always behind by 1 day
+    date = new Date(selectedDate);
+    day = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][date.getDay()+1];
+  }
+
+  // Args for fetching data
   let args = {
-    hasPickedUp: checkbox.checked,
-    formId: formId
-  };
-
-  ajaxJson("/ajax/tracker", null, args);
-}
-
-
-/**
- * Added the given location to the location selector
- */
-function addLocation(location) {
-  let option = mkEle("option", location);
-  option.value = location;
-  document.getElementById("location-selector").appendChild(option);
-  $("#selector").show();
-
-  // Make the display group for the location
-  let group = mkEle("div");
-  group.classList.add("content");
-  group.id = location;
-  group.style.display = "none";
-  document.getElementById("display").appendChild(group);
-}
-
-
-/**
- * Check the location selected by the user then hides all of the divs that
- * do not match the location
- */
-function checkSelector() {
-  let selector = document.getElementById("location-selector");
-  // Hide all
-  let children = document.getElementById("display").childNodes;
-  for(let child of children) {
-    child.style.display = "none";
+    // Get the day of the week
+    day: day,
+    enabled: true
   }
 
-  document.getElementById( selector.value ).style.display = "block";
+  if(selectedDate != null)
+    args["date"] = selectedDate;
+
+  console.log( args );
+
+  showLoading();
+
+  fetchData( function() {
+    // Clear data
+    $("#display").empty();
+    if( authenticateUser() == false) return;
+
+    // Show the selectors
+    $("#selectors").show();
+
+    for(let index in data["locations"]) {
+      let location = data["locations"][index];
+
+      // Add a display div
+      $("#display").append(
+        $("<div>", {id: "location"+index})
+          .addClass("content")
+          .append(
+            $("<h2>").text( location )
+          )
+      );
+
+      // Add to drop down
+      $("#location-selector").append(
+        $("<option>")
+          .text(location)
+          .val(index)
+      );
+    }
+
+    for(let index in data["forms"]) {
+      let row = createRow( index );
+      if(row == null) continue;
+      // div.append(row);
+      let locationIndex = data["locations"].indexOf( data["forms"][index]["Location"] );
+      $("#location"+locationIndex).append( row );
+    }
+
+    doneLoading();
+  }, args);
 }
 
-// Get the day of the week
-let args = {
-  day: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]
-}
+$(document).ready(function() {
+  init();
 
-fetchData( function() {
-  if( authenticateUser() == false) return;
+  // Set the date input to today by default
+  var today = new Date();
 
-  for(let location of data["locations"]) {
-    addLocation(location);
-  }
-  checkSelector();
+  var year = today.getFullYear();
+  var month = (today.getMonth() + 1).toString().padStart(2, '0');
+  var day = today.getDate().toString().padStart(2, '0');
 
-  // Draw all rows
-  for(let index in data["forms"]) {
-    addPickup(index);
-  }
-}, args);
+  var formattedDate = year + '-' + month + '-' + day;
+
+  let dateSelector = $('#date-selector');
+  dateSelector.val(formattedDate);
+
+  // Check of date change
+  dateSelector.change(function() {
+    let selectedDate = $(this).val();
+    console.log('Selected date: ' + selectedDate);
+    // Reload tracker information using the new date
+
+    init(selectedDate);
+  });
+});

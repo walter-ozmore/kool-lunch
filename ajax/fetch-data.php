@@ -10,8 +10,9 @@
    * 2 - No user is logged in
    */
 
-  // error_reporting(E_ALL);
-  // ini_set('display_errors', '1');
+  error_reporting(E_ALL);
+  ini_set('display_errors', '1');
+
 
   /**
    * Counts the number of lunches picked up after the given string date and
@@ -26,7 +27,7 @@
 
       $min = strtotime($str);
       $max = strtotime("+1 day", $min);
-      $query = "SELECT SUM(amount) AS count FROM Pickup WHERE pickupTime>$min AND pickupTime<$max";
+      $query = "SELECT SUM(amount) AS count FROM Pickup WHERE pickupTime>=$min AND pickupTime<$max";
       $result = $db_conn->query($query);
       while ($row = $result->fetch_assoc()) {
         return $row["count"];
@@ -56,7 +57,7 @@
     foreach($datesList as $date) {
       $count = getPickupCount($date);
 
-      $data["counts"][] = ["date"=>$date, "count"=>$count];
+      $data["counts"][] = ["date">=$date, "count"=>$count];
     }
   }
 
@@ -79,6 +80,10 @@
     // Create query
     $query = "SELECT * FROM Form WHERE TimeSubmited<$cutOff";
 
+    if( isset($args["enabled"]) && is_numeric($args["enabled"]) ) {
+      $query .= " AND isEnabled=" . $args["enabled"];
+    }
+
     // Filter by days
     if( isset($args["day"]) ) {
       $query .= " AND Pickup".$args["day"]."=1";
@@ -88,9 +93,7 @@
   }
 
   function fetchData($args) {
-    $defaultArgs = [
-
-    ];
+    $defaultArgs = [];
 
     // Open SQL Connection
     $conn = connectDB("lunch");
@@ -159,8 +162,22 @@
         $data["forms"][$formId]["totalChildren"] += 1;
     }
 
-    // Clean up data
+    // Set checked forms
+    if(isset($args["date"])) {
+      $minUnix = strtotime($args["date"]);
+      $maxUnix = strtotime($args["date"]." +1 day");
+    } else {
+      $minUnix = strtotime('today');
+      $maxUnix = strtotime('today +1 day');
+    }
+    $result = $conn->query("SELECT FormId FROM Pickup WHERE FormId IN ($multiselect) AND pickupTime>=$minUnix AND pickupTime<$maxUnix");
+    while ($row = $result->fetch_assoc()) {
+      $formId = $row["FormId"];
 
+      $data["forms"][$formId]["pickedUp"] = true;
+    }
+
+    // Clean up data
     foreach($data["forms"] as $formId => $form) {
       // Set the lunches needed to the correct value
       $lunchOveride = $form["lunchOverideAmount"];
@@ -171,15 +188,23 @@
       unset( $data["forms"][$formId]["totalChildren"] );
     }
 
-
-
-
     $data["code"] = 0;
     return $data;
   }
 
+  /**
+   * Args break down
+   *
+   * day     -> Day of the week, with this set it will only return data from
+   *            that day of the week
+   * date    -> Used to display all the information about that day. Mostly for
+   *            tracker
+   * enabled -> Only returns forms that match that criteria
+   */
+
   // Runner Code
-  $args = json_decode( $_POST["q"], true);
+  $txt = isset($_POST["q"])? $_POST["q"]: file_get_contents('php://input');
+  $args = json_decode($txt, true);
   $data = [];
 
   // Check to see if the user is valid
