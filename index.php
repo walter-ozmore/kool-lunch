@@ -5,7 +5,44 @@
 
     <?php
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
-      require realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
+      include realpath($_SERVER["DOCUMENT_ROOT"])."/res/db.php";
+
+      function drawMonetaryDonations() {
+        global $db_conn;
+
+        if(!isset($db_conn)) return;
+
+        echo '<div style="margin-bottom: 1em"> <h2 class="center-text" style="color: black">Monetary Donations</h2>';
+        
+        $query = "SELECT DISTINCT coll FROM Donation";
+        $list = [];
+        $result = $db_conn->query( $query );
+        while ($row = $result->fetch_assoc()) {
+          $list[] = $row["coll"];
+        }
+
+
+        for($x = 0;$x < sizeof($list);$x++) {
+          $col = $list[$x];
+          echo "<center><h3>" . ((strlen($col) > 0)? $col : "Others") . "</h3></center>";
+
+          echo "<table style='margin: 0em auto;'>";
+          $query = "SELECT * FROM Donation ".( (strlen($col) > 0)?"WHERE coll='$col' " : "WHERE coll IS NULL ") . "ORDER BY amount DESC";
+          $result = $db_conn->query( $query );
+          while ($row = $result->fetch_assoc()) {
+            $name = $row["donatorName"];
+            $amount = $row["amount"];
+            echo "
+            <tr>
+              <td>$$amount</td>
+              <td>$name</td>
+            </tr>
+            ";
+          }
+          echo "</table>";
+        }
+        echo '</div>';
+      }
     ?>
 
     <script src="/scripts/index.js"></script>
@@ -53,38 +90,7 @@
     <div class="content">
       <!-- <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQ15Qlu6CeWJkAIDFFkFgO2MIPIco7-KkOZWg3DJfRJSrrIpordmYhTj-ZnqBoKsDhYiC8ptKGL65NG/embed?start=true&loop=true&delayms=3000&amp;rm=minimal" frameborder="0" class="section"></iframe> -->
 
-      <div>
-        <h2 class="center-text" style="color: black">Monetary Donations</h2>
-        <?php
-          $query = "SELECT DISTINCT coll FROM Donation";
-          $list = [];
-          $result = $db_conn->query( $query );
-          while ($row = $result->fetch_assoc()) {
-            $list[] = $row["coll"];
-          }
-
-
-          for($x = 0;$x < sizeof($list);$x++) {
-            $col = $list[$x];
-            echo "<center><h3>" . ((strlen($col) > 0)? $col : "Others") . "</h3></center>";
-
-            echo "<table style='margin: 0em auto;'>";
-            $query = "SELECT * FROM Donation ".( (strlen($col) > 0)?"WHERE coll='$col' " : "WHERE coll IS NULL ") . "ORDER BY amount DESC";
-            $result = $db_conn->query( $query );
-            while ($row = $result->fetch_assoc()) {
-              $name = $row["donatorName"];
-              $amount = $row["amount"];
-              echo "
-              <tr>
-                <td>$$amount</td>
-                <td>$name</td>
-              </tr>
-              ";
-            }
-            echo "</table>";
-          }
-        ?>
-      </div>
+      <?php drawMonetaryDonations(); ?>
       <div class="center-text thank-you-grid">
         <div>
           <h2>Board Members</h2>
