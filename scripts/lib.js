@@ -133,6 +133,7 @@ function fetchData(returnFunction = null, args = {}) {
     contentType: "application/json",
     success: function(str) {
       // Decode JSON
+      console.log(str);
       let obj = JSON.parse(str);
 
       // Set the data to our object

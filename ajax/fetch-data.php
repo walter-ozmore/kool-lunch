@@ -10,8 +10,8 @@
    * 2 - No user is logged in
    */
 
-  // error_reporting(E_ALL);
-  // ini_set('display_errors', '1');
+  error_reporting(E_ALL);
+  ini_set('display_errors', '1');
 
 
   /**
@@ -86,7 +86,10 @@
 
     // Filter by days
     if( isset($args["day"]) ) {
-      $query .= " AND Pickup".$args["day"]."=1";
+      if($args["day"] === "Saturday" || $args["day"] === "Sunday") {} else {
+        $query .= " AND Pickup".$args["day"]."=1";
+      }
+
     }
 
     return $query;
