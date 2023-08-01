@@ -49,13 +49,13 @@
 
     $now = $selectedDay;
     $today = $selectedDay;
-    echo "using selected day\n";
+    // echo "using selected day\n";
   } else {
     // Grab the current date
     $now = strtotime('now'); // Current time on the selected day
     $today = strtotime('today'); // Selected day
 
-    echo "using current day info\n";
+    // echo "using current day info\n";
   }
 
   // exit();
@@ -68,13 +68,13 @@
   // Nothing to do if there is already a row and the user is trying to select
   // pickup
   if($hasPickedUp == 1 && $rowCount > 0) {
-    echo "Doing nothing\n";
+    // echo "Doing nothing\n";
     exit();
   }
 
   // Add a new pickup
   if($hasPickedUp == 1 && $rowCount <= 0) {
-    echo "Adding new pickup\n";
+    // echo "Adding new pickup\n";
     $numberOfLunchesNeeded = getNumberOfLunches( $formId );
     $query = "INSERT INTO Pickup (formId, pickupTime, amount) VALUES ($formId, $now, $numberOfLunchesNeeded)";
     $db_conn->query($query);
@@ -82,7 +82,7 @@
 
   // Delete the pickup
   if($hasPickedUp == 0 && $rowCount > 0) {
-    echo "Deleting pickup\n";
+    // echo "Deleting pickup\n";
     $query = "DELETE FROM Pickup WHERE FormId=$formId AND pickupTime>=$today";
     $db_conn->query($query);
   }
