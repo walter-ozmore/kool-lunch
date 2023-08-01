@@ -29,6 +29,8 @@ function createRow(index) {
         .append(
           $("<input>", {type: "checkbox", checked: form.pickedUp})
             .change(function() {
+              let checkbox = $(this);
+              checkbox.prop('disabled', true);
               $.ajax({
                 type: "POST",
                 url: "/ajax/tracker",
@@ -40,6 +42,10 @@ function createRow(index) {
                 contentType: "application/json",
                 success: function(data) {
                   // console.log(data);
+                  checkbox.prop('disabled', false);
+                },
+                error: function() {
+                  $('#myCheckbox').prop('checked', !checkbox.is(':checked'));
                 }
               });
             })
