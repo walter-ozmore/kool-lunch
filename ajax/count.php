@@ -19,7 +19,6 @@
 
   // Grab unique dates
   $query = "SELECT pickupTime FROM Pickup";
-  $statement = $db_conn->query($query);
   $result = $db_conn->query($query);
 
   $uniqueDates = array();
