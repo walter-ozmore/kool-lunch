@@ -5,5 +5,8 @@
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
 
   $query = "SELECT * FROM Form";
-
+  $result = $db_conn->query($query);
+  while ($row = $result->fetch_assoc()) {
+    
+  }
 ?>
