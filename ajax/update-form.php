@@ -1,4 +1,8 @@
 <?php
+  /**
+   * Updates a form in various way
+   */
+
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/version-3/lib.php";
 

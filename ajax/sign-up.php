@@ -1,6 +1,12 @@
 <?php
+  /**
+   * Signup form for users
+   */
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
 
+  /**
+   * Formats the given phone number in to a more human readable format
+   */
   function formatPhoneNumber($phoneNumber) {
 
     // Remove any non-numeric characters from the phone number

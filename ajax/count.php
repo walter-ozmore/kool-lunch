@@ -1,4 +1,7 @@
 <?php
+  /**
+   * Counts the number of pick ups
+   */
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/version-3/lib.php";
 
