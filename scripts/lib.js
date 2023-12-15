@@ -322,6 +322,18 @@ function doneLoading() {
   $("#loading").remove();
 }
 
+function displayError(string) {
+  let div = $("<div>", {class: "notification"});
+  div.append(
+    $("<h2>").text("An Error has Occurred"),
+    $("<p>").html(string),
+    $("<button>")
+      .text("OK")
+      .click(()=>{div.remove();})
+  );
+  $("body").append(div);
+}
+
 $(document).ready(function() {
   // Recenter notifications on window resize or scroll
   $(window).resize(centerNotification);
