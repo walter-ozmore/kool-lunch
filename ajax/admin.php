@@ -5,6 +5,7 @@
 	 */
 
 	switch($_POST["function"]) {
-		
+		case 1: // Fetch volunteer forms
+			break;
 	}
 ?>
