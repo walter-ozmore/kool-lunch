@@ -4,5 +4,7 @@
 	 * send it too the correct function. POST only.
 	 */
 
-	switch($_POST["function"])
+	switch($_POST["function"]) {
+		
+	}
 ?>

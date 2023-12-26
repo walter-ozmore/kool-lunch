@@ -73,13 +73,62 @@
             $("*[name='contact-person']").show();
             break;
         }
+
+
+        // Show the type of contact they selected
+        // Hide everything
+        $("#contact-phone-section").hide();
+        $("#contact-email-section").hide();
+        $("#contact-messenger-section").hide();
+
+        // Show selected
+        switch($("input[name='perfer-comms']:checked").val()) {
+          case "call": case "text":
+            $("#contact-phone-section").show();
+          break;
+          case "email":
+            $("#contact-email-section").show();
+          break;
+          case "fbm":
+            $("#contact-messenger-section").show();
+          break;
+        }
       }
 
-      function submit() {
+      async function submit() {
+        // Grab our contact info
+        let contactInfo = {};
+        switch($("input[name='perfer-comms']:checked").val()) {
+          case "call": case "text":
+            contactInfo["phoneNumber"] = $("#phone-number").val();
+          break;
+          case "email":
+            contactInfo["email"] = $("#email").val();
+          break;
+          case "fbm":
+            contactInfo["fbm"] = $("#fbm").val();
+          break;
+        }
+
+        let opp = [];
+        if($("#vol-option-1").is(":checked")) opp.push("weekInTheSummer");
+        if($("#vol-option-2").is(":checked")) opp.push("bagDecoration");
+        if($("#vol-option-3").is(":checked")) opp.push("fundraising");
+        if($("#vol-option-4").is(":checked")) opp.push("supplyGathering");
+
+        let data = {
+          firstName: $("#first-name").val(),
+          lastName: $("#last-name").val(),
+          contact: contactInfo,
+          opportunities: opp,
+          preferredContact: $("input[name='perfer-comms']:checked").val()
+        };
+        await post("/ajax/vol-su.php", data);
 
       }
 
       $(document).ready(function() {
+        let assume = 1; // 0-Assume Nothing, 1-Assume Individual, 2-Assume Org
         // Unselect all checkboxes & radio buttons
         $('input[type="checkbox"]').prop('checked', false);
         $('input[type="radio"]').prop('checked', false);
@@ -89,6 +138,7 @@
         check();
         $("input[name='volunteer-type']").change(check);
         $("input[name='is-main-contact']").change(check);
+        $("input[name='perfer-comms']").change(check);
       });
     </script>
   </head>
@@ -122,13 +172,11 @@
       </div>
 
       <div id="wait-2" style="display: none">
-        <div id="not-main">
-          <div class="section">
-            <label name="question">Name of person filling out the form</label>
-            <div class="flex">
-              <input type="text" placeholder="First Name">
-              <input type="text" placeholder="Last Name">
-            </div>
+        <div class="section" id="name-section">
+          <label name="question">Name of person filling out the form</label>
+          <div class="flex">
+            <input type="text" placeholder="First Name" id="first-name">
+            <input type="text" placeholder="Last Name" id="last-name">
           </div>
         </div>
 
@@ -136,34 +184,39 @@
         <div class="section" id="preferred-communication-section">
           <label name="question">Preferred Communication Method</label>
           <div class="radio">
-            <input type="radio" name="fav_language"><label>Phone Call</label><br>
-            <input type="radio" name="fav_language"><label>Text Message</label><br>
-            <input type="radio" name="fav_language"><label>Email</label><br>
-            <input type="radio" name="fav_language"><label>Facebook Messenger</label><br>
+            <input type="radio" name="perfer-comms" value="call"><label>Phone Call</label><br>
+            <input type="radio" name="perfer-comms" value="text"><label>Text Message</label><br>
+            <input type="radio" name="perfer-comms" value="email"><label>Email</label><br>
+            <input type="radio" name="perfer-comms" value="fbm"><label>Facebook Messenger</label><br>
           </div>
         </div>
 
 
         <div class="section" id="contact-phone-section">
           <label name="question">Phone Number<span name="contact-person"> of main contact person</span></label>
-          <input type="text" placeholder="(000) 000-0000">
+          <input type="text" placeholder="(000) 000-0000" id="phone-number">
         </div>
 
 
         <!-- Contact email -->
         <div class="section" id="contact-email-section">
           <label name="question">Email<span name="contact-person">  of main contact person</span></label>
-          <input type="text" placeholder="example@example.com">
+          <input type="text" placeholder="example@example.com" id="email">
+        </div>
+
+        <div class="section" id="contact-messenger-section">
+          <label name="question">Facebook Messenger<span name="contact-person">  of main contact person</span></label>
+          <input type="text" placeholder="" id="fbm">
         </div>
 
 
         <div class="section">
           <label>Volunteer Opportunities</label>
           <div class="radio">
-            <input type="checkbox"><label>Week in the summer</label><br>
-            <input type="checkbox"><label>Bag Decoration</label><br>
-            <input type="checkbox"><label>Fundraising</label><br>
-            <input type="checkbox"><label>Supply Gathering</label><br>
+            <input type="checkbox" id="vol-option-1"><label>Week in the summer</label><br>
+            <input type="checkbox" id="vol-option-2"><label>Bag Decoration</label><br>
+            <input type="checkbox" id="vol-option-3"><label>Fundraising</label><br>
+            <input type="checkbox" id="vol-option-4"><label>Supply Gathering</label><br>
           </div>
         </div>
 
