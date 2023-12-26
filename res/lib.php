@@ -35,9 +35,6 @@
       if(isset($args["phoneNumber"])) $insertArgs["PhoneNumber"      ] = $args["phoneNumber"];
       if(isset($args["fbm"        ])) $insertArgs["FacebookMessenger"] = $args["fbm"        ];
       if(isset($args["preferredContact"])) $insertArgs["PreferredContact"] = $args["preferredContact"];
-      
-      // Assume adult for now 
-      $insertArgs["isAdult"] = 1;
 
       $insertStr = arrayToInsertString($insertArgs);
     

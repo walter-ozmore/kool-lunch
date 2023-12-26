@@ -33,4 +33,6 @@
 	foreach ($opportunities as $name) { $args[$name] = 1; }
 
 	Database::createVolunteerForm($args);
+
+	echo "Job Done";
 ?>

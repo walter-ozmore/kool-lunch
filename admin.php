@@ -52,7 +52,7 @@
           sidebarEle.addClass("highlight");
 
           // Clear and pass the page
-          let page = $("#view-pane").empty();
+          let page = $("#view-pane").empty().show();
           func(page);
         });
 
@@ -73,9 +73,7 @@
 		<!-- Dropdown for pages -->
     <div class="admin-container">
       <div class="sidebar content" id="sidebar"></div>
-      <div class="view-pane content" id="view-pane">
-        <p>Test Item</p>
-      </div>
+      <div class="view-pane content" id="view-pane"></div>
     </div>
   </body>
 </html>
