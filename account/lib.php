@@ -1,12 +1,107 @@
 <?php
-  require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/config.php";
+  /**
+   * Codes
+   *-1 - Argument mismatch
+   * 0 - Success
+   * 1 - Invalid login
+   */
 
   // Log errors to console for testing
-  // error_reporting(E_ALL);
-  // ini_set('display_errors', '1');
+  error_reporting(E_ALL);
+  ini_set('display_errors', '1');
 
-  if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+  // Ensure there is a session started
+  if (session_status() == PHP_SESSION_NONE) session_start();
+  require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/config.php";
+
+  class Account {
+    /**
+     * Logs out the current user by delete the session, and login cookie
+     */
+    public static function logout() {
+      global $cookie_authentication, $cookie_domain;
+
+      // Delete Session
+      session_destroy();
+
+      // Delete authentication cookie
+      setcookie($cookie_authentication, "", time() - 3600, '/', $cookie_domain);
+    }
+
+    /**
+     * Logs in the user using their username and password
+     *
+     * sli -> stayloggedin bool
+     *
+     * returns key array
+     */
+    public static function login($username, $password, $sli) {
+      global $account_conn, $cookie_authentication, $cookie_domain;
+      $returnObj = [];
+
+      // Make sure our data is safe
+      $susername = addslashes($username);
+
+      // Check if any usernames that match the data
+      $query = "SELECT uid, username, password, cookie FROM User WHERE username='$susername' LIMIT 1";
+      $result = $account_conn->query($query);
+      $row = $result->fetch_assoc();
+      if( !$row ) {
+        /*echo "NO MATCH";//*/
+        $returnObj["code"] = 1;
+        $returnObj["message"] = "No row maching $username was found.";
+        return $returnObj;
+      }
+
+      // Pull data out of query
+      $uid = $row["uid"];
+      $cookie = $row["cookie"];
+      $storedPassword = $row["password"];
+
+      // Check if any rows are found
+      if(!$result) {
+        $returnObj["code"] = 1;
+        $returnObj["message"] = "No results maching $username was found.";
+        return $returnObj;
+      }
+      if($result->num_rows <= 0) {
+        $returnObj["code"] = 1;
+        $returnObj["message"] = "More than one row maching $username was found.";
+        return $returnObj;
+      }
+
+      // Check if the password matches
+      if(password_verify($password . $cookie, $storedPassword) == false) {
+        $returnObj["code"] = 1;
+        $returnObj["message"] = "Password was incorect.";
+        return $returnObj;
+      }
+
+      // User info is correct, lets check if we need to update the account in anyway
+
+
+      // Set the user as logged in
+      if((int)$sli == 1) {
+        // Calculate the Unix timestamp for one month in the future (days * 24 hours * 60 minutes * 60 seconds)
+        $expiration = time()+(24*60 *60)* 30;
+        setcookie($cookie_authentication, $cookie, time() + $expiration, $cookie_domain);
+      }
+
+      // Set logged in for the session
+      $_SESSION[$cookie_authentication] = $cookie;
+
+      $returnObj["user"] = getCurrentUser();
+      $returnObj["code"] = 0;
+      $returnObj["message"] = "User log successfull";
+      return $returnObj;
+    }
+
+    /**
+     * Create account
+     */
+    public static function createAccount() {
+
+    }
   }
 
   function returnCode($code, $extra=[]) {
@@ -26,9 +121,9 @@
   function getCurrentUser() {
     global $cookie_authentication, $account_conn;
     $message = "";
-    
+
     // Check if there is a cookie stored, if they is we use it
-    
+
     if(isset($_COOKIE[$cookie_authentication])) {
       $message = $cookie_authentication." : ".$_COOKIE[$cookie_authentication] . "\n";
       $message .= "Found data in sli cookie.\n";
@@ -154,7 +249,7 @@
     // echo "   Null? ". ($password != NULL);
     // echo "   Verify? ". (password_verify($password . $cookie, $storedPassword));
     // echo "\n";
-    
+
     do {
       // If the stored password is null and no password is provide (undefined,
       // null, not set) then it is good

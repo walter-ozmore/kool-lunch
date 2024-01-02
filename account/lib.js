@@ -1,3 +1,75 @@
+class Account {
+  static async login(username, password, sti) {
+    let result = await post("/account/api.php", {
+      funStr: "login",
+      username: username,
+      password: password,
+      sti: sti
+    });
+
+    if(result.code == 0) location.reload();
+  }
+  static signup(username, email, password) {}
+  static async logout() {
+    await post("/account/api.php", {
+      funStr: "logout"
+    });
+    location.reload();
+  }
+  static createWindow() {
+    // Create notification element
+    let not = $("<div>", {class: "notification"});
+    $("body").append(not);
+
+    // Create two pages, one for login one for signup so we can easly switch them
+    let loginPage  = $("<div>");
+    let signupPage = $("<div>").hide();
+    not.append(loginPage, signupPage);
+
+    // Create a grid to make things look nice for each page
+    let loginGrid  = $("<div>", {
+      class: "account-offset",
+      style: "display: grid; grid-template-columns: 1fr 1.5fr;"
+    });
+    let signupGrid = loginGrid.clone();
+    loginPage.append(loginGrid);
+    signupPage.append(signupGrid);
+
+    // Add grid elements
+    let loginUsername = $("<input>", {type: "text"});
+    let loginPassword = $("<input>", {type: "password"});
+    loginGrid.append(
+      $("<label>").text("Username"), loginUsername,
+      $("<label>").text("Password"), loginPassword
+    );
+
+    let signupUsername = $("<input>", {type: "text"});
+
+    // Add links to switch between signup and login
+    let loginSignupLink = $("<a>").text("Create an Account").click(()=>{
+      loginPage.hide(); signupPage.show();
+    });
+    let signupLoginLink = $("<a>").text("Login instead"    ).click(()=>{
+      signupPage.hide(); loginPage.show();
+    });
+    loginGrid.append(loginSignupLink);
+    signupGrid.append(signupLoginLink);
+
+    // Add button to submit
+    let signupButton = $("<button>").text("Sign Up").click(()=>{
+
+    });
+    let loginButton  = $("<button>").text("Login").click(()=>{
+      let username = loginUsername.val();
+      let password = loginPassword.val();
+
+      Account.login(username, password, false);
+    });
+    loginPage .append($("<center>").append(loginButton))
+    signupPage.append($("<center>").append(signupButton))
+  }
+}
+
 /**
  * Logs the user in to the system then refreshes the page on
  * success

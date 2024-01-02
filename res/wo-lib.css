@@ -17,6 +17,7 @@
   padding: 1em;
 
   z-index: 101;
+  color: white;
 }
 .notification > *:first-child {
   margin-top: 0em;
