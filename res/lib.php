@@ -63,7 +63,7 @@
       $insertArgs = $args;
       $insertStr = arrayToInsertString($insertArgs);
     
-      $query = "INSERT INTO Volunteer $insertStr;";
+      $query = "INSERT INTO FormVolunteer $insertStr;";
       // echo $query; // Echo for testing
       $db_conn->query($query);
       return $db_conn->insert_id;

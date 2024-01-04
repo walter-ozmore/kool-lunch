@@ -6,7 +6,23 @@ $(document).ready(async function() {
 		});
 
 		console.log(data);
-		let tableDiv = mktable(data);
+		let tableDiv = mktable(data, {
+			headerNames: {
+				timeSubmitted: "Submit Time",
+				weekInTheSummer: "For a Week",
+				bagDecoration: "Bag Decoration",
+				fundraising: "Fundraising",
+				supplyGathering: "Supplies"
+			},
+			triggers: [
+				{ case: ["weekInTheSummer", "bagDecoration", "fundraising", "supplyGathering"],
+					func: function(data) { return (data == "1")? "Yes": "No"; }
+				},
+				{ case: ["timeSubmitted"],
+					func: function(data) { return unixToHuman(data); }
+				}
+			]
+		});
 		page.append(tableDiv);
 	});
 });

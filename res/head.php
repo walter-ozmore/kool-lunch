@@ -13,10 +13,11 @@
 <!-- Import Scripts -->
 <script src="/res/jquery-3.7.0.min.js"></script>
 
+<script src="/res/wo-lib.js"></script>
 <script src="/scripts/lib.js"></script>
 <script src="/scripts/data.js"></script>
 <script src="/scripts/form.js"></script>
-<script src="/account/version-3/lib.js"></script>
+<script src="/account/lib.js"></script>
 
 
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">

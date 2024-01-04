@@ -159,7 +159,7 @@
         <label>Are you signing up yourself or your organization?</label>
         <div class="radio">
           <input type="radio" value="true" name="volunteer-type"><label>I am an individual</label><br>
-          <input type="radio" value="false" name="volunteer-type"><label>I am a part of a group or organization</label>
+          <!-- <input type="radio" value="false" name="volunteer-type"><label>I am a part of a group or organization</label> -->
         </div>
       </div>
 
