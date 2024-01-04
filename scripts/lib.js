@@ -420,8 +420,24 @@ function checkBlur() {
 
 function mktable(data, args = {}) {
   // Data store to convert data names to human names
-  let ht = {};
-  let ignore = ["uid", "entryID"];
+  let ht = {
+    timeSubmitted: "Submit Time",
+    weekInTheSummer: "For a Week",
+    bagDecoration: "Bag Decoration",
+    fundraising: "Fundraising",
+    supplyGathering: "Supplies"
+  };
+  let varTriggers = [
+    {
+      case: ["weekInTheSummer", "bagDecoration", "fundraising", "supplyGathering"],
+      func: function(data) { return (data == "1")? "Yes": "No"; }
+    },
+    {
+      case: ["timeSubmitted"],
+      func: function(data) { return "Missing function"; }
+    }
+  ];
+  let ignore = ["uid", "entryID", "volunteerFormID"];
 
   let table = $("<table>");
   let header = $("<tr>");
@@ -505,7 +521,13 @@ function mktable(data, args = {}) {
       let html = entry[head];
 
       // Run custom actions for items with a specific header
-      do {} while(false);
+      for(let t of varTriggers) {
+        console.log( t, head, t.case.indexOf(head) )
+        if( t.case.indexOf(head) <= -1 )
+          continue;
+
+        html = t.func(entry[head]);
+      }
 
       td.html( html );
     }

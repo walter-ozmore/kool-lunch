@@ -13,7 +13,7 @@
 			$data = [];
 
 			$conn = connectDB("lunch");
-			$query = "SELECT * FROM Volunteer";
+			$query = "SELECT * FROM FormVolunteer";
 			$result = $conn->query($query);
 			while ($row = $result->fetch_assoc()) {
 				$data[] = $row;
