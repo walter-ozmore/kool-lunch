@@ -1,4 +1,4 @@
-$(document).ready(async function() {	
+$(document).ready(async function() {
 	addPage("Volunteer Forms", async (page)=>{
 		page.append($("<p>").text("Volunteer Forms"));
 		let data = await post("/ajax/admin.php", {
@@ -12,7 +12,14 @@ $(document).ready(async function() {
 				weekInTheSummer: "For a Week",
 				bagDecoration: "Bag Decoration",
 				fundraising: "Fundraising",
-				supplyGathering: "Supplies"
+				supplyGathering: "Supplies",
+        phoneNumber: "Phone Number",
+        individualName: "Name",
+        individualID: "",
+        email: "Email",
+        facebookMessenger: "FBM",
+        preferredContact: "PMOC",
+        orgID: ""
 			},
 			triggers: [
 				{ case: ["weekInTheSummer", "bagDecoration", "fundraising", "supplyGathering"],
