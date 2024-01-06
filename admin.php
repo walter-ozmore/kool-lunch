@@ -18,6 +18,7 @@
         padding: 0em;
         border-right: groove 1px white;
         min-width: fit-content;
+        height: fit-content;
       }
 
       .sidebar p {
@@ -45,8 +46,7 @@
        * Adds a page to the document by adding the sidebar content
        */
       function addPage(name, func) {
-        let sidebarEle = $("<p>", {class: "clickable"}).text(name);
-        sidebarEle.click(function() {
+        let select = function() {
           // Remove highlights from all other sidebar elements & highlight
           $("#sidebar").find(".highlight").removeClass("highlight");
           sidebarEle.addClass("highlight");
@@ -54,11 +54,18 @@
           // Clear and pass the page
           let page = $("#view-pane").empty().show();
           func(page);
-        });
+        };
+        let sidebarEle = $("<p>", {class: "clickable"}).text(name);
+        sidebarEle.click(select);
 
         $("#sidebar").append(sidebarEle);
+        if(autoSelected) return;
+
+        select();
+        autoSelected = true;
       }
 
+      let autoSelected = false;
       $(document).ready(async function() {
         // lightMode();
 
@@ -72,7 +79,7 @@
     </script>
 
     <!-- Import Pages -->
-    <script src="/scripts/admin/overview.js"></script>
+    <!-- <script src="/scripts/admin/overview.js"></script> -->
     <script src="/scripts/admin/volunteer-forms.js"></script>
   </head>
 
