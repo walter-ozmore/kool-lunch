@@ -161,6 +161,10 @@ input[type=checkbox] {
   cursor: pointer;
 }
 
+.notification {
+  color: black;
+}
+
 @media only screen and (max-width: 1000px) {
   .content {
     padding: .5em 2vw;

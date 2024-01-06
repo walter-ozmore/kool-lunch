@@ -102,6 +102,26 @@
     public static function createAccount() {
 
     }
+
+    public static function getCurrentUser($select) {
+      global $cookie_authentication, $account_conn;
+
+      // Check if there is a cookie stored, if they is we use it
+      if(array_key_exists($cookie_authentication, $_SESSION)) {
+        $cookie = $_SESSION[$cookie_authentication];
+      } else if(isset($_COOKIE[$cookie_authentication])) {
+        $cookie = $_COOKIE[$cookie_authentication];
+      } else
+        return NULL;
+
+      $query = "SELECT $select FROM User WHERE cookie='$cookie' LIMIT 1";
+      $result = $account_conn->query($query);
+      $row = $result->fetch_assoc();
+
+      if($row["uid"] == -1)
+        return NULL;
+      return $row;
+    }
   }
 
   function returnCode($code, $extra=[]) {

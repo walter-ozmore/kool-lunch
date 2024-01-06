@@ -3,10 +3,23 @@
 	ini_set('display_errors', '1');
 
 	require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
+  require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/lib.php";
+  require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
 	/**
 	 * All admin fetches start here, we check the function code then
 	 * send it too the correct function. POST only.
 	 */
+
+  // Check if an admin is logged in
+  $user = Account::getCurrentUser("uid, password");
+  if($user == null) exit();
+  if($user["password"] == null) exit();
+
+  // Check if the user is a valid one
+  $uid = $user["uid"];
+  if($uid === "8" || $uid === "20") {
+    // Continue the code
+  } else { exit(); }
 
 	switch($_POST["function"]) {
 		case 1: // Fetch volunteer forms

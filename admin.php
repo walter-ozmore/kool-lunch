@@ -58,10 +58,21 @@
 
         $("#sidebar").append(sidebarEle);
       }
+
+      $(document).ready(async function() {
+        // lightMode();
+
+        // Check if we have a user logged in
+        let user = await account_getUser();
+        if(user == null) {
+          Account.createWindow();
+          return;
+        }
+      });
     </script>
 
     <!-- Import Pages -->
-    <script src="/scripts/admin/overview.js"></script>  
+    <script src="/scripts/admin/overview.js"></script>
     <script src="/scripts/admin/volunteer-forms.js"></script>
   </head>
 
