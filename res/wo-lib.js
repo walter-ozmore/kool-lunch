@@ -32,7 +32,7 @@ function unixToHuman(unixTimestamp, args={}) {
   if(hours < 10) hours = "0" + hours;
 
   // Create a formatted timestamp string
-  let timestamp = `${hours}:${minutes}${ampm}, <span class="${weekColor}">${weekName}</span> ${month}/${day}/${year}`;
+  let timestamp = `${hours}:${minutes}${ampm}, ${weekName} ${month}/${day}/${year}`;
   return timestamp;
 }
 
@@ -153,4 +153,121 @@ function checkBlur() {
     return;
   }
   blurScreen(false);
+}
+
+
+function mktable(data, args = {}) {
+  let ht = args.headerNames;
+  let varTriggers = args.triggers;
+  let ignore = ["uid", "entryID", "volunteerFormID"];
+
+  let table = $("<table>");
+  let header = $("<tr>");
+
+  // Grab header info
+  let headers = [];
+  for(let index in data) {
+    let entry = data[index];
+    for(let key in entry) {
+      if((headers.indexOf(key) > -1))
+        continue;
+
+      if(ignore.indexOf(key) > -1)
+        continue;
+
+      // Try to convert data name in to human names
+      header.append($("<th>").text( (key in ht)? ht[key]: key));
+
+      headers.push(key);
+    }
+  }
+
+  // If the header length is zero why print the header?
+  if(header.html().length > 0) table.append(header);
+
+  // Add data to the table
+  for(let index in data) {
+    let entry = data[index];
+    // Create a row for each entry
+    let row = $("<tr>");
+
+    // Check for if the row has a click action
+    if("onRowClick" in args) {
+      row.click( function() {args["onRowClick"](entry);} );
+      row.addClass("clickable");
+    }
+
+    if("onContext" in args) {
+      // Add a listener
+      row.on("contextmenu", function(e) {
+        // Highlight the row
+        row.addClass("highlight");
+
+        // Prevents default context menu
+        e.preventDefault();
+
+        // Create the context menu and apply it to the document
+        var contextMenu = $("<div>").addClass("context-menu");
+        contextMenu.css({ display: "block",  left: e.pageX,  top: e.pageY });
+        $(document.body).append(contextMenu);
+
+        // Add items to the context menu according to the args
+        for(let key in args.onContext) {
+          // Grabs the function that will be called when its clicked
+          let fun = args.onContext[key];
+
+          // Create and append the element to the menu
+          contextMenu.append(
+            $("<p>")
+              .text(key)
+              .click(function(){fun(entry);})
+          );
+        }
+
+        // Add listener so that the context menu is removed when the use is done with it
+        $(document).on("click contextmenu", function() {
+          contextMenu.remove();
+          $(document).off("click");
+          row.removeClass("highlight");
+        });
+
+        return false;
+      });
+    }
+
+    for(let head of headers) {
+      let td = $("<td>"); row.append(td);
+
+      if(head in entry == false) continue;
+
+      let html = entry[head];
+
+      // Run custom actions for items with a specific header
+      for(let t of varTriggers) {
+        if( t.case.indexOf(head) <= -1 )
+          continue;
+
+        html = t.func(entry[head]);
+      }
+
+      td.html( html );
+    }
+
+    if(row.html().length > 0) table.append(row);
+  }
+
+  let div = $("<div>");
+
+  if("title" in args == true) {
+    div.append($("<h2>", {style: "text-align:center; margin-bottom: 0em;"}).text(args.title))
+  }
+
+  // Check if table is empty, if it is show a message
+  if(data == undefined || data.length <= 0 || table.find('tr').length <= 0) {
+    div.append( $("<p>", {style: "text-align: center; margin-top: 0em;color:light-grey;"}).text("No Data") );
+    return div;
+  }
+
+  div.append(table);
+  return div;
 }

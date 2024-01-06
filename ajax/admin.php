@@ -13,7 +13,7 @@
 			$data = [];
 
 			$conn = connectDB("lunch");
-			$query = "SELECT * FROM FormVolunteer";
+			$query = "SELECT FormVolunteer.*, Individual.individualName, Individual.phoneNumber, Individual.email, Individual.facebookMessenger, Individual.preferredContact FROM FormVolunteer INNER JOIN Individual ON FormVolunteer.individualID = Individual.individualID;";
 			$result = $conn->query($query);
 			while ($row = $result->fetch_assoc()) {
 				$data[] = $row;
