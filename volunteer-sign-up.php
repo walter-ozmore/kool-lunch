@@ -123,8 +123,14 @@
           opportunities: opp,
           preferredContact: $("input[name='perfer-comms']:checked").val()
         };
-        await post("/ajax/vol-su.php", data);
-
+        let msg = await post("/ajax/vol-su.php", data);
+        if(msg == null) {
+          displayAlert({
+            title: "Thank You",
+            text: "We look forward to working with you and will be in touch soon.",
+            onClose: ()=>{ window.location.href = '/'; }
+          });
+        }
       }
 
       $(document).ready(function() {
@@ -154,7 +160,7 @@
         <p style="color: rgb(50,50,50)">The KOOL Lunches Program is growing and we are finding more ways for you to get involved! If you wish to get involved, please fill out this form and we will get in touch.</p>
       </div>
 
-      
+
       <div class="section">
         <label>Are you signing up yourself or your organization?</label>
         <div class="radio">
@@ -172,11 +178,12 @@
       </div>
 
       <div id="wait-2" style="display: none">
+        <!-- Ask for the org's name -->
         <div class="section" id="name-section">
           <label name="question">Name of person filling out the form</label>
           <div class="flex">
-            <input type="text" placeholder="First Name" id="first-name">
-            <input type="text" placeholder="Last Name" id="last-name">
+            <input type="text" placeholder="First Name" id="first-name" value="">
+            <input type="text" placeholder="Last Name"  id="last-name"  value="">
           </div>
         </div>
 

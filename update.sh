@@ -1,6 +1,6 @@
 # This script update dependencies
 
-wod="/var/www/walter-ozmore"
+wod="/var/www/walter-ozmore.dev"
 kld="/var/www/kool-lunch"
 
 sudo cp -r $wod/account $kld

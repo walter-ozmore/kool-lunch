@@ -9,7 +9,7 @@
 		"lastName"=>$_POST["lastName"],
 		"preferredContact"=>$_POST["preferredContact"]
 	];
-	
+
 	// Add contact info to our args
 	if(isset($_POST["contact"])) {
 		$contact = $_POST["contact"];
@@ -28,11 +28,9 @@
 
 	$args = [
 		"timeSubmitted" => time(),
-		"signupIndividual" => $signupIndividual
+		"individualID" => $signupIndividual
 	];
 	foreach ($opportunities as $name) { $args[$name] = 1; }
 
 	Database::createVolunteerForm($args);
-
-	echo "Job Done";
 ?>

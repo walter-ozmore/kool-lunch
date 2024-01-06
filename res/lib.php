@@ -7,13 +7,13 @@
      * Creates an individual in the database with the given parameters, this
      * function should also check if all the arguments are valid before inputing
      * them in to the database.
-     * 
+     *
      * firstName, lastName, or name is required. The database only support name
      * right now but should be expanded later
      * email
      * phoneNumber
      * fbm AKA. facebook messanger
-     * 
+     *
      * returns the individuals ID if it was entered, otherwise returns -1
      */
     public static function createIndividual($args) {
@@ -37,7 +37,7 @@
       if(isset($args["preferredContact"])) $insertArgs["PreferredContact"] = $args["preferredContact"];
 
       $insertStr = arrayToInsertString($insertArgs);
-    
+
       $query = "INSERT INTO Individual $insertStr;";
       // echo $query; // Echo for testing
       $db_conn->query($query);
@@ -62,7 +62,7 @@
 
       $insertArgs = $args;
       $insertStr = arrayToInsertString($insertArgs);
-    
+
       $query = "INSERT INTO FormVolunteer $insertStr;";
       // echo $query; // Echo for testing
       $db_conn->query($query);
