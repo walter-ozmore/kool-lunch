@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Data | KoolLunches</title>
+    <title>Admin | KoolLunches</title>
     <?php
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
       require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";

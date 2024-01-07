@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Kool Lunches</title>
+    <title>Tracker | Kool Lunches</title>
 
     <?php
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";

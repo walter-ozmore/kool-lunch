@@ -1,4 +1,7 @@
 <?php
+  /**
+   * Just general scripts that should only be ran in a local enviroment
+   */
 	exit();
 	error_reporting(E_ALL);
 	ini_set('display_errors', '1');
@@ -17,7 +20,7 @@
 		$forms[] = $id;
 	}
 
-	// Check all forms 
+	// Check all forms
 	foreach($forms as $formID) {
 		$numOfKids = 0;
 		$allergies = "";
