@@ -66,6 +66,28 @@
       }
 
       let autoSelected = false;
+      let tableHeaderNames = {
+				timeSubmitted: "Submit Time",
+				weekInTheSummer: "For a Week",
+				bagDecoration: "Bag Decoration",
+				fundraising: "Fundraising",
+				supplyGathering: "Supplies",
+        phoneNumber: "Phone Number",
+        individualName: "Name",
+        individualID: "",
+        email: "Email",
+        facebookMessenger: "FBM",
+        preferredContact: "PMOC",
+        orgID: "",
+			};
+      let tableTriggers = [
+				{ case: ["weekInTheSummer", "bagDecoration", "fundraising", "supplyGathering"],
+					func: function(data) { return (data == "1")? "Yes": "No"; }
+				},
+				{ case: ["timeSubmitted"],
+					func: function(data) { return unixToHuman(data); }
+				}
+			];
       $(document).ready(async function() {
         // lightMode();
 

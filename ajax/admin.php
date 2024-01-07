@@ -5,6 +5,7 @@
 	require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/lib.php";
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
+
 	/**
 	 * All admin fetches start here, we check the function code then
 	 * send it too the correct function. POST only.
@@ -21,11 +22,13 @@
     // Continue the code
   } else { exit(); }
 
+
+  // Actual code
+  $conn = Secret::connectDB("lunch");
 	switch($_POST["function"]) {
 		case 1: // Fetch volunteer forms
 			$data = [];
 
-			$conn = connectDB("lunch");
 			$query = "SELECT FormVolunteer.*, Individual.individualName, Individual.phoneNumber, Individual.email, Individual.facebookMessenger, Individual.preferredContact FROM FormVolunteer INNER JOIN Individual ON FormVolunteer.individualID = Individual.individualID;";
 			$result = $conn->query($query);
 			while ($row = $result->fetch_assoc()) {
