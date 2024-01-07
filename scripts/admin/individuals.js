@@ -43,7 +43,7 @@ $(document).ready(async function() {
 		let tableDiv = mktable(data, {
 			headerNames: tableHeaderNames,
 			triggers: tableTriggers,
-      onRowClick: inspectIndividual
+      // onRowClick: inspectIndividual
 		});
 		page.append(tableDiv);
 	});

@@ -48,5 +48,27 @@
 
       echo json_encode($data);
       break;
+    case 3: // Fetch Forms
+      $data = [];
+
+      $query = "SELECT * FROM Form;";
+      $result = $conn->query($query);
+      while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+      }
+
+      echo json_encode($data);
+      break;
+    case 4: // Fetch Orgs
+      $data = [];
+
+      $query = "SELECT * FROM Organization;";
+      $result = $conn->query($query);
+      while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+      }
+
+      echo json_encode($data);
+      break;
 	}
 ?>

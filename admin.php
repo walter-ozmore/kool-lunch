@@ -79,6 +79,7 @@
         facebookMessenger: "FBM",
         preferredContact: "PMOC",
         orgID: "",
+        orgName: "Name",
 			};
       let tableTriggers = [
 				{ case: ["weekInTheSummer", "bagDecoration", "fundraising", "supplyGathering"],
@@ -104,6 +105,8 @@
     <!-- <script src="/scripts/admin/overview.js"></script> -->
     <script src="/scripts/admin/volunteer-forms.js"></script>
     <script src="/scripts/admin/individuals.js"></script>
+    <script src="/scripts/admin/forms.js"></script>
+    <script src="/scripts/admin/organizations.js"></script>
   </head>
 
   <header>
