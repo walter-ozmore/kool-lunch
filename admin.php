@@ -89,9 +89,8 @@
 					func: function(data) { return unixToHuman(data); }
 				}
 			];
-      $(document).ready(async function() {
-        // lightMode();
 
+      $(document).ready(async function() {
         // Check if we have a user logged in
         let user = await account_getUser();
         if(user == null) {

@@ -50,6 +50,16 @@
     </style>
 
     <script src="/scripts/tracker.js"></script>
+    <script>
+      $(document).ready(async function() {
+        // Check if we have a user logged in
+        let user = await account_getUser();
+        if(user == null) {
+          Account.createWindow();
+          return;
+        }
+      });
+    </script>
   </head>
 
   <header>
