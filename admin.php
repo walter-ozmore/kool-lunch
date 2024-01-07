@@ -119,5 +119,7 @@
       <div class="sidebar content" id="sidebar"></div>
       <div class="view-pane content" id="view-pane"></div>
     </div>
+
+    <?php include realpath($_SERVER["DOCUMENT_ROOT"])."/res/footer.php"; ?>
   </body>
 </html>
