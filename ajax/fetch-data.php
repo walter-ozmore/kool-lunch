@@ -1,6 +1,6 @@
 <?php
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
-  require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/version-3/lib.php";
+  require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/lib.php";
 
   /**
    * Error messages
@@ -10,8 +10,8 @@
    * 2 - No user is logged in
    */
 
-  // error_reporting(E_ALL);
-  // ini_set('display_errors', '1');
+  error_reporting(E_ALL);
+  ini_set('display_errors', '1');
 
 
   /**
@@ -158,7 +158,7 @@
       if($row["Allergies"] != null)
         $data["forms"][$formId]["hasAllergies"] = true;
 
-      if($row["IsAdult"] == 0)
+      if(isset($row["IsAdult"]) && $row["IsAdult"] == 0)
         $data["forms"][$formId]["totalChildren"] += 1;
     }
 
@@ -180,7 +180,7 @@
     // Clean up data
     foreach($data["forms"] as $formId => $form) {
       // Set the lunches needed to the correct value
-      $lunchOveride = $form["lunchOverideAmount"];
+      $lunchOveride = (isset($form["lunchOverideAmount"]))? $form["lunchOverideAmount"]: null;
       $lunchesNeeded = ($lunchOveride == null)? $form["totalChildren"]: $lunchOveride;
       $data["forms"][$formId]["lunchesNeeded"] = $lunchesNeeded;
 

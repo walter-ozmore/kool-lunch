@@ -70,5 +70,22 @@
 
       echo json_encode($data);
       break;
+    case 5: // Fetch for tracker
+      $data = [];
+
+      $timestamp = $_POST["date"];
+      $date = substr(date("l", $timestamp), 0, 3);
+
+      $query = "SELECT Form.formID, Form.lunchesNeeded, Form.location, Form.allergies, Individual.individualName FROM Form INNER JOIN Individual on Individual.formID=Form.formID WHERE pickup$date=1 AND isEnabled=1 ORDER BY Form.location, Individual.individualName;";
+      $result = $conn->query($query);
+      while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+      }
+
+      echo json_encode($data);
+      break;
+    case 5: // Check a checkbox
+      echo true;
+      break;
 	}
 ?>

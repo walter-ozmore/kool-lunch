@@ -12,7 +12,7 @@
       /* Row/Form of information */
       .row {
         display: grid;
-        grid-template-columns: 75% 25%;
+        grid-template-columns: 65% 25% 10%;
         padding: .5em .25em;
         border-bottom: 1px solid black;
         font-size: 1.5em;
