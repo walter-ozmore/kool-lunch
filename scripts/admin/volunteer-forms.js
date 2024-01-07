@@ -14,7 +14,7 @@ function inspectVolunteerForm(formData) {
     $("<label>").text("Time Submitted:"), $("<p>").text(unixToHuman(formData.timeSubmitted)),
   );
 
-  if(formData.phoneNumber != null) divGrid.append($("<label>").text("Phone Number:"), $("<p>").text(formData.individualName));
+  if(formData.phoneNumber != null) divGrid.append($("<label>").text("Phone Number:"), $("<p>").text(formData.phoneNumber));
   if(formData.email != null) divGrid.append($("<label>").text("Email:"), $("<p>").text(formData.email));
   if(formData.facebookMessenger != null) divGrid.append($("<label>").text("Messenger:"), $("<p>").text(formData.facebookMessenger));
 
