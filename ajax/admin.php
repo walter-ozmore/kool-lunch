@@ -37,5 +37,16 @@
 
 			echo json_encode($data);
 			break;
+    case 2: // Fetch users
+      $data = [];
+
+      $query = "SELECT * FROM Individual;";
+      $result = $conn->query($query);
+      while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+      }
+
+      echo json_encode($data);
+      break;
 	}
 ?>
