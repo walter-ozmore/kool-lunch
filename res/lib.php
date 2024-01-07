@@ -28,13 +28,13 @@
       if(isset($args["firstName"]) && isset($args["lastName" ]))
         $name = $args["firstName"] ." ". $args["lastName"];
       if(isset($args["name"     ])) $name = $args["name"];
-      $insertArgs["IndividualName"] = $name;
+      $insertArgs["individualName"] = $name;
 
       // Check for contact info
-      if(isset($args["email"      ])) $insertArgs["Email"            ] = $args["email"      ];
-      if(isset($args["phoneNumber"])) $insertArgs["PhoneNumber"      ] = $args["phoneNumber"];
-      if(isset($args["fbm"        ])) $insertArgs["FacebookMessenger"] = $args["fbm"        ];
-      if(isset($args["preferredContact"])) $insertArgs["PreferredContact"] = $args["preferredContact"];
+      if(isset($args["email"      ])) $insertArgs["email"            ] = $args["email"      ];
+      if(isset($args["phoneNumber"])) $insertArgs["phoneNumber"      ] = $args["phoneNumber"];
+      if(isset($args["fbm"        ])) $insertArgs["facebookMessenger"] = $args["fbm"        ];
+      if(isset($args["preferredContact"])) $insertArgs["preferredContact"] = $args["preferredContact"];
 
       $insertStr = arrayToInsertString($insertArgs);
 
@@ -44,6 +44,7 @@
       return $db_conn->insert_id;
     }
 
+    // TODO
     public static function createOrg($args) {
       global $db_conn;
 
@@ -57,6 +58,7 @@
       return $db_conn->insert_id;
     }
 
+    // TODO
     public static function createVolunteerForm($args) {
       global $db_conn;
 
@@ -67,6 +69,38 @@
       // echo $query; // Echo for testing
       $db_conn->query($query);
       return $db_conn->insert_id;
+    }
+
+    // TODO
+    function deleteForm($formId) {
+
+    }
+
+    // TODO
+    function deleteIndividual($individualID) {
+
+    }
+
+    // TODO
+    function deleteVolunteerForm($volunteerFormID) {
+
+    }
+
+    // TODO
+    function getDonations($limit = 8) {
+
+    }
+
+    function getLunchAmount($formId) {
+      global $db_conn;
+      if (!is_numeric($formId)) { return; }
+
+      $query = "SELECT lunchesNeeded FROM Form WHERE formID=$formId AND isEnabled = 1;";
+      $result = $db_conn->query($query);
+      while ($row = $result->fetch_assoc()) {
+        if( $row["lunchesNeeded"] != null )
+          return $row["lunchesNeeded"];
+      }
     }
   }
 
@@ -159,27 +193,6 @@
     $str .= "</table>";
 
     return $str;
-  }
-
-  function getLunchAmount($formId) {
-    global $db_conn;
-
-    // Check if there is a lunch override
-    $query = "SELECT lunchOverideAmount FROM Form WHERE FormId=$formId";
-    $result = $db_conn->query($query);
-    while ($row = $result->fetch_assoc()) {
-      if( $row["lunchOverideAmount"] != null )
-        return $row["lunchOverideAmount"];
-    }
-
-    $query = "SELECT COUNT(IndividualId) AS lunches FROM Individual INNER JOIN Form ON Individual.FormId = Form.FormId WHERE Individual.FormId = $formId AND IsAdult = 0";
-    // echo $query;
-
-    $result = $db_conn->query($query);
-    while ($row = $result->fetch_assoc()) {
-      if( $row["lunches"] != null )
-        return $row["lunches"];
-    }
   }
 
   function arrayToInsertString($data) {
