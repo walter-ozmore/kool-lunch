@@ -73,22 +73,51 @@
 
     // TODO
     function deleteForm($formId) {
+      global $db_conn;
+      if (!is_numeric($formId)) { return; }
 
+      $query = "DELETE FROM Form WHERE formID = $formId LIMIT 1;";
+      $result = $db_conn->query($query);
+
+      if ($result == FALSE) {return "Error deleting record.";}
+      return "Entry deleted.";
     }
 
     // TODO
     function deleteIndividual($individualID) {
+      global $db_conn;
+      if (!is_numeric($individualID)) { return; }
 
+      $query = "DELETE FROM Individual WHERE individualID = $individualID LIMIT 1;";
+      $result = $db_conn->query($query);
+
+      if ($result == FALSE) {return "Error deleting record.";}
+      return "Entry deleted.";
     }
 
     // TODO
-    function deleteVolunteerForm($volunteerFormID) {
+    function deleteFormVolunteer($volunteerFormID) {
+      global $db_conn;
+      if (!is_numeric($volunteerFormID)) { return; }
 
+      $query = "DELETE FROM FormVolunteer WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
+      $result = $db_conn->query($query);
+  
+      if ($result == FALSE) {return "Error deleting record.";}
+      return "Entry deleted.";
     }
 
     // TODO
     function getDonations($limit = 8) {
+      global $db_conn;
+      $list = [];
 
+      $query = "SELECT * FROM Donations ORDER BY year DESC LIMIT $limit;";
+      $result = $db_conn->query($query);
+
+      // while ($row = $result->fetch_assoc()) {
+      //   $list[] = 
+      // }
     }
 
     function getLunchAmount($formId) {
