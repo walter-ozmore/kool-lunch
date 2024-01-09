@@ -49,8 +49,13 @@ button {
   box-shadow: 0px 0px 5px 2px #F082AC;
 }
 
-button:hover, button:focus {
+button:hover:enabled, button:focus {
   background-color: #F082AC;
+}
+
+button:disabled {
+  background-color: #606060;
+  box-shadow: unset;
 }
 
 #blur-overlay {

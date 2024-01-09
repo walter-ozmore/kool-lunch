@@ -1,5 +1,6 @@
 <?php
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/db.php";
+  require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/lib.php";
 
   // Contains functions for easy database interactions
   class Database {
@@ -134,8 +135,6 @@
   }
 
   function checkUser() {
-    require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/version-3/lib.php";
-
     // TODO Check the user's
     $msg = "";
     $currentUser = getCurrentUser();

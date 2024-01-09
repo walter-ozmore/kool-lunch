@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Kool Lunches</title>
+    <title>Tracker | Kool Lunches</title>
 
     <?php
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
@@ -12,7 +12,7 @@
       /* Row/Form of information */
       .row {
         display: grid;
-        grid-template-columns: 75% 25%;
+        grid-template-columns: 65% 25% 10%;
         padding: .5em .25em;
         border-bottom: 1px solid black;
         font-size: 1.5em;
@@ -50,6 +50,16 @@
     </style>
 
     <script src="/scripts/tracker.js"></script>
+    <script>
+      $(document).ready(async function() {
+        // Check if we have a user logged in
+        let user = await account_getUser();
+        if(user == null) {
+          Account.createWindow();
+          return;
+        }
+      });
+    </script>
   </head>
 
   <header>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Data | KoolLunches</title>
+    <title>Admin | KoolLunches</title>
     <?php
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
       require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
@@ -66,9 +66,31 @@
       }
 
       let autoSelected = false;
-      $(document).ready(async function() {
-        // lightMode();
+      let tableHeaderNames = {
+				timeSubmitted: "Submit Time",
+				weekInTheSummer: "For a Week",
+				bagDecoration: "Bag Decoration",
+				fundraising: "Fundraising",
+				supplyGathering: "Supplies",
+        phoneNumber: "Phone Number",
+        individualName: "Name",
+        individualID: "",
+        email: "Email",
+        facebookMessenger: "FBM",
+        preferredContact: "PMOC",
+        orgID: "",
+        orgName: "Name",
+			};
+      let tableTriggers = [
+				{ case: ["weekInTheSummer", "bagDecoration", "fundraising", "supplyGathering"],
+					func: function(data) { return (data == "1")? "Yes": "No"; }
+				},
+				{ case: ["timeSubmitted"],
+					func: function(data) { return unixToHuman(data); }
+				}
+			];
 
+      $(document).ready(async function() {
         // Check if we have a user logged in
         let user = await account_getUser();
         if(user == null) {
@@ -81,6 +103,9 @@
     <!-- Import Pages -->
     <!-- <script src="/scripts/admin/overview.js"></script> -->
     <script src="/scripts/admin/volunteer-forms.js"></script>
+    <script src="/scripts/admin/individuals.js"></script>
+    <script src="/scripts/admin/forms.js"></script>
+    <script src="/scripts/admin/organizations.js"></script>
   </head>
 
   <header>
@@ -93,5 +118,7 @@
       <div class="sidebar content" id="sidebar"></div>
       <div class="view-pane content" id="view-pane"></div>
     </div>
+
+    <?php include realpath($_SERVER["DOCUMENT_ROOT"])."/res/footer.php"; ?>
   </body>
 </html>
