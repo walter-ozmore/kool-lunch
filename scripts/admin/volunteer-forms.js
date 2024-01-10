@@ -38,9 +38,14 @@ function inspectVolunteerForm(formData) {
 
   // Add a close button so the user isnt stuck
   div.append( $("<center>").append(
-    $("<button>", {disabled: true})
+    $("<button>")
       .text("Delete")
-      .click(async ()=>{  }),
+      .click(async ()=>{
+        await post("/ajax/admin.php", {
+          function: 6,
+          formID: formData.volunteerFormID
+        }, ()=>{ location.reload(); });
+      }),
     $("<button>")
       .text("OK")
       .click(async ()=>{ div.remove(); checkBlur(); }),

@@ -73,11 +73,11 @@
     }
 
     // TODO
-    function deleteForm($formId) {
+    function deleteForm($formID) {
       global $db_conn;
-      if (!is_numeric($formId)) { return; }
+      if (!is_numeric($formID)) { return; }
 
-      $query = "DELETE FROM Form WHERE formID = $formId LIMIT 1;";
+      $query = "DELETE FROM Form WHERE formID = $formID LIMIT 1;";
       $result = $db_conn->query($query);
 
       if ($result == FALSE) {return "Error deleting record.";}
@@ -97,13 +97,13 @@
     }
 
     // TODO
-    function deleteFormVolunteer($volunteerFormID) {
+    public static function deleteFormVolunteer($volunteerFormID) {
       global $db_conn;
       if (!is_numeric($volunteerFormID)) { return; }
 
       $query = "DELETE FROM FormVolunteer WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
       $result = $db_conn->query($query);
-  
+
       if ($result == FALSE) {return "Error deleting record.";}
       return "Entry deleted.";
     }
@@ -117,7 +117,7 @@
       $result = $db_conn->query($query);
 
       // while ($row = $result->fetch_assoc()) {
-      //   $list[] = 
+      //   $list[] =
       // }
     }
 

@@ -84,8 +84,11 @@
 
       echo json_encode($data);
       break;
-    case 5: // Check a checkbox
+    case 5: // Check a checkbox for the tracker
       echo true;
+      break;
+    case 6:
+      Database::deleteFormVolunteer($_POST["formID"]);
       break;
 	}
 ?>
