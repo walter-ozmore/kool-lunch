@@ -1,3 +1,175 @@
+
+/**
+ * Opens up a notification window that shows the individual
+ *
+ * @param {obj} individualData
+ */
+function inspectIndividual(individualData) {
+  console.log(individualData);
+
+  let div = $("<div>", {class: "notification induce-blur"});
+  let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
+  div.append(
+    $("<h2>").text("Inspect Individual"),
+    divGrid,
+  );
+
+  // Apply to div grid
+  divGrid.append(
+    $("<label>").text("Individual Name:"), $("<p>").text(individualData.individualName),
+  );
+
+  if(individualData.phoneNumber != null) divGrid.append($("<label>").text("Phone Number:"), $("<p>").text(individualData.phoneNumber));
+  if(individualData.email != null) divGrid.append($("<label>").text("Email:"), $("<p>").text(individualData.email));
+  if(individualData.facebookMessenger != null) divGrid.append($("<label>").text("Messenger:"), $("<p>").text(individualData.facebookMessenger));
+  divGrid.append(
+    $("<label>").text("Prefered Contact:"),
+    $("<p>").text((individualData.preferredContact == null)? "None Specified": individualData.preferredContact),
+  );
+
+  // Add links
+  post("/ajax/admin.php", {
+    function: 7,
+    individualID: individualData.individualID
+  }, (data)=>{
+    let formIDEle = $("<p>");
+    let volunteerFormIDEle = $("<p>");
+    divGrid.append($("<label>").text("Signup Forms:"), formIDEle);
+    divGrid.append($("<label>").text("Volunteer Forms:"), volunteerFormIDEle);
+
+    console.log("Data:", data)
+
+    // Create links for each form that is clickable
+    for(let form of data.Form) {
+      if(form.formID == null) continue;
+      formIDEle.append(
+        $("<a>", {style: "display: inline; margin-right: .5em;", class: "clickable"})
+          .text(form.formID)
+          .click(async ()=>{
+            // Fetch and inspect the form
+            let form = await post("/ajax/admin.php", {
+              function: 3,
+              formID: form.formID
+            });
+
+            inspectForm(form);
+          })
+      );
+    }
+
+    // Create links for each volunteer form that is clickable
+    for(let form of data.FormVolunteer) {
+      if(form.volunteerFormID == null) continue;
+      volunteerFormIDEle.append(
+        $("<a>", {style: "display: inline; margin-right: .5em;", class: "clickable"})
+          .text(form.volunteerFormID)
+          .click(async ()=>{
+            // Fetch and inspect the form
+            let volunteerForm = await post("/ajax/admin.php", {
+              function: 1,
+              volunteerFormID: form.volunteerFormID
+            });
+
+            inspectVolunteerForm(volunteerForm);
+          })
+      );
+    }
+  });
+
+  // Add a close button so the user isnt stuck
+  div.append( $("<center>").append(
+    $("<button>", {disabled: true})
+      .text("Delete")
+      .click(async ()=>{  }),
+    $("<button>")
+      .text("OK")
+      .click(async ()=>{ div.remove(); checkBlur(); }),
+  ));
+  $("body").append(div);
+  checkBlur();
+}
+
+
+function inspectVolunteerForm(formData) {
+  console.log(formData);
+
+  let div = $("<div>", {class: "notification induce-blur"});
+  let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
+  div.append(
+    $("<h2>").text("Inspect Volunteer Form"),
+    divGrid,
+  );
+
+  // Apply to div grid
+  divGrid.append(
+    $("<label>").text("Individual Name:"), $("<p>").text(formData.individualName),
+    $("<label>").text("Time Submitted:"), $("<p>").text(unixToHuman(formData.timeSubmitted)),
+  );
+
+  if(formData.phoneNumber != null) divGrid.append($("<label>").text("Phone Number:"), $("<p>").text(formData.phoneNumber));
+  if(formData.email != null) divGrid.append($("<label>").text("Email:"), $("<p>").text(formData.email));
+  if(formData.facebookMessenger != null) divGrid.append($("<label>").text("Messenger:"), $("<p>").text(formData.facebookMessenger));
+
+  // Add checkbox stuff
+  let checkbox;
+  checkbox = $("<input>", {type: "checkbox", disabled: true})
+  if(formData.weekInTheSummer == "1") checkbox.prop('checked', true);
+  div.append( checkbox, $("<label>").text("Week in the summer"), $("<br>"), );
+
+  checkbox = $("<input>", {type: "checkbox", disabled: true})
+  if(formData.bagDecoration == "1") checkbox.prop('checked', true);
+  div.append( checkbox, $("<label>").text("Bag Decoration"), $("<br>"), );
+
+  checkbox = $("<input>", {type: "checkbox", disabled: true})
+  if(formData.fundraising == "1") checkbox.prop('checked', true);
+  div.append( checkbox, $("<label>").text("Fundraising"), $("<br>"), );
+
+  checkbox = $("<input>", {type: "checkbox", disabled: true})
+  if(formData.supplyGathering == "1") checkbox.prop('checked', true);
+  div.append( checkbox, $("<label>").text("Supply Gathering"), $("<br>"), );
+
+  // Add a close button so the user isnt stuck
+  div.append( $("<center>").append(
+    $("<button>")
+      .text("Delete")
+      .click(async ()=>{
+        await post("/ajax/admin.php", {
+          function: 6,
+          formID: formData.volunteerFormID
+        }, ()=>{ location.reload(); });
+      }),
+    $("<button>")
+      .text("OK")
+      .click(async ()=>{ div.remove(); checkBlur(); }),
+  ));
+  $("body").append(div);
+  checkBlur();
+}
+
+
+function inspectForm(formData) {
+  console.log(formData);
+
+  let div = $("<div>", {class: "notification induce-blur"});
+  let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
+  div.append(
+    $("<h2>").text("Inspect Form"),
+    divGrid,
+  );
+
+  // Add a close button so the user isnt stuck
+  div.append( $("<center>").append(
+    $("<button>")
+      .text("OK")
+      .click(async ()=>{ div.remove(); checkBlur(); }),
+  ));
+  $("body").append(div);
+  checkBlur();
+}
+
+
+// Old code
+
 function blink() {
   // console.log("Blink");
   closeEyes();

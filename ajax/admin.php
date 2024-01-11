@@ -27,9 +27,17 @@
   $conn = Secret::connectDB("lunch");
 	switch($_POST["function"]) {
 		case 1: // Fetch volunteer forms
-			$data = [];
+      if(isset($_POST["volunteerFormID"])) {
+        $formID = $_POST["volunteerFormID"];
+        $query = "SELECT FormVolunteer.*, Individual.individualName, Individual.phoneNumber, Individual.email, Individual.facebookMessenger, Individual.preferredContact FROM FormVolunteer INNER JOIN Individual ON FormVolunteer.individualID = Individual.individualID WHERE FormVolunteer.volunteerFormID = $formID ORDER BY FormVolunteer.volunteerFormID DESC;";
+        $data = $conn->query($query)->fetch_assoc();
 
-			$query = "SELECT FormVolunteer.*, Individual.individualName, Individual.phoneNumber, Individual.email, Individual.facebookMessenger, Individual.preferredContact FROM FormVolunteer INNER JOIN Individual ON FormVolunteer.individualID = Individual.individualID;";
+        echo json_encode($data);
+        break;
+      }
+
+			$data = [];
+			$query = "SELECT FormVolunteer.*, Individual.individualName, Individual.phoneNumber, Individual.email, Individual.facebookMessenger, Individual.preferredContact FROM FormVolunteer INNER JOIN Individual ON FormVolunteer.individualID = Individual.individualID ORDER BY FormVolunteer.volunteerFormID DESC;";
 			$result = $conn->query($query);
 			while ($row = $result->fetch_assoc()) {
 				$data[] = $row;
@@ -40,7 +48,7 @@
     case 2: // Fetch users
       $data = [];
 
-      $query = "SELECT * FROM Individual;";
+      $query = "SELECT * FROM Individual ORDER BY individualID DESC;";
       $result = $conn->query($query);
       while ($row = $result->fetch_assoc()) {
         $data[] = $row;
@@ -49,8 +57,17 @@
       echo json_encode($data);
       break;
     case 3: // Fetch Forms
-      $data = [];
+      if(isset($_POST["formID"])) {
+        $formID = $_POST["formID"];
+        $query = "SELECT * FROM Form WHERE FormID=$formID;";
+        $result = $conn->query($query);
+        $data = $result->fetch_assoc();
 
+        echo json_encode($data);
+        break;
+      }
+
+      $data = [];
       $query = "SELECT * FROM Form;";
       $result = $conn->query($query);
       while ($row = $result->fetch_assoc()) {
@@ -89,6 +106,26 @@
       break;
     case 6:
       Database::deleteFormVolunteer($_POST["formID"]);
+      break;
+    case 7: // Collect all links for a given user
+      $individualID = $_POST["individualID"];
+      $data = [];
+
+      $data["FormVolunteer"] = [];
+      $query = "SELECT volunteerFormID, timeSubmitted FROM FormVolunteer WHERE individualID=$individualID;";
+      $result = $conn->query($query);
+      while ($row = $result->fetch_assoc()) {
+        $data["FormVolunteer"][] = $row;
+      }
+
+      $data["Form"] = [];
+      $query = "SELECT formID FROM Individual WHERE individualID=$individualID;";
+      $result = $conn->query($query);
+      while ($row = $result->fetch_assoc()) {
+        $data["Form"][] = $row;
+      }
+
+      echo json_encode($data);
       break;
 	}
 ?>
