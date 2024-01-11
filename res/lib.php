@@ -18,8 +18,7 @@
      * returns the individuals ID if it was entered, otherwise returns -1
      */
     public static function createIndividual($args) {
-      global $db_conn;
-
+      $db_conn = Secret::connectDB("lunch");
       $insertArgs = [];
 
       // Convert diffrent name formats to one name
@@ -45,85 +44,165 @@
       return $db_conn->insert_id;
     }
 
-    // TODO
+    /** 
+     * Inserts a new row into Organization with the values provided.
+     * 
+     * @param args The values to be inserted into the database.
+     * @return The id for the newly generated Organization entry.
+     */
     public static function createOrg($args) {
-      global $db_conn;
-
+      $db_conn = Secret::connectDB("lunch");
       $insertArgs = [];
 
       if(isset($args["name"])) $insertArgs["orgName"] = $args["name"];
       if(isset($args["mainContact"])) $insertArgs["mainContact"] = $args["mainContact"];
 
-      $query = "INSERT INTO Organization $insertStr;";
+      $query = "INSERT INTO Organization (orgName, mainContact) $insertStr;";
       echo $query; // Echo for testing
-      return $db_conn->insert_id;
-    }
-
-    // TODO
-    public static function createVolunteerForm($args) {
-      global $db_conn;
-
-      $insertArgs = $args;
-      $insertStr = arrayToInsertString($insertArgs);
-
-      $query = "INSERT INTO FormVolunteer $insertStr;";
-      // echo $query; // Echo for testing
       $db_conn->query($query);
       return $db_conn->insert_id;
     }
 
-    // TODO
-    function deleteForm($formID) {
-      global $db_conn;
-      if (!is_numeric($formID)) { return; }
+    /** 
+     * Inserts a new row into FormVolunteer with the values provided.
+     * 
+     * @param args The values to be inserted into the database.
+     * @return The id for the newly generated FormVolunteer entry.
+     */
+    public static function createVolunteerForm($args) {
+      $db_conn = Secret::connectDB("lunch");
+      $insertArgs = [];
+      // $insertStr = arrayToInsertString($insertArgs);
+
+      // if(isset($args["name"])) $insertArgs["orgName"] = $args["name"];
+      // if(isset($args["mainContact"])) $insertArgs["mainContact"] = $args["mainContact"];
+
+      // $query = "INSERT INTO FormVolunteer $insertStr;";
+      // $db_conn->query($query);
+      // return $db_conn->insert_id;
+    }
+
+    /**
+     * Deletes the entry associated with provided id.
+     * 
+     * @param formID The id for target entry.
+     * @return 0 for success, 1 for query error, 2 for param error.
+     */
+    public static function deleteForm($formID) {
+      $db_conn = Secret::connectDB("lunch");
+      if (!is_numeric($formID)) { return 2; }
 
       $query = "DELETE FROM Form WHERE formID = $formID LIMIT 1;";
       $result = $db_conn->query($query);
 
-      if ($result == FALSE) {return "Error deleting record.";}
-      return "Entry deleted.";
+      if ($result == FALSE) {return 1;}
+      return 0;
     }
 
-    // TODO
-    function deleteIndividual($individualID) {
-      global $db_conn;
-      if (!is_numeric($individualID)) { return; }
+   /**
+     * Deletes the entry associated with provided id.
+     * 
+     * @param individualID The id for target entry.
+     * @return 0 for success, 1 for query error, 2 for param error.
+     */
+    public static function deleteIndividual($individualID) {
+      $db_conn = Secret::connectDB("lunch");
+      if (!is_numeric($individualID)) { return 2; }
 
       $query = "DELETE FROM Individual WHERE individualID = $individualID LIMIT 1;";
       $result = $db_conn->query($query);
 
-      if ($result == FALSE) {return "Error deleting record.";}
-      return "Entry deleted.";
+      if ($result == FALSE) {return 1;}
+      return 0;
     }
 
-    // TODO
+   /**
+     * Deletes the entry associated with provided id.
+     * 
+     * @param volunteerFormID The id for target entry.
+     * @return 0 for success, 1 for query error, and 2 for param error
+     */
     public static function deleteFormVolunteer($volunteerFormID) {
-      global $db_conn;
-      if (!is_numeric($volunteerFormID)) { return; }
+      $db_conn = Secret::connectDB("lunch");
+      if (!is_numeric($volunteerFormID)) { return 2; }
 
       $query = "DELETE FROM FormVolunteer WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
       $result = $db_conn->query($query);
 
-      if ($result == FALSE) {return "Error deleting record.";}
-      return "Entry deleted.";
+      if ($result == FALSE) {return 1;}
+      return 0;
+    }
+    
+    // TODO
+    public static function getAllLinks() {
+      
     }
 
     // TODO
-    function getDonations($limit = 8) {
-      global $db_conn;
+    public static function getDonations($limit = 8) {
+      $db_conn = Secret::connectDB("lunch");
       $list = [];
 
       $query = "SELECT * FROM Donations ORDER BY year DESC LIMIT $limit;";
       $result = $db_conn->query($query);
+      while ($row = $result->fetch_assoc()) { $data[] = $row; } 
 
-      // while ($row = $result->fetch_assoc()) {
-      //   $list[] =
-      // }
+      return $data;
     }
 
-    function getLunchAmount($formId) {
-      global $db_conn;
-      if (!is_numeric($formId)) { return; }
+    /**
+     * Given an id, returns the associated entry from Form.
+     * 
+     * @param formID
+     * @return The target row or a 2 for param error.
+     */
+    public static function getForm($formID) {
+      $db_conn = Secret::connectDB("lunch");
+      if (!is_numeric($formID)) { return 2; }
+
+      $query = "SELECT * FROM Form WHERE FormID=$formID LIMIT 1;";
+      $result = $db_conn->query($query);
+      $data = $result->fetch_assoc();
+
+      return $data;
+    }
+
+    /**
+     * Grabs all forms.
+     * 
+     * @return An array with all forms.
+     */
+    public static function getForms() {
+      $db_conn = Secret::connectDB("lunch");
+      $data = [];
+
+      $query = "SELECT * FROM Form;";
+      $result = $db_conn->query($query);
+      while ($row = $result->fetch_assoc()) { $data[] = $row; }
+      
+      return $data;
+    }
+
+    /**
+     * Grabs all individuals.
+     * 
+     * @return Returns an array with the individuals.
+     */
+    public static function getIndividuals() {
+      $db_conn = Secret::connectDB("lunch");
+      $data = [];
+
+      $query = "SELECT * FROM Individual ORDER BY individualID DESC;";
+      $result = $db_conn->query($query);
+      while ($row = $result->fetch_assoc()) { $data[] = $row; } 
+      
+      return $data;
+    }
+
+    // TODO
+    public static function getLunchAmount($formId) {
+      $db_conn = Secret::connectDB("lunch");
+      if (!is_numeric($formId)) { return 2; }
 
       $query = "SELECT lunchesNeeded FROM Form WHERE formID=$formId AND isEnabled = 1;";
       $result = $db_conn->query($query);
@@ -131,6 +210,23 @@
         if( $row["lunchesNeeded"] != null )
           return $row["lunchesNeeded"];
       }
+    }
+
+    // TODO
+    public static function getOrganizations() {
+      $db_conn = Secret::connectDB("lunch");
+      $data = [];
+
+      $query = "SELECT * FROM Organization ORDER BY orgName;";
+      $result = $db_conn->query($query);
+      while ($row = $result->fetch_assoc()) { $data[] = $row; } 
+
+      return $data;
+    }
+
+    // TODO
+    public static function getVolunteers() {
+
     }
   }
 

@@ -45,47 +45,19 @@
 
 			echo json_encode($data);
 			break;
-    case 2: // Fetch users
-      $data = [];
-
-      $query = "SELECT * FROM Individual ORDER BY individualID DESC;";
-      $result = $conn->query($query);
-      while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-      }
-
-      echo json_encode($data);
+    case 2: // Fetch individuals
+      echo json_encode(Database::getIndividuals());
       break;
     case 3: // Fetch Forms
       if(isset($_POST["formID"])) {
-        $formID = $_POST["formID"];
-        $query = "SELECT * FROM Form WHERE FormID=$formID;";
-        $result = $conn->query($query);
-        $data = $result->fetch_assoc();
-
-        echo json_encode($data);
+        echo json_encode(Database::getForm($formID));
         break;
       }
 
-      $data = [];
-      $query = "SELECT * FROM Form;";
-      $result = $conn->query($query);
-      while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-      }
-
-      echo json_encode($data);
+      echo json_encode(Database::getForms());
       break;
     case 4: // Fetch Orgs
-      $data = [];
-
-      $query = "SELECT * FROM Organization;";
-      $result = $conn->query($query);
-      while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-      }
-
-      echo json_encode($data);
+      echo json_encode(Database::getOrganizations());
       break;
     case 5: // Fetch for tracker
       $data = [];
