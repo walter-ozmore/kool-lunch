@@ -8,7 +8,39 @@
       require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
     ?>
 
-    <script src="/scripts/sign-up.js"></script>
+    <script>
+      function showForm() {
+        $("#topSec").hide();
+        let formDiv = $("#bottomSec").empty().show();
+        let gridDiv = $("<div>", {style: "display: grid; grid-template-columns: 1fr 1fr;"});
+        formDiv.append(gridDiv);
+
+        // Create inputs to easly submit later
+        let requiredLunches = $("<input>", {type: "number"});
+
+        let allergiesCheckbox = $("<input>", {type: "checkbox"});
+        let allergiesLabel = $("<label>").text("Please list all allergies:");
+        let allergiesInput = $("<input>", {type: "text"});
+
+        //
+        let allergyCheckboxChange = ()=>{
+          if( allergiesCheckbox.is(':checked') ) {
+            allergiesLabel.show();
+            allergiesInput.show();
+          } else {
+            allergiesLabel.hide();
+            allergiesInput.hide();
+          }
+        };
+        allergyCheckboxChange();
+        allergiesCheckbox.change( allergiesCheckbox );
+
+        gridDiv.append(
+          $("<label>").text("# of Lunches Needed:"), requiredLunches,
+          allergiesCheckbox, allergiesLabel, allergiesInput,
+        );
+      }
+    </script>
 
     <style>
       .subdiv {
@@ -52,7 +84,7 @@
       </div>
     </div>
 
-    <div id="form" class="content" style="margin-top: 1em; display: none;">
+    <div id="bottomSec" class="content" style="margin-top: 1em; display: none;">
       <div>
         <p># Of Adults That Will Pickup</p>
         <input type="number" id="adultNumber" min=1 value=1 onchange="renderAdults()">
