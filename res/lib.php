@@ -225,8 +225,35 @@
     }
 
     // TODO
-    public static function getVolunteers() {
+    public static function getVolunteer($volunteerFormID) {
+      $db_conn = Secret::connectDB("lunch");
+      if (!is_numeric($formID)) { return 2; }
 
+      $query = "SELECT fv.*, i.individualName, i.phoneNumber, i.email, i.facebookMessenger, i.preferredContact"
+              ." FROM FormVolunteerLink as fvl"
+              ." INNER JOIN FormVolunteer fv ON fv.volunteerFormID = fvl.volunteerFormID"
+              ." INNER JOIN Individual i ON i.IndividualID = fvl.individualID"
+              ." WHERE fv.volunteerFormID = $volunteerFormID;";
+      $result = $db_conn->query($query);
+      $data = $result->fetch_assoc();
+
+      return $data;
+    } 
+
+    // TODO
+    public static function getVolunteers() {
+      $db_conn = Secret::connectDB("lunch");
+      $data = [];
+
+      $query = "SELECT fv.*, i.individualName, i.phoneNumber, i.email, i.facebookMessenger, i.preferredContact"
+              ." FROM FormVolunteerLink as fvl"
+              ." INNER JOIN FormVolunteer fv ON fv.volunteerFormID = fvl.volunteerFormID"
+              ." INNER JOIN Individual i ON i.IndividualID = fvl.individualID"
+              ." ORDER BY fv.volunteerFormID DESC;";
+      $result = $db_conn->query($query);
+      while ($row = $result->fetch_assoc()) { $data[] = $row; }
+
+      return $data;
     }
   }
 
