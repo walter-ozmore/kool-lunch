@@ -32,5 +32,10 @@
 	];
 	foreach ($opportunities as $name) { $args[$name] = 1; }
 
-	Database::createVolunteerForm($args);
+	$index = Database::createVolunteerForm($args);
+  if($index > 0) {
+    echo 0;
+  } else {
+    echo "An unknown database error has occurred";
+  }
 ?>

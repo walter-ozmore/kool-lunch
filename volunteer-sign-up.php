@@ -124,7 +124,7 @@
           preferredContact: $("input[name='perfer-comms']:checked").val()
         };
         let msg = await post("/ajax/vol-su.php", data);
-        if(msg == null) {
+        if(msg === 0) {
           displayAlert({
             title: "Thank You",
             text: "We look forward to working with you and will be in touch soon.",
