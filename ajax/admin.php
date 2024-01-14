@@ -28,22 +28,22 @@
 	switch($_POST["function"]) {
 		case 1: // Fetch volunteer forms
       if(isset($_POST["volunteerFormID"])) {
-        $formID = $_POST["volunteerFormID"];
-        $query = "SELECT FormVolunteer.*, Individual.individualName, Individual.phoneNumber, Individual.email, Individual.facebookMessenger, Individual.preferredContact FROM FormVolunteer INNER JOIN Individual ON FormVolunteer.individualID = Individual.individualID WHERE FormVolunteer.volunteerFormID = $formID ORDER BY FormVolunteer.volunteerFormID DESC;";
-        $data = $conn->query($query)->fetch_assoc();
+        $$volunteerFormID = $_POST["volunteerFormID"];
+        // $query = "SELECT FormVolunteer.*, Individual.individualName, Individual.phoneNumber, Individual.email, Individual.facebookMessenger, Individual.preferredContact FROM FormVolunteer INNER JOIN Individual ON FormVolunteer.individualID = Individual.individualID WHERE FormVolunteer.volunteerFormID = $formID ORDER BY FormVolunteer.volunteerFormID DESC;";
+        // $data = $conn->query($query)->fetch_assoc();
 
-        echo json_encode($data);
+        echo json_encode(Database::getVolunteer($volunteerFormID));
         break;
       }
 
-			$data = [];
-			$query = "SELECT FormVolunteer.*, Individual.individualName, Individual.phoneNumber, Individual.email, Individual.facebookMessenger, Individual.preferredContact FROM FormVolunteer INNER JOIN Individual ON FormVolunteer.individualID = Individual.individualID ORDER BY FormVolunteer.volunteerFormID DESC;";
-			$result = $conn->query($query);
-			while ($row = $result->fetch_assoc()) {
-				$data[] = $row;
-			}
+			// $data = [];
+			// $query = "SELECT FormVolunteer.*, Individual.individualName, Individual.phoneNumber, Individual.email, Individual.facebookMessenger, Individual.preferredContact FROM FormVolunteer INNER JOIN Individual ON FormVolunteer.individualID = Individual.individualID ORDER BY FormVolunteer.volunteerFormID DESC;";
+			// $result = $conn->query($query);
+			// while ($row = $result->fetch_assoc()) {
+			// 	$data[] = $row;
+			// }
 
-			echo json_encode($data);
+			echo json_encode(Database::getVolunteers());
 			break;
     case 2: // Fetch individuals
       echo json_encode(Database::getIndividuals());
