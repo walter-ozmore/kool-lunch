@@ -5,45 +5,6 @@
 
     <?php require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php"; ?>
 
-    <style>
-      .volunteer-form label {
-        display: block;
-        font-weight: bold;
-        margin: 0em 0em .25em 0em;
-      }
-
-      .volunteer-form label,
-      .volunteer-form input,
-      .volunteer-form select {
-        font-size: 1.25em;
-      }
-
-      .flex {
-        display: flex;
-        width: 100%;
-      }
-      .flex input {
-        width: 50%;
-      }
-
-      .large-button {
-        padding: .5em 2.5em;
-        font-size: 1.25em;
-      }
-
-      .radio label {
-        display: inline;
-        /* font-size: 1.25em; */
-        font-weight: normal;
-        margin: 0em 0em 0em .5em;
-      }
-
-      .section {
-        display: block;
-        margin: 3em 0em;
-      }
-    </style>
-
     <script>
       function check() {
         var answer;
@@ -154,7 +115,7 @@
   </header>
 
   <body>
-    <div class="content volunteer-form">
+    <div class="content form">
       <div class="description">
         <h2>Want to get involved?</h2>
         <p style="color: rgb(50,50,50)">The KOOL Lunches Program is growing and we are finding more ways for you to get involved! If you wish to get involved, please fill out this form and we will get in touch.</p>

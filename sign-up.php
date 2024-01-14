@@ -9,37 +9,77 @@
     ?>
 
     <script>
-      function showForm() {
+      function showMiddleSec() {
         $("#topSec").hide();
-        let formDiv = $("#bottomSec").empty().show();
-        let gridDiv = $("<div>", {style: "display: grid; grid-template-columns: 1fr 1fr;"});
-        formDiv.append(gridDiv);
-
-        // Create inputs to easly submit later
-        let requiredLunches = $("<input>", {type: "number"});
-
-        let allergiesCheckbox = $("<input>", {type: "checkbox"});
-        let allergiesLabel = $("<label>").text("Please list all allergies:");
-        let allergiesInput = $("<input>", {type: "text"});
-
-        //
-        let allergyCheckboxChange = ()=>{
-          if( allergiesCheckbox.is(':checked') ) {
-            allergiesLabel.show();
-            allergiesInput.show();
-          } else {
-            allergiesLabel.hide();
-            allergiesInput.hide();
-          }
-        };
-        allergyCheckboxChange();
-        allergiesCheckbox.change( allergiesCheckbox );
-
-        gridDiv.append(
-          $("<label>").text("# of Lunches Needed:"), requiredLunches,
-          allergiesCheckbox, allergiesLabel, allergiesInput,
-        );
+        $("#middleSec").show();
+        $("#bottomSec").hide();
       }
+
+      function showBottomSec() {
+        $("#topSec").hide();
+        $("#middleSec").hide();
+        $("#bottomSec").show();
+      }
+
+      function addPickerUpper() {
+        let div = $("<div>", {class: "content"});
+
+        let pickerUpperLinks = {
+          nameInput: $("<input>", {type: "text"}),
+          phoneInput: $("<input>", {type: "text"}),
+          remindSelection:  $("<input>", {type: "checkbox"}),
+          removeButton: $("<button>").text("Remove this individual").click(()=>{
+            // Remove the div
+            div.remove();
+
+            // Remove the element from the array
+            pickerUppers.filter(item => item !== pickerUpperLinks);
+          }),
+        };
+        pickerUppers.push(pickerUpperLinks);
+
+        div.append(
+          $("<div>", {class: "section"}).append(
+            $("<label>").text("Name of individual"), pickerUpperLinks.nameInput,
+          ),
+          $("<div>", {class: "section"}).append(
+            $("<label>").text("Phone Number"), pickerUpperLinks.phoneInput,
+          ),
+          $("<div>", {class: "section"}).append(
+            pickerUpperLinks.remindSelection, $("<label>", {style: "display: inline"}).text("I would like updates via remind"),
+          ),
+          $("<center>").append( pickerUpperLinks.removeButton ),
+        );
+        $("#pickerUppersDiv").append(div);
+      }
+
+
+      var pickerUppers = [];
+      $(document).ready(function() {
+        // Later on we will fetch this info from the database
+        let locationRadioDiv = $("#location-radio");
+
+        let locations = ["Pizza Hut", "Simpson Park", "Powder Creak Park"];
+        for(let location of locations) {
+          locationRadioDiv.append(
+            $("<input>", {type: "radio", value: location, name: "location"}),
+            $("<p>", {style: "display: inline"}).text(location),
+            $("<br>")
+          );
+        }
+
+        // Add a trigger for allergies checkbox
+        let checkbox = $("#hasAllergies").change(function() {
+          if ($(this).is(':checked')) {
+            $('#allergy-div').show();
+          } else {
+            $('#allergy-div').hide();
+          }
+        });
+
+
+        addPickerUpper();
+      });
     </script>
 
     <style>
@@ -63,45 +103,65 @@
 
   <body>
     <!-- Top section of the signup form -->
-    <div class="content topSec" id="topSec">
-      <center><h1>Sign Up</h1></center>
+    <div class="topSec" id="topSec">
+      <div class="content">
+        <center><h1>Sign Up</h1></center>
 
-      <center>
-        <p><b><u>Dates served are May 31st - August 4th Monday-Thursdays</u></b></p>
-      </center>
-
-      <p>Sack lunches will be prepared for pick up at local parks and areas in Bonham. Lunches will be four days a week, Monday through Thursday, with the exception of July 4th in order to observe Independence Day.</p>
-
-      <p>If you are interested in your child or children participating please fill out the questionnaire at the bottom and submit.</p>
-
-      <p>If you have any questions, please contact The Kool Lunches Program at thekoollunchesprogram@gmail.com or message us on Facebook @ Kool Lunches.</p>
-
-      <div id="understand">
-        <p>I understand that I do not let the Kool Lunches Program know before 10:55 that I will not be picking up lunches that day, my name will removed until ontact the Kool Lunches Program to begin receiving lunches again.</p>
         <center>
-          <button onclick="showForm()">I understand</button>
+          <p><b><u>Dates served are May 31st - August 4th Monday-Thursdays</u></b></p>
         </center>
+        <p>Sack lunches will be prepared for pick up at local parks and areas in Bonham. Lunches will be four days a week, Monday through Thursday, with the exception of July 4th in order to observe Independence Day.</p>
+        <p>If you are interested in your child or children participating please fill out the questionnaire at the bottom and submit.</p>
+        <p>If you have any questions, please contact The Kool Lunches Program at thekoollunchesprogram@gmail.com or message us on Facebook @ Kool Lunches.</p>
+        <br>
+        <p>I understand that I do not let the Kool Lunches Program know before 10:55 that I will not be picking up lunches that day, my name will removed until ontact the Kool Lunches Program to begin receiving lunches again.</p>
       </div>
+      <center>
+        <button onclick="showMiddleSec()" class="large-button">I understand</button>
+      </center>
     </div>
 
-    <div id="bottomSec" class="content" style="margin-top: 1em; display: none;">
-      <div>
-        <p># Of Adults That Will Pickup</p>
-        <input type="number" id="adultNumber" min=1 value=1 onchange="renderAdults()">
-      </div>
-      <div id="adults"></div>
-
-      <div>
-        <p># Of Lunches Needed</p>
-        <input type="number" id="childNumber" min=1 value=1 onchange="renderChildren()">
-      </div>
-      <div id="children"></div>
-
-      <div id="questions"></div>
-
-      <p id="generalError" style="display: none">ERROR, Form not submitted</p>
+    <div id="middleSec" class="form" style="display: none;">
+      <div id="pickerUppersDiv"></div>
       <center>
-        <button type="submit" style="width: 100%" onclick="send();">Sign Up</button>
+        <button type="submit" class="large-button" onclick="addPickerUpper();">Add Picker Upper</button>
+        <button type="submit" class="large-button" onclick="showBottomSec();">Continue</button>
+      </center>
+    </div>
+
+    <div id="bottomSec" class="form" style="margin-top: 1em; display: none;">
+      <div class="content">
+        <div class="section">
+          <label># Of Lunches Needed</label>
+          <input type="number" id="childNumber" min=1 value=1 onchange="renderChildren()">
+        </div>
+
+        <div class="section">
+          <input type="checkbox" id="hasAllergies"> <label style="display: inline">One or more of my pickups have allergies</label> <br>
+          <div id="allergy-div" style="margin-top: .5em; display: none">
+            <label>Please list all allergies</label>
+            <input type="text">
+          </div>
+        </div>
+
+
+        <div class="section">
+          <label>Pickup Days</label>
+          <input type="checkbox" id="pickupMon"> <p style="display: inline">Mon</p> <br>
+          <input type="checkbox" id="pickupTue"> <p style="display: inline">Tue</p> <br>
+          <input type="checkbox" id="pickupWed"> <p style="display: inline">Wed</p> <br>
+          <input type="checkbox" id="pickupThu"> <p style="display: inline">Thu</p> <br>
+        </div>
+
+        <div class="section">
+          <label>Pickup Location</label>
+          <div id="location-radio"></div>
+        </div>
+      </div>
+
+      <center>
+        <button type="submit" class="large-button" onclick="showMiddleSec();">Back</button>
+        <button type="submit" class="large-button" onclick="send();">Sign Up</button>
       </center>
     </div> <!-- Form -->
 
