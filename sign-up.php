@@ -59,7 +59,7 @@
         // Later on we will fetch this info from the database
         let locationRadioDiv = $("#location-radio");
 
-        let locations = ["Pizza Hut", "Simpson Park", "Powder Creak Park"];
+        let locations = ["Pizza Hut", "Simpson Park", "Powder Creak Park", "T.E.A.M. Center Housing Authority"];
         for(let location of locations) {
           locationRadioDiv.append(
             $("<input>", {type: "radio", value: location, name: "location"}),
@@ -122,9 +122,15 @@
     </div>
 
     <div id="middleSec" class="form" style="display: none;">
+      <center>
+        <div style="max-width: 75%">
+          <h2>Picker Uppers</h2>
+          <p>People listed here will be able to pickup the meals</p>
+        </div>
+      </center>
       <div id="pickerUppersDiv"></div>
       <center>
-        <button type="submit" class="large-button" onclick="addPickerUpper();">Add Picker Upper</button>
+        <button type="submit" class="large-button" onclick="addPickerUpper();">Add Adult</button>
         <button type="submit" class="large-button" onclick="showBottomSec();">Continue</button>
       </center>
     </div>
@@ -136,11 +142,12 @@
           <input type="number" id="childNumber" min=1 value=1 onchange="renderChildren()">
         </div>
 
+        <!-- Somehow t -->
         <div class="section">
-          <input type="checkbox" id="hasAllergies"> <label style="display: inline">One or more of my pickups have allergies</label> <br>
+          <input type="checkbox" id="hasAllergies"> <label style="display: inline">One or more of my kids have allergies</label> <br>
           <div id="allergy-div" style="margin-top: .5em; display: none">
             <label>Please list all allergies</label>
-            <input type="text">
+            <input type="text" placeholder="Blakely is allergic to books, Taylor can not have bananas." style="width: 100%">
           </div>
         </div>
 
