@@ -21,7 +21,7 @@
       $db_conn = Secret::connectDB("lunch");
       $insertArgs = [];
 
-      // Convert diffrent name formats to one name
+      // Convert different name formats to one name
       $name = "";
       if(isset($args["firstName" ])) $name = $args["firstName"];
       if(isset($args["lastName" ])) $name = $args["lastName"];
@@ -133,12 +133,43 @@
       return 0;
     }
     
-    // TODO
-    public static function getAllLinks() {
-      
+    // TODO error checks for the two queries
+    /**
+     * Get all entires in FormVolunteer and Form for a given individualID.
+     * 
+     * @param individualID The id for a target individual.
+     * @return An array with the data.
+     */
+    public static function getAllLinks($individualID) {
+      if (!is_numeric($individualID)) {return 2;}
+      $db_conn = Secret::connectDB("lunch");
+      $data = [];
+
+      $data["FormVolunteer"] = [];
+      $query = "SELECT volunteerFormID, timeSubmitted FROM FormVolunteer"
+              ." WHERE volunteerFormID ="
+              ." (SELECT volunteerFormID FROM FormVolunteerLink WHERE individualID = $individualID);";
+      $result = $db_conn->query($query);
+      while ($row = $result->fetch_assoc())  {
+        $data["FormVolunteer"][] = $row;
+      }
+
+      $data["Form"] = [];
+      $query = "SELECT formID FROM FormLink WHERE individualID = $individualID;";
+      $result = $db_conn->query($query);
+      while ($row = $result->fetch_assoc())  {
+        $data["Form"][] = $row;
+      }
+
+      return $data;
     }
 
-    // TODO
+    /**
+     * Get the most recent donations.
+     * 
+     * @param Limit for query, defaults to 8.
+     * @return An array with the donations.
+     */
     public static function getDonations($limit = 8) {
       $db_conn = Secret::connectDB("lunch");
       $list = [];
@@ -225,6 +256,24 @@
     }
 
     // TODO
+    public static function getDayMeals($date) {
+      $db_conn = Secret::connectDB("lunch");
+      $data = [];
+
+      $query = "SELECT f.formID, f.lunchesNeeded, f.location, f.allergies, i.individualName"
+              ." FROM FormLink fl"
+              ." INNER JOIN Form f ON f.formID = fl.formID"
+              ." INNER JOIN Individual i ON i.individualID = fl.individualID"
+              ." WHERE isEnabled=1 AND pickup$date = 1"
+              ." ORDER BY f.location, i.individualName;";
+      
+      $result = $db_conn->query($query);
+      while ($row = $result->fetch_assoc()) {$data[] = $row;}
+
+      return $data;
+    }
+
+    // TODO
     public static function getVolunteer($volunteerFormID) {
       $db_conn = Secret::connectDB("lunch");
       if (!is_numeric($formID)) { return 2; }
@@ -232,10 +281,10 @@
       $query = "SELECT fv.*, i.individualName, i.phoneNumber, i.email, i.facebookMessenger, i.preferredContact"
               ." FROM FormVolunteerLink as fvl"
               ." INNER JOIN FormVolunteer fv ON fv.volunteerFormID = fvl.volunteerFormID"
-              ." INNER JOIN Individual i ON i.IndividualID = fvl.individualID"
+              ." INNER JOIN Individual i ON i.individualID = fvl.individualID"
               ." WHERE fv.volunteerFormID = $volunteerFormID;";
-      $result = $db_conn->query($query);
-      $data = $result->fetch_assoc();
+      
+      $data = $db_conn->query($query)->fetch_assoc();
 
       return $data;
     } 
@@ -250,6 +299,7 @@
               ." INNER JOIN FormVolunteer fv ON fv.volunteerFormID = fvl.volunteerFormID"
               ." INNER JOIN Individual i ON i.IndividualID = fvl.individualID"
               ." ORDER BY fv.volunteerFormID DESC;";
+      
       $result = $db_conn->query($query);
       while ($row = $result->fetch_assoc()) { $data[] = $row; }
 

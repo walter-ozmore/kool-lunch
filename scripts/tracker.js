@@ -20,12 +20,12 @@ $(document).ready(async function() {
   // Stores jquery object to use later with a key of the location
   let storage = {};
 
-  // Grab our data from the datbase
+  // Grab our data from the database
   let data = await post("/ajax/admin.php", {
     function: 5,
     date: 1717445432,
   });
-
+  console.log(data);
   for(let row of data) {
     let div; // Stores the div that we put the rows in to
 

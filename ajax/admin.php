@@ -18,7 +18,7 @@
 
   // Check if the user is a valid one
   $uid = $user["uid"];
-  if($uid === "8" || $uid === "20" || $uid === "10")  {
+  if($uid === "8" || $uid === "20" || $uid === "26")  {
     // Continue the code
   } else { exit(); }
 
@@ -28,20 +28,11 @@
 	switch($_POST["function"]) {
 		case 1: // Fetch volunteer forms
       if(isset($_POST["volunteerFormID"])) {
-        $$volunteerFormID = $_POST["volunteerFormID"];
-        // $query = "SELECT FormVolunteer.*, Individual.individualName, Individual.phoneNumber, Individual.email, Individual.facebookMessenger, Individual.preferredContact FROM FormVolunteer INNER JOIN Individual ON FormVolunteer.individualID = Individual.individualID WHERE FormVolunteer.volunteerFormID = $formID ORDER BY FormVolunteer.volunteerFormID DESC;";
-        // $data = $conn->query($query)->fetch_assoc();
+        $volunteerFormID = $_POST["volunteerFormID"];
 
         echo json_encode(Database::getVolunteer($volunteerFormID));
         break;
       }
-
-			// $data = [];
-			// $query = "SELECT FormVolunteer.*, Individual.individualName, Individual.phoneNumber, Individual.email, Individual.facebookMessenger, Individual.preferredContact FROM FormVolunteer INNER JOIN Individual ON FormVolunteer.individualID = Individual.individualID ORDER BY FormVolunteer.volunteerFormID DESC;";
-			// $result = $conn->query($query);
-			// while ($row = $result->fetch_assoc()) {
-			// 	$data[] = $row;
-			// }
 
 			echo json_encode(Database::getVolunteers());
 			break;
@@ -65,13 +56,7 @@
       $timestamp = $_POST["date"];
       $date = substr(date("l", $timestamp), 0, 3);
 
-      $query = "SELECT Form.formID, Form.lunchesNeeded, Form.location, Form.allergies, Individual.individualName FROM Form INNER JOIN Individual on Individual.formID=Form.formID WHERE pickup$date=1 AND isEnabled=1 ORDER BY Form.location, Individual.individualName;";
-      $result = $conn->query($query);
-      while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-      }
-
-      echo json_encode($data);
+      echo json_encode(Database::getDayMeals($date));
       break;
     case 5: // Check a checkbox for the tracker
       echo true;
@@ -81,23 +66,8 @@
       break;
     case 7: // Collect all links for a given user
       $individualID = $_POST["individualID"];
-      $data = [];
 
-      $data["FormVolunteer"] = [];
-      $query = "SELECT volunteerFormID, timeSubmitted FROM FormVolunteer WHERE individualID=$individualID;";
-      $result = $conn->query($query);
-      while ($row = $result->fetch_assoc()) {
-        $data["FormVolunteer"][] = $row;
-      }
-
-      $data["Form"] = [];
-      $query = "SELECT formID FROM Individual WHERE individualID=$individualID;";
-      $result = $conn->query($query);
-      while ($row = $result->fetch_assoc()) {
-        $data["Form"][] = $row;
-      }
-
-      echo json_encode($data);
+      echo json_encode(Database::getAllLinks($individualID));
       break;
 	}
 ?>
