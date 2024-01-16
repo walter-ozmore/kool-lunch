@@ -1,6 +1,9 @@
 <?php
-  require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/db.php";
+  error_reporting(E_ALL);
+  ini_set('display_errors', '1');
+
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/lib.php";
+  require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
 
   // Contains functions for easy database interactions
   class Database {
@@ -44,9 +47,9 @@
       return $db_conn->insert_id;
     }
 
-    /** 
+    /**
      * Inserts a new row into Organization with the values provided.
-     * 
+     *
      * @param args The values to be inserted into the database.
      * @return The id for the newly generated Organization entry.
      */
@@ -63,9 +66,9 @@
       return $db_conn->insert_id;
     }
 
-    /** 
+    /**
      * Inserts a new row into FormVolunteer with the values provided.
-     * 
+     *
      * @param args The values to be inserted into the database.
      * @return The id for the newly generated FormVolunteer entry.
      */
@@ -84,7 +87,7 @@
 
     /**
      * Deletes the entry associated with provided id.
-     * 
+     *
      * @param formID The id for target entry.
      * @return 0 for success, 1 for query error, 2 for param error.
      */
@@ -101,7 +104,7 @@
 
    /**
      * Deletes the entry associated with provided id.
-     * 
+     *
      * @param individualID The id for target entry.
      * @return 0 for success, 1 for query error, 2 for param error.
      */
@@ -118,7 +121,7 @@
 
    /**
      * Deletes the entry associated with provided id.
-     * 
+     *
      * @param volunteerFormID The id for target entry.
      * @return 0 for success, 1 for query error, and 2 for param error
      */
@@ -132,10 +135,10 @@
       if ($result == FALSE) {return 1;}
       return 0;
     }
-    
+
     // TODO
     public static function getAllLinks() {
-      
+
     }
 
     // TODO
@@ -145,14 +148,14 @@
 
       $query = "SELECT * FROM Donations ORDER BY year DESC LIMIT $limit;";
       $result = $db_conn->query($query);
-      while ($row = $result->fetch_assoc()) { $data[] = $row; } 
+      while ($row = $result->fetch_assoc()) { $data[] = $row; }
 
       return $data;
     }
 
     /**
      * Given an id, returns the associated entry from Form.
-     * 
+     *
      * @param formID
      * @return The target row or a 2 for param error.
      */
@@ -169,7 +172,7 @@
 
     /**
      * Grabs all forms.
-     * 
+     *
      * @return An array with all forms.
      */
     public static function getForms() {
@@ -179,13 +182,13 @@
       $query = "SELECT * FROM Form;";
       $result = $db_conn->query($query);
       while ($row = $result->fetch_assoc()) { $data[] = $row; }
-      
+
       return $data;
     }
 
     /**
      * Grabs all individuals.
-     * 
+     *
      * @return Returns an array with the individuals.
      */
     public static function getIndividuals() {
@@ -194,8 +197,8 @@
 
       $query = "SELECT * FROM Individual ORDER BY individualID DESC;";
       $result = $db_conn->query($query);
-      while ($row = $result->fetch_assoc()) { $data[] = $row; } 
-      
+      while ($row = $result->fetch_assoc()) { $data[] = $row; }
+
       return $data;
     }
 
@@ -219,7 +222,7 @@
 
       $query = "SELECT * FROM Organization ORDER BY orgName;";
       $result = $db_conn->query($query);
-      while ($row = $result->fetch_assoc()) { $data[] = $row; } 
+      while ($row = $result->fetch_assoc()) { $data[] = $row; }
 
       return $data;
     }
@@ -238,7 +241,7 @@
       $data = $result->fetch_assoc();
 
       return $data;
-    } 
+    }
 
     // TODO
     public static function getVolunteers() {
@@ -296,7 +299,7 @@
    * be a select statement.
    */
   function drawSQLTable($query, $head=null) {
-    global $db_conn;
+    $db_conn = Secret::connectDB("lunch");
 
     function fetchHead($columnName) {
       global $head;

@@ -4,19 +4,29 @@
     <title>Kool Lunches</title>
 
     <?php
+      	error_reporting(E_ALL);
+        ini_set('display_errors', '1');
+
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
-      include realpath($_SERVER["DOCUMENT_ROOT"])."/res/db.php";
+      // include realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
 
+      // Grabs and lists all monitary donations to the screen, if there is any
+      // error we just skip it all
       function drawMonetaryDonations() {
-        global $db_conn;
 
-        if(!isset($db_conn)) return;
+        $drawString = "";
 
-        echo '<div style="margin-bottom: 1em"> <h2 class="center-text" style="color: black">Monetary Donations</h2>';
-        
+        // Connect to the database
+        if (!class_exists('Secret')) return;
+        $conn = Secret::connectDB("lunch");
+        if(isset($conn) == false) return;
+
+
+        $drawString .= '<div style="margin-bottom: 1em"> <h2 class="center-text" style="color: black">Monetary Donations</h2>';
+
         $query = "SELECT DISTINCT coll FROM Donation";
         $list = [];
-        $result = $db_conn->query( $query );
+        $result = $conn->query( $query );
         while ($row = $result->fetch_assoc()) {
           $list[] = $row["coll"];
         }
@@ -24,24 +34,24 @@
 
         for($x = 0;$x < sizeof($list);$x++) {
           $col = $list[$x];
-          echo "<center><h3>" . ((strlen($col) > 0)? $col : "Others") . "</h3></center>";
+          $drawString.= "<center><h3>" . ((strlen($col) > 0)? $col : "Others") . "</h3></center>";
 
-          echo "<table style='margin: 0em auto;'>";
+          $drawString.=  "<table style='margin: 0em auto;'>";
           $query = "SELECT * FROM Donation ".( (strlen($col) > 0)?"WHERE coll='$col' " : "WHERE coll IS NULL ") . "ORDER BY amount DESC";
-          $result = $db_conn->query( $query );
+          $result = $conn->query( $query );
           while ($row = $result->fetch_assoc()) {
             $name = $row["donatorName"];
             $amount = $row["amount"];
-            echo "
+            $drawString.=  "
             <tr>
               <td>$$amount</td>
               <td>$name</td>
             </tr>
             ";
           }
-          echo "</table>";
+          $drawString.=  "</table>";
         }
-        echo '</div>';
+        $drawString.=  '</div>';
       }
     ?>
 

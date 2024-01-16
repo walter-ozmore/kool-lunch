@@ -15,8 +15,7 @@
 
       .sidebar {
         margin: .5em;
-        padding: 0em;
-        border-right: groove 1px white;
+        padding: 10px 0em;
         min-width: fit-content;
         height: fit-content;
       }

@@ -19,9 +19,8 @@ footer {
   left: 0;
   width: 100%;
   text-align: center;
-  padding-bottom: 2em;
+  margin: 2em auto;
   font-size: .75em;
-  margin-top: auto;
 }
 
 footer p {
@@ -34,6 +33,7 @@ iframe {
   min-height: 360px;
   height: auto;
   margin: 0px auto;
+  border-radius: 10px;
 }
 
 .content {
