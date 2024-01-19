@@ -58,10 +58,16 @@
       $insertArgs = [];
 
       if(isset($args["name"])) $insertArgs["orgName"] = $args["name"];
-      if(isset($args["mainContact"])) $insertArgs["mainContact"] = $args["mainContact"];
+      if(isset($args["mainContact"]) && is_numeric($args["mainContact"])){
+        $insertArgs["mainContact"] = $args["mainContact"];
+      }
 
-      $query = "INSERT INTO Organization (orgName, mainContact) $insertStr;";
-      echo $query; // Echo for testing
+      if(isset($args["signupContact"]) && is_numeric($args["signupContact"])){
+        $insertArgs["signupContact"] = $args["signupContact"];
+      }
+
+      $query = "INSERT INTO Organization (orgName, mainContact, signupContact) $insertStr;";
+      // echo $query; // Echo for testing
       $db_conn->query($query);
       return $db_conn->insert_id;
     }
@@ -75,14 +81,13 @@
     public static function createVolunteerForm($args) {
       $db_conn = Secret::connectDB("lunch");
       $insertArgs = [];
-      // $insertStr = arrayToInsertString($insertArgs);
+      $insertStr = arrayToInsertString($insertArgs);
 
-      // if(isset($args["name"])) $insertArgs["orgName"] = $args["name"];
-      // if(isset($args["mainContact"])) $insertArgs["mainContact"] = $args["mainContact"];
-
-      // $query = "INSERT INTO FormVolunteer $insertStr;";
-      // $db_conn->query($query);
-      // return $db_conn->insert_id;
+      if(isset($args["name"])) $insertArgs["orgName"] = $args["name"];
+      if(isset($args["mainContact"])) $insertArgs["mainContact"] = $args["mainContact"];
+      $query = "INSERT INTO FormVolunteer $insertStr;";
+      $db_conn->query($query);
+      return $db_conn->insert_id;
     }
 
     /**

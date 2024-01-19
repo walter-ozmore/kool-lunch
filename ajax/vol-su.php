@@ -1,6 +1,6 @@
 <?php
-  error_reporting(E_ALL);
-  ini_set('display_errors', '1');
+	error_reporting(E_ALL);
+	ini_set('display_errors', '1');
 
 	require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
 
@@ -30,12 +30,14 @@
 		"timeSubmitted" => time(),
 		"individualID" => $signupIndividual
 	];
+
 	foreach ($opportunities as $name) { $args[$name] = 1; }
 
 	$index = Database::createVolunteerForm($args);
-  if($index > 0) {
-    echo 0;
-  } else {
-    echo "An unknown database error has occurred";
-  }
+
+	if($index > 0) {
+		echo 0;
+	} else {
+		echo "An unknown database error has occurred";
+	}
 ?>

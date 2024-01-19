@@ -10,13 +10,13 @@
         var answer;
 
         switch($("input[name='volunteer-type']:checked").val()) {
-          case "true":
+          case "false":
             $("#wait-2").show();
             $("#wait-1").hide();
             $("#not-main").hide();
             break;
-          case "false":
-            $("#wait-2").hide();
+          case "true":
+            $("#wait-2").show();
             $("#wait-1").show();
             break;
           default: $("#wait-1").hide();
@@ -43,7 +43,7 @@
         $("#contact-messenger-section").hide();
 
         // Show selected
-        switch($("input[name='perfer-comms']:checked").val()) {
+        switch($("input[name='prefer-comms']:checked").val()) {
           case "call": case "text":
             $("#contact-phone-section").show();
           break;
@@ -59,7 +59,7 @@
       async function submit() {
         // Grab our contact info
         let contactInfo = {};
-        switch($("input[name='perfer-comms']:checked").val()) {
+        switch($("input[name='prefer-comms']:checked").val()) {
           case "call": case "text":
             contactInfo["phoneNumber"] = $("#phone-number").val();
           break;
@@ -71,20 +71,38 @@
           break;
         }
 
+        // Check for selected opportunities
         let opp = [];
         if($("#vol-option-1").is(":checked")) opp.push("weekInTheSummer");
         if($("#vol-option-2").is(":checked")) opp.push("bagDecoration");
         if($("#vol-option-3").is(":checked")) opp.push("fundraising");
         if($("#vol-option-4").is(":checked")) opp.push("supplyGathering");
 
+        // Turn all data into obj for individual
         let data = {
           firstName: $("#first-name").val(),
           lastName: $("#last-name").val(),
           contact: contactInfo,
           opportunities: opp,
-          preferredContact: $("input[name='perfer-comms']:checked").val()
+          preferredContact: $("input[name='prefer-comms']:checked").val()
         };
+
+        // Check if part of org, adds information if so
+        let isOrg = $("input[name='volunteer-type']").val();
+        if (isOrg) {
+          let org = {
+            isMainContact: $("input[name='is-main-contact']").val(),
+            orgName: $("#org-name").val()
+          };
+
+          data["org"] = org;
+        }
+        
+        console.log(data);
+
         let msg = await post("/ajax/vol-su.php", data);
+        
+        // Submit message
         if(msg === 0) {
           displayAlert({
             title: "Thank You",
@@ -95,7 +113,6 @@
       }
 
       $(document).ready(function() {
-        let assume = 1; // 0-Assume Nothing, 1-Assume Individual, 2-Assume Org
         // Unselect all checkboxes & radio buttons
         $('input[type="checkbox"]').prop('checked', false);
         $('input[type="radio"]').prop('checked', false);
@@ -105,7 +122,7 @@
         check();
         $("input[name='volunteer-type']").change(check);
         $("input[name='is-main-contact']").change(check);
-        $("input[name='perfer-comms']").change(check);
+        $("input[name='prefer-comms']").change(check);
       });
     </script>
   </head>
@@ -125,21 +142,23 @@
       <div class="section">
         <label>Are you signing up yourself or your organization?</label>
         <div class="radio">
-          <input type="radio" value="true" name="volunteer-type"><label>I am an individual</label><br>
-          <input type="radio" value="false" name="volunteer-type" disabled="true"><label>I am a part of a group or organization</label>
+          <input type="radio" value="false" name="volunteer-type"><label>I am an individual</label><br>
+          <input type="radio" value="true" name="volunteer-type"><label>I am a part of a group or organization</label>
         </div>
       </div>
 
       <div class="section" id="wait-1" style="display: none">
-        <label>Are you the main point of contact in the organization</label>
+        <label>Are you the main point of contact in the organization?</label>
         <div class="radio">
-          <input type="radio" value="yes" name="is-main-contact"><label>Yes, I am the main contact</label><br>
-          <input type="radio" value="no" name="is-main-contact"><label>No, I am not the main contact</label>
+          <input type="radio" value="true" name="is-main-contact"><label>Yes, I am the main contact</label><br>
+          <input type="radio" value="false" name="is-main-contact"><label>No, I am not the main contact</label>
         </div>
+        <br>
+        <label name="question">What is the name of your organization?</label>
+        <input type="text" placeholder="Organization Name" id="org-name" value="">  
       </div>
 
       <div id="wait-2" style="display: none">
-        <!-- Ask for the org's name -->
         <div class="section" id="name-section">
           <label name="question">Name of person filling out the form</label>
           <div class="flex">
@@ -147,15 +166,16 @@
             <input type="text" placeholder="Last Name"  id="last-name"  value="">
           </div>
         </div>
+      
 
 
         <div class="section" id="preferred-communication-section">
           <label name="question">Preferred Communication Method</label>
           <div class="radio">
-            <input type="radio" name="perfer-comms" value="call"><label>Phone Call</label><br>
-            <input type="radio" name="perfer-comms" value="text"><label>Text Message</label><br>
-            <input type="radio" name="perfer-comms" value="email"><label>Email</label><br>
-            <input type="radio" name="perfer-comms" value="fbm"><label>Facebook Messenger</label><br>
+            <input type="radio" name="prefer-comms" value="call"><label>Phone Call</label><br>
+            <input type="radio" name="prefer-comms" value="text"><label>Text Message</label><br>
+            <input type="radio" name="prefer-comms" value="email"><label>Email</label><br>
+            <input type="radio" name="prefer-comms" value="fbm"><label>Facebook Messenger</label><br>
           </div>
         </div>
 
