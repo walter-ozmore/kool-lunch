@@ -16,14 +16,42 @@
       }
 
       function showBottomSec() {
+        if(checkAdults() == false) return;
+
         $("#topSec").hide();
         $("#middleSec").hide();
         $("#bottomSec").show();
       }
 
+      /**
+       * Checks the amount of adults currently shown, if there is only one adult
+       * then don't let the user delete them by disabling the delete button.
+       */
+      function preventLastAdultDeletion() {
+        console.log( pickerUppers.length );
+        if(pickerUppers.length <= 1) {
+          pickerUppers[0].removeButton.attr('disabled', 'disabled');
+        } else {
+          for(let pickerUpperLinks of pickerUppers) {
+            pickerUpperLinks.removeButton.removeAttr('disabled');
+          }
+        }
+      }
+
+
+      /**
+       * Added a pickup individual to the form. Creates a pickupObject and
+       * appends it to the pickup object array.
+       *
+       * TODO: Add a way for individuals to signup using other contact methods,
+       *   but we need to check with Brandy first + make sure that an automatic
+       *   email system works.
+       */
       function addPickerUpper() {
         let div = $("<div>", {class: "content"});
 
+        // Create an object of all the inputs and append it to the array to use
+        // later for the submit button
         let pickerUpperLinks = {
           nameInput: $("<input>", {type: "text"}),
           phoneInput: $("<input>", {type: "text"}),
@@ -33,7 +61,9 @@
             div.remove();
 
             // Remove the element from the array
-            pickerUppers.filter(item => item !== pickerUpperLinks);
+            pickerUppers = pickerUppers.filter(item => item !== pickerUpperLinks);
+
+            preventLastAdultDeletion();
           }),
         };
         pickerUppers.push(pickerUpperLinks);
@@ -51,8 +81,119 @@
           $("<center>").append( pickerUpperLinks.removeButton ),
         );
         $("#pickerUppersDiv").append(div);
+        preventLastAdultDeletion();
       }
 
+
+      /**
+       * Checks wether or not the adults are all fill out correctly, if they are
+       * not then we indicate that the input is required
+       *
+       * @returns bool true if good, false if bad
+       */
+      function checkAdults() {
+        if(pickerUppers.length < 1) {
+          displayAlert({title: "Error", "text": "Atleast one adult has to signup."});
+          return false;
+        }
+
+        for(let links of pickerUppers) {
+          // Check name input
+          if(links.nameInput.val().length <= 0) {
+            displayAlert({title: "Error", "text": "Adults need names."});
+            return false;
+          }
+
+          // Check phone number
+          if(links.phoneInput.val().length <= 0) {
+            displayAlert({title: "Error", "text": "Phone numbers are required."});
+            return false;
+          }
+        }
+      }
+
+      /**
+       * Check if the misc section is filled out correctly
+       *
+       * $returns bool true if good, false if bad
+       */
+      function checkMisc() {
+        // Check if there is a pickup day
+        let hasPickupDay =
+          $("#pickupMon").is(':checked') ||
+          $("#pickupTue").is(':checked') ||
+          $("#pickupWed").is(':checked') ||
+          $("#pickupThu").is(':checked')
+        ;
+        if(hasPickupDay == false) {
+          displayAlert({title: "Error", "text": "At least one pickup day must be selected."});
+          return false;
+        }
+
+        // Check if they have a location selected
+        if( $('input[name="location"]:checked').val() === undefined ) {
+          displayAlert({title: "Error", "text": "A pickup location must be given."});
+          return false;
+        }
+
+        // if they have checked allergies make them list the alergies
+        if( $("#hasAllergies").is(":checked") && $("#allergies").val().length <= 0 ) {
+          displayAlert({title: "Error", "text": "Please list all allergies"});
+          return false;
+        }
+
+        // All looks good
+        return true;
+      }
+
+      async function submit() {
+        if(checkMisc() == false) return;
+
+        // This is the json obj that will be submitted to the server
+        let submitObj = {};
+
+        // Grab the adults
+        submitObj.adults = [];
+        for(let links of pickerUppers) {
+          let adult = {};
+
+          adult.name = links.nameInput.val();
+          adult.phoneNumber = links.phoneInput.val();
+          adult.wantsRemind = (links.remindSelection.is(":checked"))? 1: 0;
+
+          submitObj.adults.push(adult);
+        }
+
+        // Grab the misc section
+        submitObj.lunchesNeeded = $("#lunchesNeeded").val();
+        submitObj.allergies = $("#allergies").val();
+        submitObj.pickupLocation = $("input[name='location']:checked").val();
+        submitObj.pickupDays = {
+          Mon: ($("#pickupMon").is(":checked"))? 1: 0,
+          Tue: ($("#pickupTue").is(":checked"))? 1: 0,
+          Wed: ($("#pickupWed").is(":checked"))? 1: 0,
+          Thu: ($("#pickupThu").is(":checked"))? 1: 0,
+        };
+
+        // Post the data to the server
+        console.log(submitObj);
+        let msg = await post("/ajax/vol-su.php", submitObj);
+
+        // Display job done
+        if(msg === 0) {
+          displayAlert({
+            title: "Thank You",
+            text: "Message here",
+            onClose: ()=>{ window.location.href = '/'; }
+          });
+        } else {
+          displayAlert({
+            title: "Unknown Error",
+            text: "Something went wrong, please try again later",
+            onClose: ()=>{}
+          });
+        }
+      }
 
       var pickerUppers = [];
       $(document).ready(function() {
@@ -139,7 +280,7 @@
       <div class="content">
         <div class="section">
           <label># Of Lunches Needed</label>
-          <input type="number" id="childNumber" min=1 value=1 onchange="renderChildren()">
+          <input type="number" id="lunchesNeeded" min=1 value=1 required>
         </div>
 
         <!-- Somehow t -->
@@ -147,7 +288,7 @@
           <input type="checkbox" id="hasAllergies"> <label style="display: inline">One or more of my kids have allergies</label> <br>
           <div id="allergy-div" style="margin-top: .5em; display: none">
             <label>Please list all allergies</label>
-            <input type="text" placeholder="Blakely is allergic to books, Taylor can not have bananas." style="width: 100%">
+            <input type="text" id="allergies" placeholder="Blakely is allergic to books, Taylor can not have bananas." style="width: 100%">
           </div>
         </div>
 
@@ -168,7 +309,7 @@
 
       <center>
         <button type="submit" class="large-button" onclick="showMiddleSec();">Back</button>
-        <button type="submit" class="large-button" onclick="send();">Sign Up</button>
+        <button type="submit" class="large-button" onclick="submit();">Sign Up</button>
       </center>
     </div> <!-- Form -->
 
