@@ -177,7 +177,8 @@
 
         // Post the data to the server
         console.log(submitObj);
-        let msg = await post("/ajax/vol-su.php", submitObj);
+        // let msg = await post("/ajax/unknown", submitObj);
+        let msg = -1;
 
         // Display job done
         if(msg === 0) {
