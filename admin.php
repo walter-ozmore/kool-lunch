@@ -66,22 +66,28 @@
 
       let autoSelected = false;
       let tableHeaderNames = {
+        individualID: "ID",
+        formID: "ID",
+        orgID: "ID",
+        individualName: "Name",
+        orgName: "Name",
 				timeSubmitted: "Submit Time",
 				weekInTheSummer: "For a Week",
 				bagDecoration: "Bag Decoration",
 				fundraising: "Fundraising",
 				supplyGathering: "Supplies",
         phoneNumber: "Phone Number",
-        individualName: "Name",
-        individualID: "",
         email: "Email",
         facebookMessenger: "FBM",
         preferredContact: "PMOC",
-        orgID: "",
-        orgName: "Name",
+        isEnabled: "Enabled",
+        lunchesNeeded: "Lunches Needed",
+        allergies: "Allergies",
+        pickupDays: "pickupDays",
+        location: "Pickup Location",
 			};
       let tableTriggers = [
-				{ case: ["weekInTheSummer", "bagDecoration", "fundraising", "supplyGathering"],
+				{ case: ["weekInTheSummer", "bagDecoration", "fundraising", "supplyGathering", "isEnabled"],
 					func: function(data) { return (data == "1")? "Yes": "No"; }
 				},
 				{ case: ["timeSubmitted"],

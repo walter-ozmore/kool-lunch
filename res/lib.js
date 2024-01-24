@@ -27,6 +27,18 @@ function inspectIndividual(individualData) {
     $("<p>").text((individualData.preferredContact == null)? "None Specified": individualData.preferredContact),
   );
 
+  // Create the delete button ahead of time and enabled it later
+  let deleteButton = $("<button>", {disabled: true})
+    .text("Delete")
+    .click(async ()=>{post("/ajax/admin.php", {
+      function: 8,
+      individualID: individualData.individualID
+    }, (data)=>{
+      console.log(data);
+      if(data.code == 0) location.reload();
+    })})
+  ;
+
   // Add links
   post("/ajax/admin.php", {
     function: 7,
@@ -74,13 +86,15 @@ function inspectIndividual(individualData) {
           })
       );
     }
+
+    if(data.FormVolunteer.length + data.Form.length <= 0) {
+      deleteButton.prop("disabled", false);
+    }
   });
 
   // Add a close button so the user isnt stuck
   div.append( $("<center>").append(
-    $("<button>", {disabled: true})
-      .text("Delete")
-      .click(async ()=>{  }),
+    deleteButton,
     $("<button>")
       .text("OK")
       .click(async ()=>{ div.remove(); checkBlur(); }),
@@ -133,10 +147,12 @@ function inspectVolunteerForm(formData) {
     $("<button>")
       .text("Delete")
       .click(async ()=>{
-        await post("/ajax/admin.php", {
+        post("/ajax/admin.php", {
           function: 6,
           formID: formData.volunteerFormID
-        }, ()=>{ location.reload(); });
+        }, (obj)=>{
+          if(obj.code == 0) location.reload();
+        });
       }),
     $("<button>")
       .text("OK")

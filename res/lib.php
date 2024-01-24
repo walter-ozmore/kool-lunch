@@ -1,6 +1,6 @@
 <?php
-  error_reporting(E_ALL);
-  ini_set('display_errors', '1');
+  // error_reporting(E_ALL);
+  // ini_set('display_errors', '1');
 
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/lib.php";
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
@@ -140,11 +140,11 @@
       if ($result == FALSE) {return 1;}
       return 0;
     }
-    
+
     // TODO error checks for the two queries
     /**
      * Get all entires in FormVolunteer and Form for a given individualID.
-     * 
+     *
      * @param individualID The id for a target individual.
      * @return An array with the data.
      */
@@ -174,7 +174,7 @@
 
     /**
      * Get the most recent donations.
-     * 
+     *
      * @param Limit for query, defaults to 8.
      * @return An array with the donations.
      */
@@ -274,7 +274,7 @@
               ." INNER JOIN Individual i ON i.individualID = fl.individualID"
               ." WHERE isEnabled=1 AND pickup$date = 1"
               ." ORDER BY f.location, i.individualName;";
-      
+
       $result = $db_conn->query($query);
       while ($row = $result->fetch_assoc()) {$data[] = $row;}
 
@@ -291,7 +291,7 @@
               ." INNER JOIN FormVolunteer fv ON fv.volunteerFormID = fvl.volunteerFormID"
               ." INNER JOIN Individual i ON i.individualID = fvl.individualID"
               ." WHERE fv.volunteerFormID = $volunteerFormID;";
-      
+
       $data = $db_conn->query($query)->fetch_assoc();
 
       return $data;
@@ -307,7 +307,7 @@
               ." INNER JOIN FormVolunteer fv ON fv.volunteerFormID = fvl.volunteerFormID"
               ." INNER JOIN Individual i ON i.IndividualID = fvl.individualID"
               ." ORDER BY fv.volunteerFormID DESC;";
-      
+
       $result = $db_conn->query($query);
       while ($row = $result->fetch_assoc()) { $data[] = $row; }
 
