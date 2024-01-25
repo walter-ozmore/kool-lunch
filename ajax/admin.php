@@ -18,7 +18,7 @@
 
   // Check if the user is a valid one
   $uid = $user["uid"];
-  if($uid === "8" || $uid === "20" || $uid === "26")  {
+  if($uid === "8" || $uid === "20" || $uid === "26" || $uid === "24")  {
     // Continue the code
   } else { exit(); }
 
@@ -62,12 +62,17 @@
       echo true;
       break;
     case 6:
-      Database::deleteFormVolunteer($_POST["formID"]);
+      $code = Database::deleteFormVolunteer($_POST["formID"]);
+      echo json_encode(["code"=>$code]);
       break;
     case 7: // Collect all links for a given user
       $individualID = $_POST["individualID"];
 
       echo json_encode(Database::getAllLinks($individualID));
+      break;
+    case 8:
+      $code = Database::deleteIndividual($_POST["individualID"]);
+      echo json_encode(["code"=>$code]);
       break;
 	}
 ?>
