@@ -24,7 +24,6 @@
 
 
   // Actual code
-  $conn = Secret::connectDB("lunch");
 	switch($_POST["function"]) {
 		case 1: // Fetch volunteer forms
       if(isset($_POST["volunteerFormID"])) {
