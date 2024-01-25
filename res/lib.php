@@ -134,6 +134,10 @@
       $db_conn = Secret::connectDB("lunch");
       if (!is_numeric($volunteerFormID)) { return 2; }
 
+      $query = "DELETE FROM FormVolunteerLink WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
+      $result = $db_conn->query($query);
+      if ($result == FALSE) {return 1;}
+      
       $query = "DELETE FROM FormVolunteer WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
       $result = $db_conn->query($query);
 
@@ -192,7 +196,7 @@
     /**
      * Given an id, returns the associated entry from Form.
      *
-     * @param formID
+     * @param int formID
      * @return The target row or a 2 for param error.
      */
     public static function getForm($formID) {
