@@ -7,6 +7,79 @@
 
   // Contains functions for easy database interactions
   class Database {
+
+    /**
+     * Creates a form in the database with the given values. It checks for data
+     * validity before calling arrayToInsertString and making the query.
+     * 
+     * @param args The values to be inserted into the database
+     * @return The insert id of the newly created entry or -1
+     */
+    public static function createForm($args) {
+      $db_conn = Secret::connectDB("lunch");
+      $boolTypes = [0,1];
+      $insertArgs = [];
+
+      // Checks
+      if(isset($args["pickupMon"    ]) && in_array($args["pickupMon"], $boolTypes)) {
+        $insertArgs["pickupMon"    ] = $args["pickupMon"];
+      }
+      if(isset($args["pickupTue"    ]) && in_array($args["pickupTue"], $boolTypes)) {
+        $insertArgs["pickupTue"    ] = $args["pickupTue"];
+      }
+      if(isset($args["pickupWed"    ]) && in_array($args["pickupWed"], $boolTypes)) {
+        $insertArgs["pickupWed"    ] = $args["pickupWed"];
+      }
+      if(isset($args["pickupThu"    ]) && in_array($args["pickupThu"], $boolTypes)) {
+        $insertArgs["pickupThu"    ] = $args["pickupThu"];
+      }
+      if(isset($args["timeSubmitted"])) {
+        $insertArgs["timeSubmitted"] = $args["timeSubmitted"];
+      }
+      if(isset($args["location"     ]) && is_string($args["location"])) {
+        $insertArgs["location"     ] = $args["location"];
+      }
+      if(isset($args["isEnabled"    ]) && in_array($args["isEnabled"], $boolTypes)) {
+        $insertArgs["isEnabled"    ] = $args["isEnabled"];
+      }
+      if(isset($args["lunchesNeeded"]) && (0 <= $args["lunchesNeeded"])) {
+        $insertArgs["lunchesNeeded"] = $args["lunchesNeeded"];
+      }
+      if(isset($args["allergies"    ])) {
+        $insertArgs["allergies"    ] = $args["allergies"];
+      }
+
+      // Get insert string
+      $insertStr = arrayToInsertString($insertArgs);
+
+      // Run query and return the insert id
+      $query = "INSERT INTO Form $insertStr;";
+      $db_conn->query($query);
+      if ($db_conn->insert_id > 1) {return $db_conn->insert_id;}
+      return -1;
+    }
+
+    // TODO
+    public static function createFormLink($args) {
+      $db_conn = Secret::connectDB("lunch");
+      $insertArgs = [];
+
+      if (isset($args["individualID"]) && is_numeric($args["individualID"])) {
+        $insertArgs["individualID"] = $args["individualID"];
+      } else {return -1;}
+      if (isset($args["formID"]) && is_numeric($args["formID"])) {
+        $insertArgs["formID"] = $args["formID"];
+      } else {return -1;}
+
+      // Get insert string
+      $insertStr = arrayToInsertString($insertArgs);
+
+      // Run query and return 0
+      $query = "INSERT INTO FormLink $insertStr;";
+      $db_conn->query($query);
+      return 0;
+    }
+
     /**
      * Creates an individual in the database with the given parameters, this
      * function should also check if all the arguments are valid before inputing
@@ -27,10 +100,11 @@
       // Convert different name formats to one name
       $name = "";
       if(isset($args["firstName" ])) $name = $args["firstName"];
-      if(isset($args["lastName" ])) $name = $args["lastName"];
-      if(isset($args["firstName"]) && isset($args["lastName" ]))
+      if(isset($args["lastName"  ])) $name = $args["lastName"];
+      if(isset($args["firstName" ]) && isset($args["lastName" ]))
         $name = $args["firstName"] ." ". $args["lastName"];
-      if(isset($args["name"     ])) $name = $args["name"];
+      if(isset($args["name"      ])) $name = $args["name"];
+      
       $insertArgs["individualName"] = $name;
 
       // Check for contact info
@@ -70,6 +144,32 @@
       // echo $query; // Echo for testing
       $db_conn->query($query);
       return $db_conn->insert_id;
+    }
+
+    /**
+     * Inserts a new row into Pickup with the values provided.
+     *
+     * @param args The values to be inserted into the database.
+     * @return The id for the newly generated Pickup entry.
+     */
+    public static function createPickup($args) {
+      $db_conn = Secret::connectDB("lunch");
+      $insertArgs = [];
+
+      // Checks
+      if (isset($args["formID"])) {$insertArgs["formID"] = $args["formID"];}
+      else {return "formID not provided.";}
+      if (isset($args["pickupTime"])) {$insertArgs["pickupTime"] = $args["pickupTime"];}
+      if (isset($args["amount"]) && (0 <= $args["amount"])) {$insertArgs["amount"] = $args["amount"];}
+
+      // Get insert string
+      $insertStr = arrayToInsertString($insertArgs);
+
+      // Run query and return the insert id
+      $query = "INSERT INTO Pickup $insertStr;";
+      $db_conn->query($query);
+      if ($db_conn->insert_id > 1) {return 0;}
+      return -1;
     }
 
     /**
@@ -134,6 +234,10 @@
       $db_conn = Secret::connectDB("lunch");
       if (!is_numeric($volunteerFormID)) { return 2; }
 
+      $query = "DELETE FROM FormVolunteerLink WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
+      $result = $db_conn->query($query);
+      if ($result == FALSE) {return 1;}
+      
       $query = "DELETE FROM FormVolunteer WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
       $result = $db_conn->query($query);
 
@@ -192,7 +296,7 @@
     /**
      * Given an id, returns the associated entry from Form.
      *
-     * @param formID
+     * @param int formID
      * @return The target row or a 2 for param error.
      */
     public static function getForm($formID) {

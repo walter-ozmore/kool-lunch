@@ -16,8 +16,24 @@
 		foreach ($contact as $key => $value) { $args[$key] = $value; }
 	}
 
-	$signupIndividual = Database::createIndividual($args);
+	// $signupIndividual = Database::createIndividual($args);
 	unset($args);
+
+	// Create org if needed
+	$orgID = -1;
+	if (isset($_POST["org"])) {
+		$org = $_POST["org"];
+		$args = [
+			"orgName" => $org["orgName"],
+			"signupContact" => $signupIndividual
+		];
+
+		if ($org["isMainContact"]) {
+			$args["mainContact"] = $signupIndividual;
+		}
+		
+		$orgID = Database::createOrg($args);
+	}
 
 	if(isset($_POST["opportunities"]) == false) {
 		echo "No Opportunities Selected";
@@ -35,9 +51,9 @@
 
 	$index = Database::createVolunteerForm($args);
 
-	if($index > 0) {
-		echo 0;
-	} else {
-		echo "An unknown database error has occurred";
-	}
+	// if($index > 0) {
+	// 	echo 0;
+	// } else {
+	// 	echo "An unknown database error has occurred";
+	// }
 ?>

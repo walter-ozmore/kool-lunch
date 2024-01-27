@@ -54,7 +54,7 @@
         // later for the submit button
         let pickerUpperLinks = {
           nameInput: $("<input>", {type: "text"}),
-          phoneInput: $("<input>", {type: "text"}),
+          phoneInput: $("<input>", {type: "tel", placeholder: "0123456789", pattern: "[0-9]{11}"}),
           remindSelection:  $("<input>", {type: "checkbox"}),
           removeButton: $("<button>").text("Remove this individual").click(()=>{
             // Remove the div
@@ -93,7 +93,7 @@
        */
       function checkAdults() {
         if(pickerUppers.length < 1) {
-          displayAlert({title: "Error", "text": "Atleast one adult has to signup."});
+          displayAlert({title: "Error", "text": "At least one adult has to signup."});
           return false;
         }
 
@@ -108,6 +108,9 @@
           if(links.phoneInput.val().length <= 0) {
             displayAlert({title: "Error", "text": "Phone numbers are required."});
             return false;
+          }
+          else if (links.phoneInput.val().length > 11) {
+            displayAlert({title: "Error", "text": "Please enter a ten or eleven digit phone number."});
           }
         }
       }
@@ -177,8 +180,8 @@
 
         // Post the data to the server
         console.log(submitObj);
-        // let msg = await post("/ajax/unknown", submitObj);
-        let msg = -1;
+        let msg = await post("/ajax/su.php", submitObj);
+        // let msg = -1;
 
         // Display job done
         if(msg === 0) {
