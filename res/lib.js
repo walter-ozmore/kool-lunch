@@ -54,17 +54,18 @@ function inspectIndividual(individualData) {
     // Create links for each form that is clickable
     for(let form of data.Form) {
       if(form.formID == null) continue;
+
       formIDEle.append(
         $("<a>", {style: "display: inline; margin-right: .5em;", class: "clickable"})
           .text(form.formID)
           .click(async ()=>{
             // Fetch and inspect the form
-            let form = await post("/ajax/admin.php", {
+            let returnForm = await post("/ajax/admin.php", {
               function: 3,
               formID: form.formID
             });
 
-            inspectForm(form);
+            inspectForm(returnForm);
           })
       );
     }

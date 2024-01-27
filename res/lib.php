@@ -284,7 +284,7 @@
     // TODO
     public static function getVolunteer($volunteerFormID) {
       $db_conn = Secret::connectDB("lunch");
-      if (!is_numeric($formID)) { return 2; }
+      if (!is_numeric($volunteerFormID)) { return 2; }
 
       $query = "SELECT fv.*, i.individualName, i.phoneNumber, i.email, i.facebookMessenger, i.preferredContact"
               ." FROM FormVolunteerLink as fvl"
