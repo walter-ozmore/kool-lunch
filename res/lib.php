@@ -20,7 +20,7 @@
       $boolTypes = [0,1];
       $insertArgs = [];
 
-      // Checks
+      // Data verification checks
       if(isset($args["pickupMon"    ]) && in_array($args["pickupMon"], $boolTypes)) {
         $insertArgs["pickupMon"    ] = $args["pickupMon"];
       }
@@ -59,7 +59,12 @@
       return -1;
     }
 
-    // TODO
+    /**
+     * Inserts a new row into FormLink with the values provided.
+     *
+     * @param args The values to be inserted into the database.
+     * @return -1 for error, 0 for success.
+     */
     public static function createFormLink($args) {
       $conn = Secret::connectDB("lunch");
       $insertArgs = [];
@@ -126,12 +131,13 @@
      * Inserts a new row into Organization with the values provided.
      *
      * @param args The values to be inserted into the database.
-     * @return The id for the newly generated Organization entry.
+     * @return The id for the newly generated Organization, or -1 for error.
      */
     public static function createOrg($args) {
       $conn = Secret::connectDB("lunch");
       $insertArgs = [];
 
+      // Data verification checks
       if(isset($args["orgName"])) $insertArgs["orgName"] = $args["orgName"];
       if(isset($args["mainContact"]) && is_numeric($args["mainContact"])){
         $insertArgs["mainContact"] = $args["mainContact"];
@@ -144,7 +150,6 @@
       $insertStr = arrayToInsertString($insertArgs);
 
       $query = "INSERT INTO Organization $insertStr;";
-      // echo $query; // Echo for testing
       $conn->query($query);
       if ($conn->insert_id > 1) {return $conn->insert_id;}
       return -1;
@@ -154,13 +159,13 @@
      * Inserts a new row into Pickup with the values provided.
      *
      * @param args The values to be inserted into the database.
-     * @return The id for the newly generated Pickup entry.
+     * @return -1 for error, 0 for success.
      */
     public static function createPickup($args) {
       $conn = Secret::connectDB("lunch");
       $insertArgs = [];
 
-      // Checks
+      // Data verification checks
       if (isset($args["formID"])) {$insertArgs["formID"] = $args["formID"];}
       else {return "formID not provided.";}
       if (isset($args["pickupTime"])) {$insertArgs["pickupTime"] = $args["pickupTime"];}
@@ -180,29 +185,58 @@
      * Inserts a new row into FormVolunteer with the values provided.
      *
      * @param args The values to be inserted into the database.
-     * @return The id for the newly generated FormVolunteer entry.
+     * @return The id for the newly generated FormVolunteer, or -1 for error.
      */
     public static function createFormVolunteer($args) {
       $conn = Secret::connectDB("lunch");
+      $boolTypes = [0,1];
       $insertArgs = [];
 
-      if(isset($args["name"])) $insertArgs["orgName"] = $args["name"];
-      if(isset($args["mainContact"])) $insertArgs["mainContact"] = $args["mainContact"];
-      if(isset($args["timeSubmitted"])) {$insertArgs["timeSubmitted"] = $args["timeSubmitted"];}
-      if(isset($args["orgID"]) && (0 < $args["orgID"])) {$insertArgs["orgID"] = $args["orgID"];}
-
+      // Data verification checks
+      if (isset($args["orgID"           ])) {
+        $insertArgs["orgID"] = $args["orgID"];
+      }
+      if (isset($args["timeSubmitted"   ])) {
+        $insertArgs["timeSubmitted"] = $args["timeSubmitted"];
+      }
+      if (isset($args["weekInTheSummer" ]) && in_array($args["weekInTheSummer"], $boolTypes))
+      {
+        $insertArgs["weekInTheSummer"] = $args["weekInTheSummer"];
+      }
+      if (isset($args["bagDecoration"   ]) && in_array($args["bagDecoration"], $boolTypes))
+      {
+        $insertArgs["bagDecoration"] = $args["bagDecoration"];
+      }
+      if (isset($args["fundraising"    ]) && in_array($args["fundraising"], $boolTypes))
+      {
+        $insertArgs["fundraising"] = $args["fundraising"];
+      }
+      if (isset($args["supplyGathering"]) && in_array($args["supplyGathering"], $boolTypes))
+      {
+        $insertArgs["supplyGathering"] = $args["supplyGathering"];
+      }
+      
+      // Get insert string
       $insertStr = arrayToInsertString($insertArgs);
+
+      // Run query
       $query = "INSERT INTO FormVolunteer $insertStr;";
       $conn->query($query);
       if ($conn->insert_id > 1) {return $conn->insert_id;}
       return -1;
     }
 
-    // TODO
+    /**
+     * Inserts a new row into FormVolunteerLink with the values provided.
+     *
+     * @param args The values to be inserted into the database.
+     * @return -1 for error, 0 for success.
+     */
     public static function createFormVolunteerLink($args) {
       $conn = Secret::connectDB("lunch");
       $insertArgs = [];
 
+      // Data verificiation checks
       if(isset($args["individualID"]) && (0 < $args["individualID"])) {
         $insertArgs["individualID"] = $args["individualID"];
       } else {return -1;}
@@ -210,8 +244,10 @@
         $insertArgs["volunteerFormID"] = $args["volunteerFormID"];
       } else {return -1;}
       
+      // Get insert string
       $insertStr = arrayToInsertString($insertArgs);
 
+      // Run query
       $query = "INSERT INTO FormVolunteerLink $insertStr;";
       $conn->query($query);
       return 0;

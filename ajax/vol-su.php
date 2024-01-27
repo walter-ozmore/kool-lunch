@@ -85,10 +85,4 @@
 	}
 
 	echo 0;
-
-	// if($index > 0) {
-	// 	echo 0;
-	// } else {
-	// 	echo "An unknown database error has occurred";
-	// }
 ?>
