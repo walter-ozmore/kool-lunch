@@ -4,6 +4,7 @@
 
 	require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
 
+	// Create the individual
 	$args = [
 		"firstName"=> $_POST["firstName"],
 		"lastName"=>$_POST["lastName"],
@@ -16,8 +17,13 @@
 		foreach ($contact as $key => $value) { $args[$key] = $value; }
 	}
 
-	// $signupIndividual = Database::createIndividual($args);
+	$individualID = Database::createIndividual($args);
 	unset($args);
+
+	if ($individualID <= 0) {
+		echo "Error creating Individual";
+		exit();
+	}
 
 	// Create org if needed
 	$orgID = -1;
@@ -25,16 +31,23 @@
 		$org = $_POST["org"];
 		$args = [
 			"orgName" => $org["orgName"],
-			"signupContact" => $signupIndividual
+			"signupContact" => $individualID
 		];
 
 		if ($org["isMainContact"]) {
-			$args["mainContact"] = $signupIndividual;
+			$args["mainContact"] = $individualID;
 		}
 		
 		$orgID = Database::createOrg($args);
+		unset($args);
+
+		if ($orgID <= 0) {
+			echo "Error creating Organization";
+			exit();
+		}
 	}
 
+	// Create the FormVolunteer entry
 	if(isset($_POST["opportunities"]) == false) {
 		echo "No Opportunities Selected";
 		exit();
@@ -44,12 +57,34 @@
 
 	$args = [
 		"timeSubmitted" => time(),
-		"individualID" => $signupIndividual
 	];
 
 	foreach ($opportunities as $name) { $args[$name] = 1; }
 
-	$index = Database::createVolunteerForm($args);
+	if ($orgID != -1) {
+		$args["orgID"] = $orgID;
+	}
+
+	$volID = Database::createFormVolunteer($args);
+	unset($args);
+
+	if ($volID <= 0) {
+		echo "Error creating Volunteer";
+		exit();
+	}
+
+	// Create the FormVolunteerLink
+	$args = [
+		"individualID" => $individualID,
+		"volunteerFormID" => $volID
+	];
+
+	if (Database::createFormVolunteerLink($args) != 0) {
+		echo "Error creating Volunteer Link";
+		exit();
+	}
+
+	echo 0;
 
 	// if($index > 0) {
 	// 	echo 0;
