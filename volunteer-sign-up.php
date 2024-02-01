@@ -89,7 +89,8 @@
 
         // Check if part of org, adds information if so
         let isOrg = $("input[name='volunteer-type']").val();
-        if (isOrg) {
+        // isOrg is a string, therefore always try by itself
+        if (isOrg == true) {
           let org = {
             isMainContact: $("input[name='is-main-contact']").val(),
             orgName: $("#org-name").val()
@@ -97,11 +98,11 @@
 
           data["org"] = org;
         }
-        
+
         console.log(data);
 
         let msg = await post("/ajax/vol-su.php", data);
-        
+
         // Submit message
         if(msg === 0) {
           displayAlert({
@@ -155,7 +156,7 @@
         </div>
         <br>
         <label name="question">What is the name of your organization?</label>
-        <input type="text" placeholder="Organization Name" id="org-name" value="">  
+        <input type="text" placeholder="Organization Name" id="org-name" value="">
       </div>
 
       <div id="wait-2" style="display: none">
@@ -166,7 +167,7 @@
             <input type="text" placeholder="Last Name"  id="last-name"  value="">
           </div>
         </div>
-      
+
 
 
         <div class="section" id="preferred-communication-section">
