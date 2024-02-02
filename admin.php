@@ -9,7 +9,6 @@
     <style>
       .admin-container {
         display: flex;
-        max-width: 64em;
         margin: 0em auto;
       }
 

@@ -26,7 +26,7 @@ $(document).ready(async function() {
 		let tableDiv = mktable(data, {
 			headerNames: tableHeaderNames,
 			triggers: tableTriggers,
-      // onRowClick: inspectForm
+      onRowClick: inspectForm
 		});
 		page.append(tableDiv);
 	});

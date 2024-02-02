@@ -5,8 +5,6 @@
  * @param {obj} individualData
  */
 function inspectIndividual(individualData) {
-  console.log(individualData);
-
   let div = $("<div>", {class: "notification induce-blur"});
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
   div.append(
@@ -19,6 +17,7 @@ function inspectIndividual(individualData) {
     $("<label>").text("Individual Name:"), $("<p>").text(individualData.individualName),
   );
 
+  // Show the individual's contact information if they have it
   if(individualData.phoneNumber != null) divGrid.append($("<label>").text("Phone Number:"), $("<p>").text(individualData.phoneNumber));
   if(individualData.email != null) divGrid.append($("<label>").text("Email:"), $("<p>").text(individualData.email));
   if(individualData.facebookMessenger != null) divGrid.append($("<label>").text("Messenger:"), $("<p>").text(individualData.facebookMessenger));
@@ -39,7 +38,7 @@ function inspectIndividual(individualData) {
     })})
   ;
 
-  // Add links
+  // Add links for the user, like if they are atttached to a form or something
   post("/ajax/admin.php", {
     function: 7,
     individualID: individualData.individualID
@@ -106,8 +105,6 @@ function inspectIndividual(individualData) {
 
 
 function inspectVolunteerForm(formData) {
-  console.log(formData);
-
   let div = $("<div>", {class: "notification induce-blur"});
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
   div.append(

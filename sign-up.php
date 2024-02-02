@@ -109,9 +109,12 @@
             displayAlert({title: "Error", "text": "Phone numbers are required."});
             return false;
           }
-          else if (links.phoneInput.val().length > 11) {
-            displayAlert({title: "Error", "text": "Please enter a ten or eleven digit phone number."});
-          }
+
+          // Removed due to the phone number of "(903) 039-1039" being denied
+          // Also this did not stop the form from continuing
+          // if (links.phoneInput.val().length > 11) {
+          //   displayAlert({title: "Error", "text": "Please enter a ten or eleven digit phone number."});
+          // }
         }
       }
 
@@ -179,9 +182,7 @@
         };
 
         // Post the data to the server
-        console.log(submitObj);
         let msg = await post("/ajax/su.php", submitObj);
-        // let msg = -1;
 
         // Display job done
         if(msg === 0) {
