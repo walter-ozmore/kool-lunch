@@ -3,10 +3,11 @@ $(document).ready(async function() {
 		let data = await post("/ajax/admin.php", {
 			function: 3
 		});
+    console.log(data);
 
-    // Alter some data
-
+    // Alter some data to fit our table format
     for(let row of data) {
+      // Trim days to match the format of M Tu W Th F
       let pickupDays = "";
       if(row.pickupMon == 1) pickupDays += "M ";
       if(row.pickupTue == 1) pickupDays += "Tu ";
@@ -20,6 +21,17 @@ $(document).ready(async function() {
       delete row.pickupWed;
       delete row.pickupThu;
       delete row.pickupFri;
+
+      // Make individuals show up on the same row
+      if('individual' in row) {
+        let tempStr = "";
+        for(let individual of row.individual) {
+          tempStr += individual + "<br>";
+        }
+        row.individual = tempStr;
+      } else {
+        row.individual = "Data not found";
+      }
     }
     //
 
