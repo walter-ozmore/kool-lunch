@@ -382,7 +382,13 @@
       $conn = Secret::connectDB("lunch");
       $data = [];
 
-      $query = "SELECT * FROM Form;";
+      // $query = "SELECT * FROM Form;";
+      $query = "SELECT f.*, i.individualName, i.individualID"
+              ." FROM FormLink fl"
+              ." INNER JOIN Form f ON f.formID = fl.formID"
+              ." INNER JOIN Individual i ON i.individualID = fl.individualID"
+              ." ORDER BY f.timeSubmitted;";
+
       $result = $conn->query($query);
       while ($row = $result->fetch_assoc()) { $data[] = $row; }
 
