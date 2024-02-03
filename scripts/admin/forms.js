@@ -5,6 +5,35 @@ $(document).ready(async function() {
 		});
     console.log(data);
 
+    // Merge rows in to a more usable format
+    let newData = [];
+    for(let row of data) {
+      // Grab the index of the data in the newData if it already exists,
+      // otherwise use -1 to indicate that new data is needed
+      let index = -1;
+      for(let i in newData) {
+        if(newData[i]["formID"] != row["formID"])
+          continue;
+        index = i;
+      }
+
+      if(index == -1) {
+        newData.push(row);
+        index = newData.length-1;
+        newData[index]["individual"] = [];
+      }
+
+      let individual = {
+        individualID: row["individualID"],
+        individualName: row["individualName"]
+      };
+      delete row.individualID;
+      delete row.individualName;
+      newData[index]["individual"].push( individual );
+    }
+    data = newData;
+    console.log("New Data:", data);
+
     // Alter some data to fit our table format
     for(let row of data) {
       // Trim days to match the format of M Tu W Th F
@@ -26,7 +55,7 @@ $(document).ready(async function() {
       if('individual' in row) {
         let tempStr = "";
         for(let individual of row.individual) {
-          tempStr += individual + "<br>";
+          tempStr += individual.individualName + "<br>";
         }
         row.individual = tempStr;
       } else {
