@@ -3,7 +3,6 @@ $(document).ready(async function() {
 		let data = await post("/ajax/admin.php", {
 			function: 3
 		});
-    console.log(data);
 
     // Merge rows in to a more usable format
     let newData = [];
@@ -32,7 +31,6 @@ $(document).ready(async function() {
       newData[index]["individual"].push( individual );
     }
     data = newData;
-    console.log("New Data:", data);
 
     // Alter some data to fit our table format
     for(let row of data) {

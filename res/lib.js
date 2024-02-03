@@ -164,11 +164,23 @@ function inspectVolunteerForm(formData) {
 function inspectForm(formData) {
   console.log(formData);
 
+  // TODO: Fetch fresh form data because display data doesn't divide up pickup days and such
+
   let div = $("<div>", {class: "notification induce-blur"});
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
   div.append(
     $("<h2>").text("Inspect Form"),
     divGrid,
+  );
+
+  // Apply to div grid
+  divGrid.append(
+    $("<label>").text("Form ID:"), $("<p>").text(formData.formID),
+    $("<label>").text("Time Submitted:"), $("<p>").text(unixToHuman(formData.timeSubmitted)),
+    $("<label>").text("Enabled:"), $("<p>").text(formData.isEnabled),
+    $("<label>").text("Location:"), $("<p>").text(formData.location),
+    $("<label>").text("lunchesNeeded:"), $("<p>").text(formData.lunchesNeeded),
+    $("<label>").text("pickupDays:"), $("<p>").text(formData.pickupDays),
   );
 
   // Add a close button so the user isnt stuck
