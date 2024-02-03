@@ -374,23 +374,40 @@
     }
 
     /**
-     * Grabs all forms.
+     * Grabs all forms and the individuals linked to those forms.
      *
      * @return An array with all forms.
      */
     public static function getForms() {
       $conn = Secret::connectDB("lunch");
       $data = [];
-
-      // $query = "SELECT * FROM Form;";
-      $query = "SELECT f.*, i.individualName, i.individualID"
+      
+      // Query for form information
+      $query = "SELECT f.*"
               ." FROM FormLink fl"
               ." INNER JOIN Form f ON f.formID = fl.formID"
-              ." INNER JOIN Individual i ON i.individualID = fl.individualID"
               ." ORDER BY f.timeSubmitted;";
 
       $result = $conn->query($query);
-      while ($row = $result->fetch_assoc()) { $data[] = $row; }
+      while ($row = $result->fetch_assoc()) {
+        $formID = $row["formID"];
+        $data[$formID] = $row;
+
+        $data[$formID]["individuals"] = array();
+
+        // Query for individuals linked to each form
+        $individualQuery = "SELECT i.individualName, i.individualID"
+                ." FROM FormLink fl"
+                ." INNER JOIN Individual i ON i.individualID = fl.individualID"
+                ." WHERE fl.formID = $formID;";
+        
+        $individualResult = $conn->query($individualQuery);
+
+        // Add the individual to the data array
+        while ($individualRow = $individualResult->fetch_assoc()) {
+          $data[$formID]["individuals"][] = $individualRow;
+        }
+      }
 
       return $data;
     }
