@@ -34,6 +34,8 @@ $(document).ready(async function() {
     // }
     // data = newData;
 
+    console.log(data);
+
     // Alter some data to fit our table format
     for(let row of data) {
       // Trim days to match the format of M Tu W Th F
@@ -52,15 +54,17 @@ $(document).ready(async function() {
       delete row.pickupFri;
 
       // Make individuals show up on the same row
-      if('individual' in row) {
+      let individualStr = "";
+      if('individuals' in row) {
         let tempStr = "";
-        for(let individual of row.individual) {
+        for(let individual of row.individuals) {
           tempStr += individual.individualName + "<br>";
         }
-        row.individual = tempStr;
+        individualStr = tempStr;
       } else {
-        row.individual = "Data not found";
+        individualStr = "Data not found";
       }
+      row.individuals = individualStr;
     }
     //
 

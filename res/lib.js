@@ -1,6 +1,8 @@
 
 /**
- * Opens up a notification window that shows the individual
+ * Opens up a notification window that shows the individual and allows the user
+ * to see where the user is linked too. The user also has access to edit the user
+ * or even delete them as long as they are not tied to another table
  *
  * @param {obj} individualData
  */
@@ -190,10 +192,35 @@ async function inspectForm(formData) {
   divGrid.append(
     $("<label>").text("Form ID:"), $("<p>").text(formData.formID),
     $("<label>").text("Time Submitted:"), $("<p>").text(unixToHuman(formData.timeSubmitted)),
-    $("<label>").text("Enabled:"), $("<p>").text(formData.isEnabled),
     $("<label>").text("Location:"), $("<p>").text(formData.location),
     $("<label>").text("lunchesNeeded:"), $("<p>").text(formData.lunchesNeeded),
   );
+
+  // Add enabled checkbox
+  divGrid.append(
+    $("<label>").text("Enabled:"),
+    $("<input>", {type: "checkbox"})
+      .prop("checked", (freshFormData.isEnabled == 1)? true: false)
+      .change(function() {
+        // Prevent checkbox spam
+        $(this).prop("disabled", true);
+
+        // Check if the checkbox is checked
+        let setValue = $(this).prop("checked");
+
+        // Send the data to the server
+        post("/ajax/admin",
+          {function: -1, setValue: setValue},
+          ()=>{
+            // TODO: Set the checkbox to the returned value that the server has
+            $(this).prop("disabled", false);
+
+            // Failed, set checkbox back
+            $(this).prop("checked", !setValue);
+          }
+        );
+      })
+  )
 
   // Add date checkboxes
   for(let dateStr of ["Mon", "Tue", "Wed", "Thu"]) {
@@ -214,10 +241,12 @@ async function inspectForm(formData) {
             ()=>{
               // TODO: Set the checkbox to the returned value that the server has
               $(this).prop("disabled", false);
+
+              // Failed, set checkbox back
+              $(this).prop("checked", !setValue);
             }
           );
         })
-      ,
     )
   }
 
