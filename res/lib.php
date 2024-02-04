@@ -381,35 +381,8 @@
     public static function getForms() {
       $conn = Secret::connectDB("lunch");
       $data = [];
-
-      // COMMENTED OUT DUE TO POOR OPTIMIZATION
-      // // Query for form information
-      // $query = "SELECT DISTINCT DISTINCT f.*"
-      //         ." FROM FormLink fl"
-      //         ." INNER JOIN Form f ON f.formID = fl.formID"
-      //         ." ORDER BY f.timeSubmitted DESC"
-      //         ." LIMIT 5;"; // Temp limit due to poor performance.
-
-      // $result = $conn->query($query);
-      // while ($row = $result->fetch_assoc()) {
-      //   $formID = $row["formID"];
-      //   $row["individuals"] = array();
-
-      //   // Query for individuals linked to each form
-      //   $individualQuery = "SELECT i.individualName, i.individualID"
-      //           ." FROM FormLink fl"
-      //           ." INNER JOIN Individual i ON i.individualID = fl.individualID"
-      //           ." WHERE fl.formID = $formID;";
-
-      //   $individualResult = $conn->query($individualQuery);
-
-      //   // Add the individual to the data array
-      //   while ($individualRow = $individualResult->fetch_assoc()) {
-      //     $row["individuals"][] = $individualRow;
-      //   }
-
-      //   $data[] = $row;
-      // }
+      $order = [];
+      $rawData = [];
 
       // Query
       $query = "SELECT f.*, i.individualID, i.individualName"
@@ -423,9 +396,11 @@
       while ($row = $result->fetch_assoc()){
         $formID = $row["formID"];
 
+        if (!in_array($formID, $order)) {$order[] = $formID;}
+
         // If the formID is not already in $data, add it
-        if (!isset($data[$formID])) {
-          $data[$formID] = [
+        if (!isset($rawData[$formID])) {
+          $rawData[$formID] = [
             "formID"        => $row["formID"],
             "pickupMon"     => $row["pickupMon"],
             "pickupTue"     => $row["pickupTue"],
@@ -441,10 +416,15 @@
         }
 
         // Add the individual from this row to data
-        $data[$formID]["individuals"][] = [
+        $rawData[$formID]["individuals"][] = [
           "individualID"   => $row["individualID"],
           "individualName" => $row["individualName"]
         ];
+      }
+
+      // Place in final array with correct order
+      foreach ($order as $formID) {
+        $data[] = $rawData[$formID];
       }
 
       return $data;
