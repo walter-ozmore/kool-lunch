@@ -560,7 +560,6 @@
 
       // Query end
       $query .= " WHERE formID = $formID;";
-      echo $query;
       $result = $conn->query($query);
 
       if ($result == FALSE) {return 1;}
