@@ -55,7 +55,7 @@ function inspectIndividual(individualData) {
       if(form.formID == null) continue;
 
       formIDEle.append(
-        $("<a>", {style: "display: inline; margin-right: .5em;", class: "clickable"})
+        $("<a href=''>", {style: "display: inline; margin-right: .5em;", class: "clickable"})
           .text(form.formID)
           .click(async ()=>{
             // Fetch and inspect the form
