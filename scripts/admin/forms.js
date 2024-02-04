@@ -56,14 +56,14 @@ $(document).ready(async function() {
         delete row.pickupFri;
 
         // Make individuals show up on the same row
-        if('individual' in row) {
+        if('individuals' in row) {
           let tempStr = "";
-          for(let individual of row.individual) {
+          for(let individual of row.individuals) {
             tempStr += individual.individualName + "<br>";
           }
-          row.individual = tempStr;
+          row.individuals = tempStr;
         } else {
-          row.individual = "Data not found";
+          row.individuals = "Data not found";
         }
       }
     // DELETE ONCE CONFIRMED THE ABOVE CHANGES ARE OKAY
