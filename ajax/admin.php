@@ -40,6 +40,8 @@
       break;
     case 3: // Fetch Forms
       if(isset($_POST["formID"])) {
+        $strID = $_POST["formID"];
+        $formID = (int)$strID;
         echo json_encode(Database::getForm($formID));
         break;
       }

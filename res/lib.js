@@ -161,8 +161,21 @@ function inspectVolunteerForm(formData) {
 }
 
 
-function inspectForm(formData) {
-  console.log(formData);
+async function inspectForm(formData) {
+  console.log("Form", formData);
+
+  // Fetch some fresh data to work with
+  let freshFormData = await post("/ajax/admin.php", {
+    function: 3,
+    formID: formData.formID
+  });
+
+  console.log("freshFormData", freshFormData);
+  if(freshFormData == null) {
+    displayError("Missing fresh form data");
+    return;
+  }
+
 
   // TODO: Fetch fresh form data because display data doesn't divide up pickup days and such
 
@@ -180,8 +193,33 @@ function inspectForm(formData) {
     $("<label>").text("Enabled:"), $("<p>").text(formData.isEnabled),
     $("<label>").text("Location:"), $("<p>").text(formData.location),
     $("<label>").text("lunchesNeeded:"), $("<p>").text(formData.lunchesNeeded),
-    $("<label>").text("pickupDays:"), $("<p>").text(formData.pickupDays),
   );
+
+  // Add date checkboxes
+  for(let dateStr of ["Mon", "Tue", "Wed", "Thu"]) {
+    divGrid.append(
+      $("<label>").text("Pickup "+dateStr+":"),
+      $("<input>", {type: "checkbox"})
+        .prop("checked", (freshFormData["pickup"+dateStr] == 1)? true: false)
+        .change(function() {
+          // Prevent checkbox spam
+          $(this).prop("disabled", true);
+
+          // Check if the checkbox is checked
+          let setValue = $(this).prop("checked");
+
+          // Send the data to the server
+          post("/ajax/admin",
+            {function: -1, setValue: setValue, dateStr: dateStr},
+            ()=>{
+              // TODO: Set the checkbox to the returned value that the server has
+              $(this).prop("disabled", false);
+            }
+          );
+        })
+      ,
+    )
+  }
 
   // Add a close button so the user isnt stuck
   div.append( $("<center>").append(
