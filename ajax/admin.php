@@ -78,11 +78,24 @@
     case 9:
       // Get all args for update
       $args["formID"] = $_POST["formID"];
-      if (isset($_POST["pickupMon"])) {$args["pickupMon"] = $_POST["pickupMon"];}
-      if (isset($_POST["pickupTue"])) {$args["pickupTue"] = $_POST["pickupTue"];}
-      if (isset($_POST["pickupWed"])) {$args["pickupWed"] = $_POST["pickupWed"];}
-      if (isset($_POST["pickupThu"])) {$args["pickupThu"] = $_POST["pickupThu"];}
-      if (isset($_POST["pickupFri"])) {$args["pickupFri"] = $_POST["pickupFri"];}
+
+      switch ($_POST["dateStr"]) {
+        case "Mon":
+          $args["pickupMon"] = $_POST["setValue"];
+          break;
+        case "Tue":
+          $args["pickupTue"] = $_POST["setValue"];
+          break;
+        case "Wed":
+          $args["pickupWed"] = $_POST["setValue"];
+          break;
+        case "Thu":
+          $args["pickupThu"] = $_POST["setValue"];
+          break;
+        case "Fri":
+          $args["pickupFri"] = $_POST["setValue"];
+          break;
+      }
     
       $code = Database::updatePickupDay($args);
       echo json_encode(["code"=>$code]);
