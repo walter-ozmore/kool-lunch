@@ -75,5 +75,17 @@
       $code = Database::deleteIndividual($_POST["individualID"]);
       echo json_encode(["code"=>$code]);
       break;
+    case 9:
+      // Get all args for update
+      $args["formID"] = $_POST["formID"];
+      if (isset($_POST["pickupMon"])) {$args["pickupMon"] = $_POST["pickupMon"];}
+      if (isset($_POST["pickupTue"])) {$args["pickupTue"] = $_POST["pickupTue"];}
+      if (isset($_POST["pickupWed"])) {$args["pickupWed"] = $_POST["pickupWed"];}
+      if (isset($_POST["pickupThu"])) {$args["pickupThu"] = $_POST["pickupThu"];}
+      if (isset($_POST["pickupFri"])) {$args["pickupFri"] = $_POST["pickupFri"];}
+    
+      $code = Database::updatePickupDay($args);
+      echo json_encode(["code"=>$code]);
+      break;
 	}
 ?>
