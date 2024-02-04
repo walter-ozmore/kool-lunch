@@ -382,32 +382,69 @@
       $conn = Secret::connectDB("lunch");
       $data = [];
 
-      // Query for form information
-      $query = "SELECT DISTINCT f.*"
-              ." FROM FormLink fl"
-              ." INNER JOIN Form f ON f.formID = fl.formID"
-              ." ORDER BY f.timeSubmitted DESC"
-              ." LIMIT 5;";
+      // COMMENTED OUT DUE TO POOR OPTIMIZATION
+      // // Query for form information
+      // $query = "SELECT DISTINCT f.*"
+      //         ." FROM FormLink fl"
+      //         ." INNER JOIN Form f ON f.formID = fl.formID"
+      //         ." ORDER BY f.timeSubmitted DESC"
+      //         ." LIMIT 5;"; // Temp limit due to poor performance.
 
+      // $result = $conn->query($query);
+      // while ($row = $result->fetch_assoc()) {
+      //   $formID = $row["formID"];
+      //   $row["individuals"] = array();
+
+      //   // Query for individuals linked to each form
+      //   $individualQuery = "SELECT i.individualName, i.individualID"
+      //           ." FROM FormLink fl"
+      //           ." INNER JOIN Individual i ON i.individualID = fl.individualID"
+      //           ." WHERE fl.formID = $formID;";
+
+      //   $individualResult = $conn->query($individualQuery);
+
+      //   // Add the individual to the data array
+      //   while ($individualRow = $individualResult->fetch_assoc()) {
+      //     $row["individuals"][] = $individualRow;
+      //   }
+
+      //   $data[] = $row;
+      // }
+
+      // Query
+      $query = "SELECT f.*, i.individualID, i.individualName"
+               ." FROM FormLink fl"
+               ." INNER JOIN Form f ON f.formID = fl.formID"
+               ." INNER JOIN Individual i ON fl.individualID = i.individualID"
+               ." ORDER BY f.timeSubmitted DESC;";
+      
       $result = $conn->query($query);
-      while ($row = $result->fetch_assoc()) {
+      
+      while ($row = $result->fetch_assoc()){
         $formID = $row["formID"];
-        $row["individuals"] = array();
-
-        // Query for individuals linked to each form
-        $individualQuery = "SELECT i.individualName, i.individualID"
-                ." FROM FormLink fl"
-                ." INNER JOIN Individual i ON i.individualID = fl.individualID"
-                ." WHERE fl.formID = $formID;";
-
-        $individualResult = $conn->query($individualQuery);
-
-        // Add the individual to the data array
-        while ($individualRow = $individualResult->fetch_assoc()) {
-          $row["individuals"][] = $individualRow;
+        
+        // If the formID is not already in $data, add it
+        if (!isset($data[$formID])) {
+          $data[$formID] = [
+            "formID"        => $row["formID"],
+            "pickupMon"     => $row["pickupMon"],
+            "pickupTue"     => $row["pickupTue"],
+            "pickupWed"     => $row["pickupWed"],
+            "pickupThu"     => $row["pickupThu"],
+            "pickupFri"     => $row["pickupFri"],
+            "timeSubmitted" => $row["timeSubmitted"],
+            "location"      => $row["location"],
+            "isEnabled"     => $row["isEnabled"],
+            "lunchesNeeded" => $row["lunchesNeeded"],
+            "allergies"     => $row["allergies"]
+          ];
         }
 
-        $data[] = $row;
+        // Add the individual from this row to data
+        $data[$formID]["individuals"][] = [
+          "individualID"   => $row["individualID"],
+          "individualName" => $row["individualName"]
+        ];
       }
 
       return $data;
@@ -503,6 +540,50 @@
       while ($row = $result->fetch_assoc()) { $data[] = $row; }
 
       return $data;
+    }
+
+    // TODO
+    public static function updatePickupDay($args) {
+      $conn = Secret::connectDB("lunch");
+      $boolTypes = [0,1];
+      
+      // Check formID, return if invalid
+      $formID = $args["formID"];
+      if (!is_numeric($formID) || $formID < 1) { return 2; }
+
+
+      // Query start
+      $query = "UPDATE Form SET";
+
+      // Parse through args to apply needed query segments
+      if(isset($args["pickupMon"    ]) && in_array($args["pickupMon"], $boolTypes)) {
+        $var = $args["pickupMon"];
+        $query .= " pickupMon = $var";
+      }
+      if(isset($args["pickupTue"    ]) && in_array($args["pickupTue"], $boolTypes)) {
+        $var = $args["pickupTue"];
+        $query .= " pickupTue = $var";
+      }
+      if(isset($args["pickupWed"    ]) && in_array($args["pickupWed"], $boolTypes)) {
+        $var = $args["pickupWed"];
+        $query .= " pickupWed = $var";
+      }
+      if(isset($args["pickupThu"    ]) && in_array($args["pickupThu"], $boolTypes)) {
+        $var = $args["pickupThu"];
+        $query .= " pickupThu = $var";
+      }
+      if(isset($args["pickupFri"    ]) && in_array($args["pickupFri"], $boolTypes)) {
+        $var = $args["pickupFri"];
+        $query .= " pickupFri = $var";
+      }
+      unset($var);
+
+      // Query end
+      $query .= " WHERE formID = $formID;";
+      $result = $conn->query($query);
+
+      if ($result == FALSE) {return 1;}
+      return 0;
     }
   }
 
