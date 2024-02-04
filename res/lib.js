@@ -210,7 +210,7 @@ async function inspectForm(formData) {
 
         // Send the data to the server
         post("/ajax/admin",
-          {function: -1, setValue: setValue},
+          {function: -``, setValue: setValue},
           ()=>{
             // TODO: Set the checkbox to the returned value that the server has
             $(this).prop("disabled", false);
@@ -234,10 +234,12 @@ async function inspectForm(formData) {
 
           // Check if the checkbox is checked
           let setValue = $(this).prop("checked");
+          // Format for php
+          let phpSetValue = setValue ? 1 : 0;
 
           // Send the data to the server
           post("/ajax/admin",
-            {function: -1, setValue: setValue, dateStr: dateStr},
+            {function: 9, setValue: phpSetValue, dateStr: dateStr, formID: formData.formID},
             ()=>{
               // TODO: Set the checkbox to the returned value that the server has
               $(this).prop("disabled", false);
