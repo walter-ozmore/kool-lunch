@@ -4,33 +4,35 @@ $(document).ready(async function() {
 			function: 3
 		});
 
-    // Merge rows in to a more usable format
-    let newData = [];
-    for(let row of data) {
-      // Grab the index of the data in the newData if it already exists,
-      // otherwise use -1 to indicate that new data is needed
-      let index = -1;
-      for(let i in newData) {
-        if(newData[i]["formID"] != row["formID"])
-          continue;
-        index = i;
-      }
+    console.log(data);
 
-      if(index == -1) {
-        newData.push(row);
-        index = newData.length-1;
-        newData[index]["individual"] = [];
-      }
+    // // Merge rows in to a more usable format
+    // let newData = [];
+    // for(let row of data) {
+    //   // Grab the index of the data in the newData if it already exists,
+    //   // otherwise use -1 to indicate that new data is needed
+    //   let index = -1;
+    //   for(let i in newData) {
+    //     if(newData[i]["formID"] != row["formID"])
+    //       continue;
+    //     index = i;
+    //   }
 
-      let individual = {
-        individualID: row["individualID"],
-        individualName: row["individualName"]
-      };
-      delete row.individualID;
-      delete row.individualName;
-      newData[index]["individual"].push( individual );
-    }
-    data = newData;
+    //   if(index == -1) {
+    //     newData.push(row);
+    //     index = newData.length-1;
+    //     newData[index]["individual"] = [];
+    //   }
+
+    //   let individual = {
+    //     individualID: row["individualID"],
+    //     individualName: row["individualName"]
+    //   };
+    //   delete row.individualID;
+    //   delete row.individualName;
+    //   newData[index]["individual"].push( individual );
+    // }
+    // data = newData;
 
     // Alter some data to fit our table format
     for(let row of data) {

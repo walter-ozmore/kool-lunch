@@ -11,7 +11,7 @@
     /**
      * Creates a form in the database with the given values. It checks for data
      * validity before calling arrayToInsertString and making the query.
-     * 
+     *
      * @param args The values to be inserted into the database
      * @return The insert id of the newly created entry or -1
      */
@@ -109,7 +109,7 @@
       if(isset($args["firstName" ]) && isset($args["lastName" ]))
         $name = $args["firstName"] ." ". $args["lastName"];
       if(isset($args["name"      ])) $name = $args["name"];
-      
+
       $insertArgs["individualName"] = $name;
 
       // Check for contact info
@@ -215,7 +215,7 @@
       {
         $insertArgs["supplyGathering"] = $args["supplyGathering"];
       }
-      
+
       // Get insert string
       $insertStr = arrayToInsertString($insertArgs);
 
@@ -243,7 +243,7 @@
       if (isset($args["volunteerFormID"]) && (0 < $args["volunteerFormID"])) {
         $insertArgs["volunteerFormID"] = $args["volunteerFormID"];
       } else {return -1;}
-      
+
       // Get insert string
       $insertStr = arrayToInsertString($insertArgs);
 
@@ -300,7 +300,7 @@
       $query = "DELETE FROM FormVolunteerLink WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
       $result = $conn->query($query);
       if ($result == FALSE) {return 1;}
-      
+
       $query = "DELETE FROM FormVolunteer WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
       $result = $conn->query($query);
 
@@ -381,7 +381,7 @@
     public static function getForms() {
       $conn = Secret::connectDB("lunch");
       $data = [];
-      
+
       // Query for form information
       $query = "SELECT f.*"
               ." FROM FormLink fl"
@@ -391,22 +391,22 @@
       $result = $conn->query($query);
       while ($row = $result->fetch_assoc()) {
         $formID = $row["formID"];
-        $data[$formID] = $row;
-
-        $data[$formID]["individuals"] = array();
+        $row["individuals"] = array();
 
         // Query for individuals linked to each form
         $individualQuery = "SELECT i.individualName, i.individualID"
                 ." FROM FormLink fl"
                 ." INNER JOIN Individual i ON i.individualID = fl.individualID"
                 ." WHERE fl.formID = $formID;";
-        
+
         $individualResult = $conn->query($individualQuery);
 
         // Add the individual to the data array
         while ($individualRow = $individualResult->fetch_assoc()) {
-          $data[$formID]["individuals"][] = $individualRow;
+          $row["individuals"][] = $individualRow;
         }
+
+        $data[] = $row;
       }
 
       return $data;

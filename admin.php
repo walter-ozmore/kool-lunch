@@ -94,6 +94,7 @@
 				}
 			];
 
+      let page = undefined;
       $(document).ready(async function() {
         // Check if we have a user logged in
         let user = await account_getUser();
@@ -101,14 +102,19 @@
           Account.createWindow();
           return;
         }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        page = urlParams.get('page');
+        console.log(page);
+        // Somehow go to that page
       });
     </script>
 
     <!-- Import Pages -->
     <!-- <script src="/scripts/admin/overview.js"></script> -->
+    <script src="/scripts/admin/forms.js"></script>
     <script src="/scripts/admin/volunteer-forms.js"></script>
     <script src="/scripts/admin/individuals.js"></script>
-    <script src="/scripts/admin/forms.js"></script>
     <script src="/scripts/admin/organizations.js"></script>
   </head>
 
