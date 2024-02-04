@@ -383,10 +383,11 @@
       $data = [];
 
       // Query for form information
-      $query = "SELECT f.*"
+      $query = "SELECT DISTINCT f.*"
               ." FROM FormLink fl"
               ." INNER JOIN Form f ON f.formID = fl.formID"
-              ." ORDER BY f.timeSubmitted;";
+              ." ORDER BY f.timeSubmitted DESC"
+              ." LIMIT 5;";
 
       $result = $conn->query($query);
       while ($row = $result->fetch_assoc()) {
