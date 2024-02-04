@@ -34,65 +34,32 @@ $(document).ready(async function() {
     // }
     // data = newData;
 
-    console.log(data);
-    // Alter some data to fit our table format
-    for (let formID in data) {
-      if (data.hasOwnProperty(formID)) {
-        let row = data[formID];
+    for(let row of data) {
+      // Trim days to match the format of M Tu W Th F
+      let pickupDays = "";
+      if(row.pickupMon == 1) pickupDays += "M ";
+      if(row.pickupTue == 1) pickupDays += "Tu ";
+      if(row.pickupWed == 1) pickupDays += "W ";
+      if(row.pickupThu == 1) pickupDays += "Th ";
+      if(row.pickupFri == 1) pickupDays += "F ";
+      row.pickupDays = pickupDays;
 
-        // Trim days to match the format of M Tu W Th F
-        let pickupDays = "";
-        if(row.pickupMon == 1) pickupDays += "M ";
-        if(row.pickupTue == 1) pickupDays += "Tu ";
-        if(row.pickupWed == 1) pickupDays += "W ";
-        if(row.pickupThu == 1) pickupDays += "Th ";
-        if(row.pickupFri == 1) pickupDays += "F ";
-        row.pickupDays = pickupDays;
+      delete row.pickupMon;
+      delete row.pickupTue;
+      delete row.pickupWed;
+      delete row.pickupThu;
+      delete row.pickupFri;
 
-        delete row.pickupMon;
-        delete row.pickupTue;
-        delete row.pickupWed;
-        delete row.pickupThu;
-        delete row.pickupFri;
-
-        // Make individuals show up on the same row
-        if('individuals' in row) {
-          let tempStr = "";
-          for(let individual of row.individuals) {
-            tempStr += individual.individualName + "<br>";
-          }
-          row.individuals = tempStr;
-        } else {
-          row.individuals = "Data not found";
+      // Make individuals show up on the same row
+      if('individual' in row) {
+        let tempStr = "";
+        for(let individual of row.individual) {
+          tempStr += individual.individualName + "<br>";
         }
+        row.individual = tempStr;
+      } else {
+        row.individual = "Data not found";
       }
-    // DELETE ONCE CONFIRMED THE ABOVE CHANGES ARE OKAY
-    // for(let row of data) {
-      // // Trim days to match the format of M Tu W Th F
-      // let pickupDays = "";
-      // if(row.pickupMon == 1) pickupDays += "M ";
-      // if(row.pickupTue == 1) pickupDays += "Tu ";
-      // if(row.pickupWed == 1) pickupDays += "W ";
-      // if(row.pickupThu == 1) pickupDays += "Th ";
-      // if(row.pickupFri == 1) pickupDays += "F ";
-      // row.pickupDays = pickupDays;
-
-      // delete row.pickupMon;
-      // delete row.pickupTue;
-      // delete row.pickupWed;
-      // delete row.pickupThu;
-      // delete row.pickupFri;
-
-      // // Make individuals show up on the same row
-      // if('individual' in row) {
-      //   let tempStr = "";
-      //   for(let individual of row.individual) {
-      //     tempStr += individual.individualName + "<br>";
-      //   }
-      //   row.individual = tempStr;
-      // } else {
-      //   row.individual = "Data not found";
-      // }
     }
 
 		let tableDiv = mktable(data, {
