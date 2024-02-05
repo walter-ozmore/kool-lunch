@@ -192,7 +192,35 @@ async function inspectForm(formData) {
   divGrid.append(
     $("<label>").text("Form ID:"), $("<p>").text(formData.formID),
     $("<label>").text("Time Submitted:"), $("<p>").text(unixToHuman(formData.timeSubmitted)),
-    $("<label>").text("Location:"), $("<p>").text(formData.location),
+  );
+
+  {// Add location dropdown
+    let locationDropdown = $("<select>", {disabled: true});
+    let locations = [
+      "T.E.A.M. Center Housing Authority",
+      "Williams Building",
+      "Pizza Hut",
+      "Simpson Park",
+      "Powder Creak Park"
+    ]; // This should be retrieved from the backend
+
+    for(let location of locations) {
+      let option = $("<option>", {value: location}).text(location);
+      locationDropdown.append(option);
+    }
+    locationDropdown.val( formData.location );
+
+
+    divGrid.append(
+      $("<label>").text("Location:"),
+      locationDropdown,
+    );
+  }
+
+  // Add allergies
+  divGrid.append(
+    $("<label>").text("Allergies:"),
+    $("<input>", {type: "text", value: formData.allergies, disabled: true}),
   );
 
   // Add lunches need input
