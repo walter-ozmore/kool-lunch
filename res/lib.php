@@ -1,6 +1,6 @@
 <?php
-  // error_reporting(E_ALL);
-  // ini_set('display_errors', '1');
+  error_reporting(E_ALL);
+  ini_set('display_errors', '1');
 
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/lib.php";
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
@@ -270,17 +270,22 @@
       return 0;
     }
 
-   /**
-     * Deletes the entry associated with provided id.
+     /**
+     * Deletes the entry associated with provided ids
      *
-     * @param individualID The id for target entry.
+     * @param args[] An array containing the formID and individualID. 
      * @return 0 for success, 1 for query error, 2 for param error.
      */
-    public static function deleteIndividual($individualID) {
+    public static function deleteFormLink($args) {
       $conn = Secret::connectDB("lunch");
-      if (!is_numeric($individualID)) { return 2; }
 
-      $query = "DELETE FROM Individual WHERE individualID = $individualID LIMIT 1;";
+      // Data verification checks
+      if (!is_numeric($args["formID"])) { return 2; }
+      if (!is_numeric($args["individualID"])) { return 2; }
+      $formID = $args["formID"];
+      $individualID = $args["individualID"];
+
+      $query = "DELETE FROM FormLink WHERE formID = $formID AND individualID = $individualID LIMIT 1;";
       $result = $conn->query($query);
 
       if ($result == FALSE) {return 1;}
@@ -302,6 +307,23 @@
       if ($result == FALSE) {return 1;}
 
       $query = "DELETE FROM FormVolunteer WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
+      $result = $conn->query($query);
+
+      if ($result == FALSE) {return 1;}
+      return 0;
+    }
+
+    /**
+     * Deletes the entry associated with provided id.
+     *
+     * @param individualID The id for target entry.
+     * @return 0 for success, 1 for query error, 2 for param error.
+     */
+    public static function deleteIndividual($individualID) {
+      $conn = Secret::connectDB("lunch");
+      if (!is_numeric($individualID)) { return 2; }
+
+      $query = "DELETE FROM Individual WHERE individualID = $individualID LIMIT 1;";
       $result = $conn->query($query);
 
       if ($result == FALSE) {return 1;}
@@ -368,8 +390,11 @@
 
       $query = "SELECT * FROM Form WHERE FormID=$formID LIMIT 1;";
       $result = $conn->query($query);
-      $data = $result->fetch_assoc();
+      
+      if (!$result) {return 1;}
+      if ($result->lengths == 0) {return 1;}
 
+      $data = $result->fetch_assoc();
       return $data;
     }
 
@@ -446,8 +471,31 @@
       return $data;
     }
 
-    // TODO
-    public static function getLunchAmount($formId) {
+    /**
+     * Grab all distinct locations.
+     * 
+     * @return Returns an array with the locations.
+     */
+    public static function getLocations() {
+      $conn = Secret::connectDB("lunch");
+      $data = [];
+
+      $query = "SELECT DISTINCT `location` FROM Form ORDER BY `location`;";
+      $result = $conn->query($query);
+      while ($row = $result->fetch_assoc()) { $data[] = $row; }
+
+      return $data;
+    }
+
+
+    /**
+     * Grab the lunchesNeeded column for a specific form.
+     * 
+     * @param formID The ID of the form.
+     * 
+     * @return Returns the lunchesNeeded value
+     */
+    public static function getLunchesNeeded($formId) {
       $conn = Secret::connectDB("lunch");
       if (!is_numeric($formId)) { return 2; }
 
@@ -459,7 +507,11 @@
       }
     }
 
-    // TODO
+    /**
+     * Grab all organizations.
+     * 
+     * @return Returns an array with the organizations.
+    */
     public static function getOrganizations() {
       $conn = Secret::connectDB("lunch");
       $data = [];
@@ -471,7 +523,13 @@
       return $data;
     }
 
-    // TODO
+    /**
+     * Get all emails for a specific day.
+     * 
+     * @param date The day to get the meals from.
+     * 
+     * @return Returns an array with the resulting rows from the query.
+     */
     public static function getDayMeals($date) {
       $conn = Secret::connectDB("lunch");
       $data = [];
@@ -489,7 +547,13 @@
       return $data;
     }
 
-    // TODO
+    /**
+     * Get a volunteer's information using a provided ID.
+     * 
+     * @param volunteerFormID The volunteerFormID.
+     * 
+     * @return Returns an array with the query results.
+     */
     public static function getVolunteer($volunteerFormID) {
       $conn = Secret::connectDB("lunch");
       if (!is_numeric($volunteerFormID)) { return 2; }
@@ -505,7 +569,11 @@
       return $data;
     }
 
-    // TODO
+    /**
+     * Get all volunteers.
+     * 
+     * @return Returns an array with the query results.
+     */
     public static function getVolunteers() {
       $conn = Secret::connectDB("lunch");
       $data = [];
@@ -522,7 +590,107 @@
       return $data;
     }
 
-    // TODO
+    /**
+     * Update the allergies field of a specific form with provided values.
+     * 
+     * @param args An array containing the formID and new allergies value.
+     * 
+     * @return 0 on success, 1 for query error, and 2 for param error.
+     */
+    public static function updateAllergies($args) {
+      $conn = Secret::connectDB("lunch");
+
+      // Data verification checks
+      if (!is_numeric($args["formID"])) {return 2;}
+      if (!is_string($args["allergies"])) {return 2;}
+      $formID = $args["formID"];
+      $allergies = $args["allergies"];
+
+      $query = "UPDATE Form SET allergies = '$allergies' WHERE formID = $formID LIMIT 1;";
+
+      $result = $conn->query($query);
+      if ($result == FALSE) {return 1;}
+      return 0;
+    }
+
+    /**
+     * Update the isEnabled field of a specific form with provided values.
+     * 
+     * @param args An array containing the formID and new isEnabled value.
+     * 
+     * @return 0 on success, 1 for query error, and 2 for param error.
+     */
+    public static function updateIsEnabled($args) {
+      $conn = Secret::connectDB("lunch");
+      $boolTypes = [0,1];
+
+      // Data verificiation checks
+      if (!is_numeric($args["formID"])) {return 2;}
+      if (!is_numeric($args["isEnabled"]) || !in_array($args["isEnabled"], $boolTypes)) {return 2;}
+      $formID = $args["formID"];
+      $isEnabled = $args["isEnabled"];
+
+      $query = "UPDATE Form SET isEnabled = $isEnabled WHERE formID = $formID LIMIT 1;";
+
+      $result = $conn->query($query);
+      if ($result == FALSE) {return 1;}
+      return 0;
+    }
+
+    /**
+     * Update the location field of a specific form with provided values.
+     * 
+     * @param args An array containing the formID and new location value.
+     * 
+     * @return 0 on success, 1 for query error, and 2 for param error.
+     */
+    public static function updateLocation($args) {
+      $conn = Secret::connectDB("lunch");
+
+      // Data verificiation checks
+      if (!is_numeric($args["formID"])) {return 2;}
+      if (!is_string($args["location"])) {return 2;}
+      $formID = $args["formID"];
+      $location = $args["location"];
+
+      $query = "UPDATE Form SET location = '$location' WHERE formID = $formID LIMIT 1;";
+
+      $result = $conn->query($query);
+      if ($result == FALSE) {return 1;}
+      return 0;
+    }
+
+    /**
+     * Update the lunchesNeeded field of a specific form with provided values.
+     * 
+     * @param args An array containing the formID and new lunchesNeeded value.
+     * 
+     * @return 0 on success, 1 for query error, and 2 for param error.
+     */
+    public static function updateLunchesNeeded($args) {
+      $conn = Secret::connectDB("lunch");
+
+      // Data verificiation checks
+      if (!is_numeric($args["formID"])) {return 2;}
+      if (!is_numeric($args["numLunches"])) {return 2;}
+      $lunchesNeeded = $args["numLunches"];
+      $formID = $args["formID"];
+
+      $query = "UPDATE Form SET lunchesNeeded = $lunchesNeeded WHERE formID = $formID LIMIT 1;";
+
+      $result = $conn->query($query);
+      if ($result == FALSE) {return 1;}
+      return 0;
+    }
+
+    /**
+     * Update one of the pickupday fields of a specific form with provided values.
+     * 
+     * @param args An array containing the formID, column to be updated, and the
+     * new value.
+     * 
+     * @return 0 on success, 1 for query error, and 2 for param error.
+     */
     public static function updatePickupDay($args) {
       $conn = Secret::connectDB("lunch");
       $boolTypes = [0,1];
@@ -559,7 +727,7 @@
       unset($var);
 
       // Query end
-      $query .= " WHERE formID = $formID;";
+      $query .= " WHERE formID = $formID LIMIT 1;";
       $result = $conn->query($query);
 
       if ($result == FALSE) {return 1;}

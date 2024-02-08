@@ -25,6 +25,6 @@
 
 <script>
   <?php
-    echo "code = ". ((isset($_GET["code"]))? "true": "false") .";";
+  //   echo "code = ". ((isset($_GET["code"]))? "true": "false") .";";
   ?>
 </script>

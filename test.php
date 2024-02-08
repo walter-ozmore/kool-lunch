@@ -10,12 +10,12 @@
     <script>
       async function buttonClick() {
         let data = await post("/ajax/admin.php", {
-          function: 5,
-          uid: 1
+          function: 16,
+          formID: 246
         });
+
         console.log(data);
       }
-
     </script>
   </head>
 
@@ -25,6 +25,7 @@
 
   <body>
     <div class="content">
+      <p>User logged in as <span name="account-username"></span></p>
       <button onclick="buttonClick()">Test</button>
     </div>
   </body>
