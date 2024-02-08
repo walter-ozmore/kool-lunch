@@ -292,12 +292,17 @@ async function inspectForm(formData) {
           // Send the data to the server
           post("/ajax/admin",
             {function: 9, setValue: phpSetValue, dateStr: dateStr, formID: formData.formID},
-            ()=>{
-              // TODO: Set the checkbox to the returned value that the server has
-              $(this).prop("disabled", false);
+            (obj)=>{
+              // Success update the value to match what the server has
+              if(obj.code == 0 && "value" in obj)
+                if("value" in obj) $(this).prop("checked", obj.value);
 
               // Failed, set checkbox back
-              $(this).prop("checked", !setValue);
+              if(obj.code != 0)
+                $(this).prop("checked", !setValue);
+
+              // TODO: Set the checkbox to the returned value that the server has
+              $(this).prop("disabled", false);
             }
           );
         })
