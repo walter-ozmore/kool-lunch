@@ -707,23 +707,23 @@
       if(isset($args["pickupMon"    ]) && in_array($args["pickupMon"], $boolTypes)) {
         $var = $args["pickupMon"];
         $query .= " pickupMon = $var";
-      }
+      } else {return 2;}
       if(isset($args["pickupTue"    ]) && in_array($args["pickupTue"], $boolTypes)) {
         $var = $args["pickupTue"];
         $query .= " pickupTue = $var";
-      }
+      } else {return 2;}
       if(isset($args["pickupWed"    ]) && in_array($args["pickupWed"], $boolTypes)) {
         $var = $args["pickupWed"];
         $query .= " pickupWed = $var";
-      }
+      } else {return 2;}
       if(isset($args["pickupThu"    ]) && in_array($args["pickupThu"], $boolTypes)) {
         $var = $args["pickupThu"];
         $query .= " pickupThu = $var";
-      }
+      } else {return 2;}
       if(isset($args["pickupFri"    ]) && in_array($args["pickupFri"], $boolTypes)) {
         $var = $args["pickupFri"];
         $query .= " pickupFri = $var";
-      }
+      } else {return 2;}
       unset($var);
 
       // Query end
