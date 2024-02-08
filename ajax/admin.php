@@ -41,13 +41,13 @@
       if(isset($_POST["formID"])) {
         $strID = $_POST["formID"];
         $formID = (int)$strID;
-        
-        
+
+
         echo json_encode(Database::getForm($formID));
         break;
       }
 
-      
+
       echo json_encode(Database::getForms());
       break;
     case 4: // Fetch Orgs
@@ -83,7 +83,8 @@
       $code = Database::deleteIndividual($_POST["individualID"]);
       echo json_encode(["code"=>$code]);
       break;
-    case 9: // Update a pickup day for a specific form
+    case 9: // Updates a pickup day for a specific form
+      // TODO: Make this return the updated value
       // Get all args for update
       $args["formID"] = $_POST["formID"];
 
@@ -104,7 +105,7 @@
           $args["pickupFri"] = $_POST["setValue"];
           break;
       }
-    
+
       $code = Database::updatePickupDay($args);
       echo json_encode(["code"=>$code]);
       break;
