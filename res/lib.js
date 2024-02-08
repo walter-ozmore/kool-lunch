@@ -192,8 +192,60 @@ async function inspectForm(formData) {
   divGrid.append(
     $("<label>").text("Form ID:"), $("<p>").text(formData.formID),
     $("<label>").text("Time Submitted:"), $("<p>").text(unixToHuman(formData.timeSubmitted)),
-    $("<label>").text("Location:"), $("<p>").text(formData.location),
-    $("<label>").text("lunchesNeeded:"), $("<p>").text(formData.lunchesNeeded),
+  );
+
+  {// Add location dropdown
+    let locationDropdown = $("<select>", {disabled: true});
+    let locations = [
+      "T.E.A.M. Center Housing Authority",
+      "Williams Building",
+      "Pizza Hut",
+      "Simpson Park",
+      "Powder Creak Park"
+    ]; // This should be retrieved from the backend
+
+    for(let location of locations) {
+      let option = $("<option>", {value: location}).text(location);
+      locationDropdown.append(option);
+    }
+    locationDropdown.val( formData.location );
+
+
+    divGrid.append(
+      $("<label>").text("Location:"),
+      locationDropdown,
+    );
+  }
+
+  // Add allergies
+  divGrid.append(
+    $("<label>").text("Allergies:"),
+    $("<input>", {type: "text", value: formData.allergies, disabled: true}),
+  );
+
+  // Add lunches need input
+  divGrid.append(
+    $("<label>").text("lunchesNeeded:"),
+    $("<input>", {type: "number", value: formData.lunchesNeeded})
+      .change(function() {
+        // Prevent spam
+        $(this).prop("disabled", true);
+
+        // Grab the value of the input
+        let value = $(this).val();
+
+        // Send the data to the server
+        post("/ajax/admin",
+          {function: -1, value: value},
+          ()=>{
+            // TODO: Set the checkbox to the returned value that the server has
+            $(this).prop("disabled", false);
+
+            // Failed, set input back
+            $(this).val(formData.lunchesNeeded);
+          }
+        );
+      }),
   );
 
   // Add enabled checkbox
