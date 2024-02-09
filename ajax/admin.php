@@ -111,8 +111,8 @@
       break;
     case 10: // Update is enabled for a specific form
       $args = [
-        "formID"    => $_POST["formID"],
-        "isEnabled" => $_POST["isEnabled"]
+        "formID"    => (int)($_POST["formID"]),
+        "isEnabled" => (int)($_POST["isEnabled"])
       ];
 
       $code = Database::updateIsEnabled($args);

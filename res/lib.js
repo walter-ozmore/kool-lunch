@@ -261,14 +261,20 @@ async function inspectForm(formData) {
         let setValue = $(this).prop("checked");
 
         // Send the data to the server
-        post("/ajax/admin",
-          {function: -``, setValue: setValue},
-          ()=>{
-            // TODO: Set the checkbox to the returned value that the server has
-            $(this).prop("disabled", false);
+        let args = {function: `10`, formID:formData.formID, isEnabled: setValue};
+        console.log(args);
+        post("/ajax/admin", args,
+          (obj)=>{
+            console.log(obj);
+            if(obj.code == 0 && "value" in obj)
+              $(this).prop("checked", obj.value);
 
             // Failed, set checkbox back
-            $(this).prop("checked", !setValue);
+            if(obj.code != 0)
+              $(this).prop("checked", !setValue);
+
+            // Unlock the checkbox
+            $(this).prop("disabled", false);
           }
         );
       })
@@ -295,13 +301,14 @@ async function inspectForm(formData) {
             (obj)=>{
               // Success update the value to match what the server has
               if(obj.code == 0 && "value" in obj)
-                if("value" in obj) $(this).prop("checked", obj.value);
+                if("value" in obj)
+                  $(this).prop("checked", obj.value);
 
               // Failed, set checkbox back
               if(obj.code != 0)
                 $(this).prop("checked", !setValue);
 
-              // TODO: Set the checkbox to the returned value that the server has
+              // Enable the checkbox for the user
               $(this).prop("disabled", false);
             }
           );
