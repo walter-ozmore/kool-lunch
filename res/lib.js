@@ -163,6 +163,20 @@ function inspectVolunteerForm(formData) {
 }
 
 
+/**
+ * Using the given element this function will send a post request to the server
+ * in an attempt to update the element. The element will be disabled while the
+ * post is being carried out. If the element failed to update with the server it
+ * will be returned to its starting state, if it succedes its update the value
+ * will be updated with the value that the server provides if it provides one.
+ *
+ * @param {JQuery Dom Element} ele the input or selection element that will be
+ *   updated.
+ * @param {int} apiFunction the function that will be called in /ajax/admin.php
+ * @param {string} valueKey the object index where the value will be places in
+ *  the post command.
+ * @param {obj} args an object to be appended to the post variables.
+ */
 function updateServer(ele, apiFunction, valueKey, args={}) {
   // Prevent spam
   ele.prop("disabled", true);
@@ -183,14 +197,20 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
 
   // Send the data to the server
   post("/ajax/admin", postArgs, (obj)=>{
-    // Failed, set input back
-    if (ele.is(":checkbox")) {
-      if(obj.code == 0 && "value" in obj)
+    // Update the value to the server value if it exists
+    if(obj.code == 0 && "value" in obj)
+      if (ele.is(":checkbox"))
         ele.prop("checked", obj.value);
+      else
+        ele.val(obj.value)
 
-      if(obj.code != 0)
+    // Failed, set input back
+    if(obj.code != 0)
+      if (ele.is(":checkbox"))
         ele.prop("checked", !setValue);
-    }
+      else
+        // Somehow make this the value the input had before they updated it
+        ele.val(setValue)
 
     // TODO: Set the checkbox to the returned value that the server has
     ele.prop("disabled", false);
@@ -230,7 +250,7 @@ async function inspectForm(formData) {
   );
 
   {// Add location dropdown
-    let locationDropdown = $("<select>", {disabled: true});
+    let locationDropdown = $("<select>");
     let locations = [
       "T.E.A.M. Center Housing Authority",
       "Williams Building",
@@ -244,6 +264,7 @@ async function inspectForm(formData) {
       locationDropdown.append(option);
     }
     locationDropdown.val( formData.location );
+    locationDropdown.change(function() {updateServer($(this), 13, "location", {formID: formData.formID})});
 
 
     divGrid.append(
@@ -255,32 +276,16 @@ async function inspectForm(formData) {
   // Add allergies
   divGrid.append(
     $("<label>").text("Allergies:"),
-    $("<input>", {type: "text", value: formData.allergies, disabled: true}),
+    $("<input>", {type: "text", value: formData.allergies})
+      .change(function() {updateServer($(this), 12, "allergies", {formID: formData.formID})})
+    ,
   );
 
   // Add lunches need input
   divGrid.append(
     $("<label>").text("lunchesNeeded:"),
     $("<input>", {type: "number", value: formData.lunchesNeeded})
-      .change(function() {
-        // Prevent spam
-        $(this).prop("disabled", true);
-
-        // Grab the value of the input
-        let value = $(this).val();
-
-        // Send the data to the server
-        post("/ajax/admin",
-          {function: 11, numLunches: value},
-          ()=>{
-            // Failed, set input back
-            $(this).val(formData.lunchesNeeded);
-
-            // TODO: Set the checkbox to the returned value that the server has
-            $(this).prop("disabled", false);
-          }
-        );
-      }),
+      .change(function() {updateServer($(this), 11, "numLunches", {formID: formData.formID})}),
   );
 
   // Add enabled checkbox
@@ -298,10 +303,7 @@ async function inspectForm(formData) {
       $("<input>", {type: "checkbox"})
         .prop("checked", (freshFormData["pickup"+dateStr] == 1)? true: false)
         .change(function() {
-          updateServer($(this), 9, "setValue", {
-            formID: formData.formID,
-            dateStr: dateStr
-          })
+          updateServer($(this), 9, "setValue", { formID: formData.formID, dateStr: dateStr })
         })
     )
   }
