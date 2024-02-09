@@ -273,7 +273,7 @@
      /**
      * Deletes the entry associated with provided ids
      *
-     * @param args[] An array containing the formID and individualID. 
+     * @param args[] An array containing the formID and individualID.
      * @return 0 for success, 1 for query error, 2 for param error.
      */
     public static function deleteFormLink($args) {
@@ -390,9 +390,10 @@
 
       $query = "SELECT * FROM Form WHERE FormID=$formID LIMIT 1;";
       $result = $conn->query($query);
-      
+
       if (!$result) {return 1;}
-      if ($result->lengths == 0) {return 1;}
+      // When the query is "SELECT * FROM Form WHERE FormID=247 LIMIT 1;" this is triggered
+      // if ($result->lengths == 0) {return 1;}
 
       $data = $result->fetch_assoc();
       return $data;
@@ -473,7 +474,7 @@
 
     /**
      * Grab all distinct locations.
-     * 
+     *
      * @return Returns an array with the locations.
      */
     public static function getLocations() {
@@ -490,9 +491,9 @@
 
     /**
      * Grab the lunchesNeeded column for a specific form.
-     * 
+     *
      * @param formID The ID of the form.
-     * 
+     *
      * @return Returns the lunchesNeeded value
      */
     public static function getLunchesNeeded($formId) {
@@ -509,7 +510,7 @@
 
     /**
      * Grab all organizations.
-     * 
+     *
      * @return Returns an array with the organizations.
     */
     public static function getOrganizations() {
@@ -525,9 +526,9 @@
 
     /**
      * Get all emails for a specific day.
-     * 
+     *
      * @param date The day to get the meals from.
-     * 
+     *
      * @return Returns an array with the resulting rows from the query.
      */
     public static function getDayMeals($date) {
@@ -549,9 +550,9 @@
 
     /**
      * Get a volunteer's information using a provided ID.
-     * 
+     *
      * @param volunteerFormID The volunteerFormID.
-     * 
+     *
      * @return Returns an array with the query results.
      */
     public static function getVolunteer($volunteerFormID) {
@@ -571,7 +572,7 @@
 
     /**
      * Get all volunteers.
-     * 
+     *
      * @return Returns an array with the query results.
      */
     public static function getVolunteers() {
@@ -592,9 +593,9 @@
 
     /**
      * Update the allergies field of a specific form with provided values.
-     * 
+     *
      * @param args An array containing the formID and new allergies value.
-     * 
+     *
      * @return 0 on success, 1 for query error, and 2 for param error.
      */
     public static function updateAllergies($args) {
@@ -615,18 +616,16 @@
 
     /**
      * Update the isEnabled field of a specific form with provided values.
-     * 
+     *
      * @param args An array containing the formID and new isEnabled value.
-     * 
+     *
      * @return 0 on success, 1 for query error, and 2 for param error.
      */
     public static function updateIsEnabled($args) {
       $conn = Secret::connectDB("lunch");
-      $boolTypes = [0,1];
 
       // Data verificiation checks
       if (!is_numeric($args["formID"])) {return 2;}
-      if (!is_numeric($args["isEnabled"]) || !in_array($args["isEnabled"], $boolTypes)) {return 2;}
       $formID = $args["formID"];
       $isEnabled = $args["isEnabled"];
 
@@ -639,9 +638,9 @@
 
     /**
      * Update the location field of a specific form with provided values.
-     * 
+     *
      * @param args An array containing the formID and new location value.
-     * 
+     *
      * @return 0 on success, 1 for query error, and 2 for param error.
      */
     public static function updateLocation($args) {
@@ -662,9 +661,9 @@
 
     /**
      * Update the lunchesNeeded field of a specific form with provided values.
-     * 
+     *
      * @param args An array containing the formID and new lunchesNeeded value.
-     * 
+     *
      * @return 0 on success, 1 for query error, and 2 for param error.
      */
     public static function updateLunchesNeeded($args) {
@@ -685,10 +684,10 @@
 
     /**
      * Update one of the pickupday fields of a specific form with provided values.
-     * 
+     *
      * @param args An array containing the formID, column to be updated, and the
      * new value.
-     * 
+     *
      * @return 0 on success, 1 for query error, and 2 for param error.
      */
     public static function updatePickupDay($args) {

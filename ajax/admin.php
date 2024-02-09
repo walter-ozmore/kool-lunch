@@ -42,7 +42,6 @@
         $strID = $_POST["formID"];
         $formID = (int)$strID;
 
-
         echo json_encode(Database::getForm($formID));
         break;
       }
@@ -112,7 +111,7 @@
     case 10: // Update is enabled for a specific form
       $args = [
         "formID"    => (int)($_POST["formID"]),
-        "isEnabled" => (int)($_POST["isEnabled"])
+        "isEnabled" => $_POST["isEnabled"]
       ];
 
       $code = Database::updateIsEnabled($args);

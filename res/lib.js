@@ -167,6 +167,7 @@ async function inspectForm(formData) {
   console.log("Form", formData);
 
   // Fetch some fresh data to work with
+  console.log("Fetching form", formData.formID);
   let freshFormData = await post("/ajax/admin.php", {
     function: 3,
     formID: formData.formID
