@@ -163,6 +163,40 @@ function inspectVolunteerForm(formData) {
 }
 
 
+function updateServer(ele, apiFunction, valueKey, args={}) {
+  // Prevent spam
+  ele.prop("disabled", true);
+
+  let postArgs = {
+    function: apiFunction,
+    ...args // Append the input args to our post args
+  };
+
+  // Grab the value of the input
+  let value = ele.val();
+
+  // Update the elemtn if its a checkbox
+  if (ele.is(":checkbox"))
+    value = ele.prop("checked");
+
+  postArgs[valueKey] = value;
+
+  // Send the data to the server
+  post("/ajax/admin", postArgs, (obj)=>{
+    // Failed, set input back
+    if (ele.is(":checkbox")) {
+      if(obj.code == 0 && "value" in obj)
+        ele.prop("checked", obj.value);
+
+      if(obj.code != 0)
+        ele.prop("checked", !setValue);
+    }
+
+    // TODO: Set the checkbox to the returned value that the server has
+    ele.prop("disabled", false);
+  });
+}
+
 async function inspectForm(formData) {
   console.log("Form", formData);
 
@@ -237,13 +271,13 @@ async function inspectForm(formData) {
 
         // Send the data to the server
         post("/ajax/admin",
-          {function: -1, value: value},
+          {function: 11, numLunches: value},
           ()=>{
-            // TODO: Set the checkbox to the returned value that the server has
-            $(this).prop("disabled", false);
-
             // Failed, set input back
             $(this).val(formData.lunchesNeeded);
+
+            // TODO: Set the checkbox to the returned value that the server has
+            $(this).prop("disabled", false);
           }
         );
       }),
@@ -254,31 +288,7 @@ async function inspectForm(formData) {
     $("<label>").text("Enabled:"),
     $("<input>", {type: "checkbox"})
       .prop("checked", (freshFormData.isEnabled == 1)? true: false)
-      .change(function() {
-        // Prevent checkbox spam
-        $(this).prop("disabled", true);
-
-        // Check if the checkbox is checked
-        let setValue = $(this).prop("checked");
-
-        // Send the data to the server
-        let args = {function: `10`, formID:formData.formID, isEnabled: setValue};
-        console.log(args);
-        post("/ajax/admin", args,
-          (obj)=>{
-            console.log(obj);
-            if(obj.code == 0 && "value" in obj)
-              $(this).prop("checked", obj.value);
-
-            // Failed, set checkbox back
-            if(obj.code != 0)
-              $(this).prop("checked", !setValue);
-
-            // Unlock the checkbox
-            $(this).prop("disabled", false);
-          }
-        );
-      })
+      .change(function() {updateServer($(this), 10, "isEnabled", {formID: formData.formID})})
   )
 
   // Add date checkboxes
@@ -288,31 +298,10 @@ async function inspectForm(formData) {
       $("<input>", {type: "checkbox"})
         .prop("checked", (freshFormData["pickup"+dateStr] == 1)? true: false)
         .change(function() {
-          // Prevent checkbox spam
-          $(this).prop("disabled", true);
-
-          // Check if the checkbox is checked
-          let setValue = $(this).prop("checked");
-          // Format for php
-          let phpSetValue = setValue ? 1 : 0;
-
-          // Send the data to the server
-          post("/ajax/admin",
-            {function: 9, setValue: phpSetValue, dateStr: dateStr, formID: formData.formID},
-            (obj)=>{
-              // Success update the value to match what the server has
-              if(obj.code == 0 && "value" in obj)
-                if("value" in obj)
-                  $(this).prop("checked", obj.value);
-
-              // Failed, set checkbox back
-              if(obj.code != 0)
-                $(this).prop("checked", !setValue);
-
-              // Enable the checkbox for the user
-              $(this).prop("disabled", false);
-            }
-          );
+          updateServer($(this), 9, "setValue", {
+            formID: formData.formID,
+            dateStr: dateStr
+          })
         })
     )
   }

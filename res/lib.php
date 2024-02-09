@@ -630,7 +630,7 @@
       $isEnabled = $args["isEnabled"];
 
       $query = "UPDATE Form SET isEnabled = $isEnabled WHERE formID = $formID LIMIT 1;";
-
+      // echo $query;
       $result = $conn->query($query);
       if ($result == FALSE) {return 1;}
       return 0;
@@ -692,7 +692,6 @@
      */
     public static function updatePickupDay($args) {
       $conn = Secret::connectDB("lunch");
-      $boolTypes = [0,1];
 
       // Check formID, return if invalid
       $formID = $args["formID"];
@@ -704,34 +703,24 @@
 
       // Parse through args to apply needed query segments
       if(isset($args["pickupMon"    ])) {
-        if (in_array($args["pickupMon"], $boolTypes)) {
-          $var = $args["pickupMon"];
-          $query .= " pickupMon = $var";
-        } else {return 2;}
+        $var = $args["pickupMon"];
+        $query .= " pickupMon = $var";
       }
       if(isset($args["pickupTue"    ])) {
-        if (in_array($args["pickupTue"], $boolTypes)) {
-          $var = $args["pickupTue"];
-          $query .= " pickupTue = $var";
-        } else {return 2;}
+        $var = $args["pickupTue"];
+        $query .= " pickupTue = $var";
       }
       if(isset($args["pickupWed"    ])) {
-        if (in_array($args["pickupWed"], $boolTypes)) {
-          $var = $args["pickupWed"];
-          $query .= " pickupWed = $var";
-        } else {return 2;}
+        $var = $args["pickupWed"];
+        $query .= " pickupWed = $var";
       }
       if(isset($args["pickupThu"    ])) {
-        if (in_array($args["pickupThu"], $boolTypes)) {
-          $var = $args["pickupThu"];
-          $query .= " pickupThu = $var";
-        } else {return 2;}
+        $var = $args["pickupThu"];
+        $query .= " pickupThu = $var";
       }
       if(isset($args["pickupFri"    ])) {
-        if (in_array($args["pickupFri"], $boolTypes)) {
-          $var = $args["pickupFri"];
-          $query .= " pickupFri = $var";
-        } else {return 2;}
+        $var = $args["pickupFri"];
+        $query .= " pickupFri = $var";
       }
       unset($var);
 
