@@ -4,6 +4,12 @@
 
 	require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
 
+	// Make sure opporunities were selected
+	if(isset($_POST["opportunities"]) == false) {
+		echo "No Opportunities Selected";
+		exit();
+	}
+
 	// Create the individual
 	$args = [
 		"firstName"=> $_POST["firstName"],
@@ -17,13 +23,15 @@
 		foreach ($contact as $key => $value) { $args[$key] = $value; }
 	}
 
-	$individualID = Database::createIndividual($args);
+	$result = Database::createIndividual($args);
 	unset($args);
 
-	if ($individualID <= 0) {
-		echo "Error creating Individual";
+	// Verify the Individual entry was successful
+	if ($result["code"] != 110) {
+		echo $result["message"];
 		exit();
 	}
+	$individualID = $result["entryID"];
 
 	// Create org if needed
 	$orgID = -1;
@@ -38,21 +46,19 @@
 			$args["mainContact"] = $individualID;
 		}
 		
-		$orgID = Database::createOrg($args);
+		$result = Database::createOrganization($args);
 		unset($args);
 
-		if ($orgID <= 0) {
-			echo "Error creating Organization";
+		// Verify the Organization entry was successful
+		if ($result["code"] != 110) {
+			Database::deleteIndividual($individualID);
+			echo "Error submitting your form. Please try again later.";
 			exit();
 		}
+		$orgID = $result["entryID"];
 	}
 
 	// Create the FormVolunteer entry
-	if(isset($_POST["opportunities"]) == false) {
-		echo "No Opportunities Selected";
-		exit();
-	}
-
 	$opportunities = $_POST["opportunities"];
 
 	$args = [
@@ -65,22 +71,31 @@
 		$args["orgID"] = $orgID;
 	}
 
-	$volID = Database::createFormVolunteer($args);
+	$result = Database::createFormVolunteer($args);
 	unset($args);
 
-	if ($volID <= 0) {
-		echo "Error creating Volunteer";
+	// Verify the FormVolunteer entry was successful
+	if ($result["code"] != 110) {
+		if ($orgID != -1) {Database::deleteOrganization($orgID);}
+		Database::deleteIndividual($individualID);
+		echo "Error submitting your form. Please try again later.";
 		exit();
 	}
+
+	$volunteerFormID = $result["entryID"];
 
 	// Create the FormVolunteerLink
 	$args = [
 		"individualID" => $individualID,
-		"volunteerFormID" => $volID
+		"volunteerFormID" => $volunteerFormID
 	];
 
-	if (Database::createFormVolunteerLink($args) != 0) {
-		echo "Error creating Volunteer Link";
+	$result = Database::createFormVolunteerLink($args);
+	if ($result["code"] != 110) {
+		Database::deleteFormVolunteer($volunteerFormID);
+		if ($orgID != -1) {Database::deleteOrganization($orgID);}
+		Database::deleteIndividual($individualID);
+		echo "Error submitting your form. Please try again later.";
 		exit();
 	}
 

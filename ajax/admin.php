@@ -49,7 +49,7 @@
 
       echo json_encode(Database::getForms());
       break;
-    case 4: // Fetch Orgs
+    case 4: // Fetch orgs
       echo json_encode(Database::getOrganizations());
       break;
     case 5: // Fetch for tracker
@@ -61,13 +61,13 @@
       echo json_encode(Database::getDayMeals($date));
       break;
     case 5: // Check a checkbox for the tracker
-      $args = [
-        "formID"     => $_POST["formID"],
-        "pickupTime" => time(),
-        "amount"     => $_POST["amount"]
-      ];
-      // TODO Create Pickup table entry using given information
-      echo true;
+      // $args = [
+      //   "formID"     => $_POST["formID"],
+      //   "pickupTime" => time(),
+      //   "amount"     => $_POST["amount"]
+      // ];
+
+      // echo json_encode(Database::createPickup($args));
       break;
     case 6:
       $code = Database::deleteFormVolunteer($_POST["formID"]);
@@ -105,8 +105,7 @@
           break;
       }
 
-      $code = Database::updatePickupDay($args);
-      echo json_encode(["code"=>$code]);
+      echo json_encode(Database::updatePickupDay($args));
       break;
     case 10: // Update is enabled for a specific form
       $args = [
@@ -114,8 +113,7 @@
         "isEnabled" => $_POST["isEnabled"]
       ];
 
-      $code = Database::updateIsEnabled($args);
-      echo json_encode(["code"=>$code]);
+      echo json_encode(Database::updateIsEnabled($args));
       break;
     case 11: // Update lunches needed for a specific form
       $args = [
@@ -123,8 +121,7 @@
         "numLunches" => $_POST["numLunches"]
       ];
 
-      $code = Database::updateLunchesNeeded($args);
-      echo json_encode(["code"=>$code]);
+      echo json_encode(Database::updateLunchesNeeded($args));
       break;
       break;
     case 12: // Update allergies for a specific form
@@ -133,8 +130,7 @@
         "allergies" => $_POST["allergies"]
       ];
 
-      $code = Database::updateAllergies($args);
-      echo json_encode(["code"=>$code]);
+      echo json_encode(Database::updateAllergies($args));
       break;
     case 13: // Update location for a specific form
       $args = [
@@ -142,8 +138,7 @@
         "location" => $_POST["location"]
       ];
 
-      $code = Database::updateLocation($args);
-      echo json_encode(["code"=>$code]);
+      echo json_encode(Database::updateLocation($args));
       break;
     case 14: // Get all distinct locations
       echo json_encode(Database::getLocations());
@@ -154,13 +149,11 @@
         "individualID" => $_POST["individualID"]
       ];
 
-      $code = Database::deleteFormLink($args);
-      echo json_encode(["code"=>$code]);
+      echo json_encode(Database::deleteFormLink($args));
       break;
     case 16: // Delete specific form
       $formID = $_POST["formID"];
 
-      $code = Database::deleteForm($formID);
-      echo json_encode(["code"=>$code]);
+      echo json_encode(Database::deleteForm($formID));
 	}
 ?>
