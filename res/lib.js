@@ -1,3 +1,60 @@
+/**
+ * Using the given element this function will send a post request to the server
+ * in an attempt to update the element. The element will be disabled while the
+ * post is being carried out. If the element failed to update with the server it
+ * will be returned to its starting state, if it succedes its update the value
+ * will be updated with the value that the server provides if it provides one.
+ *
+ * Maybe should be promoted??
+ *
+ * @param {JQuery Dom Element} ele the input or selection element that will be
+ *   updated.
+ * @param {int} apiFunction the function that will be called in /ajax/admin.php
+ * @param {string} valueKey the object index where the value will be places in
+ *  the post command.
+ * @param {obj} args an object to be appended to the post variables.
+ */
+function updateServer(ele, apiFunction, valueKey, args={}) {
+  // Prevent spam
+  ele.prop("disabled", true);
+
+  let postArgs = {
+    function: apiFunction,
+    ...args // Append the input args to our post args
+  };
+
+  // Grab the value of the input
+  let value = ele.val();
+
+  // Update the elemtn if its a checkbox
+  if (ele.is(":checkbox"))
+    value = ele.prop("checked");
+
+  postArgs[valueKey] = value;
+
+  // Send the data to the server
+  post("/ajax/admin", postArgs, (json)=>{
+    let isSuccessfull = json.code >= 100 || json.code < 200;
+
+    // Update the value to the server value if it exists
+    if(isSuccessfull && "value" in json)
+      if (ele.is(":checkbox"))
+        ele.prop("checked", json.value);
+      else
+        ele.val(json.value)
+
+    // Failed, set input back
+    if(!isSuccessfull)
+      if (ele.is(":checkbox"))
+        ele.prop("checked", !ele.val());
+      // else
+        // Somehow make this the value the input had before they updated it
+        // ele.val(setValue)
+
+    // TODO: Set the checkbox to the returned value that the server has
+    ele.prop("disabled", false);
+  });
+}
 
 /**
  * Opens up a notification window that shows the individual and allows the user
@@ -35,7 +92,6 @@ function inspectIndividual(individualData) {
       function: 8,
       individualID: individualData.individualID
     }, (data)=>{
-      console.log(data);
       if(data.code == 0) location.reload();
     })})
   ;
@@ -51,7 +107,7 @@ function inspectIndividual(individualData) {
     divGrid.append($("<label>").text("Signup Forms:"), formIDEle);
     divGrid.append($("<label>").text("Volunteer Forms:"), volunteerFormIDEle);
 
-    console.log("Data:", data)
+    // console.log("Data:", data)
 
     // Create links for each form that is clickable
     for(let form of data.Form) {
@@ -164,75 +220,18 @@ function inspectVolunteerForm(formData) {
 }
 
 
-/**
- * Using the given element this function will send a post request to the server
- * in an attempt to update the element. The element will be disabled while the
- * post is being carried out. If the element failed to update with the server it
- * will be returned to its starting state, if it succedes its update the value
- * will be updated with the value that the server provides if it provides one.
- *
- * @param {JQuery Dom Element} ele the input or selection element that will be
- *   updated.
- * @param {int} apiFunction the function that will be called in /ajax/admin.php
- * @param {string} valueKey the object index where the value will be places in
- *  the post command.
- * @param {obj} args an object to be appended to the post variables.
- */
-function updateServer(ele, apiFunction, valueKey, args={}) {
-  // Prevent spam
-  ele.prop("disabled", true);
-
-  let postArgs = {
-    function: apiFunction,
-    ...args // Append the input args to our post args
-  };
-
-  // Grab the value of the input
-  let value = ele.val();
-
-  // Update the elemtn if its a checkbox
-  if (ele.is(":checkbox"))
-    value = ele.prop("checked");
-
-  postArgs[valueKey] = value;
-
-  // Send the data to the server
-  post("/ajax/admin", postArgs, (json)=>{
-    // Update the value to the server value if it exists
-    if(json.code == 0 && "value" in json)
-      if (ele.is(":checkbox"))
-        ele.prop("checked", json.value);
-      else
-        ele.val(json.value)
-
-    // Failed, set input back
-    if(json.code != 0)
-      if (ele.is(":checkbox"))
-        ele.prop("checked", !setValue);
-      else
-        // Somehow make this the value the input had before they updated it
-        ele.val(setValue)
-
-    // TODO: Set the checkbox to the returned value that the server has
-    ele.prop("disabled", false);
-  });
-}
-
 async function inspectForm(formData) {
-  console.log("Form", formData);
-
   // Fetch some fresh data to work with
-  console.log("Fetching form", formData.formID);
-  let freshFormData = await post("/ajax/admin.php", {
+  let freshFormData = (await post("/ajax/admin.php", {
     function: 3,
     formID: formData.formID
-  });
+  })).data;
 
-  console.log("freshFormData", freshFormData);
   if(freshFormData == null) {
     displayError("Missing fresh form data");
     return;
   }
+  console.log(freshFormData);
 
 
   // TODO: Fetch fresh form data because display data doesn't divide up pickup days and such
@@ -310,11 +309,11 @@ async function inspectForm(formData) {
   }
 
   // Display the people attached to this form
-  post("/ajax/admin.php", { function: -1, formID: formData.formID},
-    function(obj) {
-      console.log(obj);
-    }
-  );
+  // post("/ajax/admin.php", { function: -1, formID: formData.formID},
+  //   function(obj) {
+  //     // console.log(obj);
+  //   }
+  // );
 
   // Add a close button so the user isnt stuck
   div.append( $("<center>").append(
@@ -415,31 +414,6 @@ function ajaxJson(url, fun, args={}) {
   xhttp.send("q="+JSON.stringify(args));
 }
 
-async function post(url, args = {}, returnFunction = null) {
-  let response;
-  try {
-    response = await $.ajax({ url: url, method: "POST", data: args });
-  } catch (error) {
-    console.error("An error occurred during the AJAX request:", error);
-    return null;
-  }
-
-  // Parse and return
-  try {
-    let data = JSON.parse(response);
-    if(returnFunction != null) returnFunction(data);
-    return data;
-  } catch(error) {
-    if(response.length > 0) {
-      console.log(response);
-      displayError(response);
-    }
-
-    if(returnFunction != null) returnFunction(null);
-    return null;
-  }
-}
-
 
 /**
  * A quick way to create an element with innerHTML set
@@ -472,37 +446,6 @@ function timeConverter(UNIX_timestamp){
   return time;
 }
 
-
-/**
- * Fetches data from the database according to the user's permissions
- */
-function fetchData(returnFunction = null, args = {}) {
-  if(data != null)
-    returnFunction(data);
-
-  let url = "/ajax/fetch-data.php";
-
-  $.ajax({
-    type: "POST",
-    url: url,
-    data: JSON.stringify(args),
-    contentType: "application/json",
-    success: function(str) {
-      console.log(str);
-
-      // Decode JSON
-      let obj = JSON.parse(str);
-
-      // Set the data to our object
-      data = obj;
-
-      sortData();
-
-      // Call return function if its available
-      if(returnFunction != null) returnFunction(data);
-    }
-  });
-}
 
 
 /**
