@@ -996,7 +996,7 @@
       if ($collection == NULL) {
         $query .= " coll IS NULL"; 
       } else {
-        $query .= " coll = $collection";
+        $query .= " coll = '$collection'";
       }
 
       $query .= " ORDER BY year DESC LIMIT $limit;";
@@ -1147,7 +1147,7 @@
             "individualName" => $row["individualName"]
           ];
         }
-        
+
         // Set return data
         $returnData = [
           "data"    => $rawData[$formID],
@@ -1238,6 +1238,53 @@
         ];
       }
 
+      return $returnData;
+    }
+
+    /**
+     * Get Individual entry matching passed ID.
+     * 
+     * @param individualID The ID of the target entry.
+     * @return returnData An array with code, message, relevant metadata,
+     *   and any data retrieved.
+     */
+    public static function getIndividual($individualID) {
+      $conn = Secret::connectDB("lunch");
+      $returnData = [];
+
+      if (!is_numeric($individualID)) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid individualID"
+        ];
+
+        return $returnData;
+      }
+
+      $query = "SELECT * FROM Individual WHERE individualID = $individualID LIMIT 1;";
+      $result = $conn->query($query);
+
+      if ($result == FALSE) {
+        $returnData = [
+          "code"    => 310,
+          "message" => "Query error"
+        ];
+      } else if ($result->num_rows == 0) {
+        $returnData = [
+          "numRows" => $result->num_rows,
+          "code"    => 120,
+          "message" => "No entries found"
+        ];
+      } else {
+
+        $returnData = [
+          "data"    => $result->fetch_assoc(),
+          "numRows" => $result->num_rows,
+          "code"    => 110,
+          "message" => "Success"
+        ];
+      }
+      
       return $returnData;
     }
 
