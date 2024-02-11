@@ -308,10 +308,17 @@ async function inspectForm(formData) {
     )
   }
 
+  // Display the people attached to this form
+  post("/ajax/admin.php", { function: -1, formID: formData.formID},
+    function(obj) {
+      console.log(obj);
+    }
+  );
+
   // Add a close button so the user isnt stuck
   div.append( $("<center>").append(
     $("<button>")
-      .text("OK")
+      .text("Close")
       .click(async ()=>{ div.remove(); checkBlur(); }),
   ));
   $("body").append(div);
