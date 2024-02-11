@@ -231,10 +231,9 @@ async function inspectForm(formData) {
     displayError("Missing fresh form data");
     return;
   }
+
+  // Display data for testing purposes
   console.log(freshFormData);
-
-
-  // TODO: Fetch fresh form data because display data doesn't divide up pickup days and such
 
   let div = $("<div>", {class: "notification induce-blur"});
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
@@ -308,12 +307,43 @@ async function inspectForm(formData) {
     )
   }
 
-  // Display the people attached to this form
-  // post("/ajax/admin.php", { function: -1, formID: formData.formID},
-  //   function(obj) {
-  //     // console.log(obj);
-  //   }
-  // );
+
+  { // Draw the individuals in a table
+    let table = $("<table>");
+
+    // Create the header for the table
+    table.append($("<tr>").append(
+      $("<th>").text("Name"),
+      $("<th>").text("Actions"),
+    ));
+
+    for(let individual of freshFormData.individuals) {
+      let row = $("<tr>");
+      table.append(row);
+
+      console.log(individual);
+      row.append($("<td>").text(individual.individualName));
+
+      // Make action buttons
+      let viewButton = $("<button>").text("Inspect").click(()=>{
+        post("/ajax/admin.php", {
+          function: -1,
+          individualID: individualData.individualID
+        }, inspectIndividual);
+      });
+      let removeButton = $("<button>").text("Remove from Form").click(()=>{
+        post("/ajax/admin.php", {
+          function: -1,
+          individualID: individualData.individualID,
+          formID: freshFormData.formID
+        }, inspectIndividual);
+      });
+      row.append($("<td>").append(
+        viewButton, removeButton
+      ));
+    }
+    div.append(table);
+  }
 
   // Add a close button so the user isnt stuck
   div.append( $("<center>").append(
