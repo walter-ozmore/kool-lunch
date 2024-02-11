@@ -70,12 +70,17 @@ async function post(url, args = {}, returnFunction = null) {
     if(returnFunction != null) returnFunction(data);
     return data;
   } catch(error) {
+    console.error(
+      "Response String:", response.length,
+      "\nURL: "+url,
+      "\nArgs: ", args,
+      // "\n\n", error, error.stack
+    );
     if(response.length > 0) {
       console.log(response);
       displayError(response);
     }
 
-    if(returnFunction != null) returnFunction(null);
     return null;
   }
 }

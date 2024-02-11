@@ -105,7 +105,7 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         page = urlParams.get('page');
-        console.log(page);
+        // console.log(page);
         // Somehow go to that page
       });
     </script>
