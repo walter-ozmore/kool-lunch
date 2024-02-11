@@ -1218,7 +1218,7 @@
       } else {
         while ($row = $result->fetch_assoc()) {
           if( $row["lunchesNeeded"] != null )
-            $data[] = $row["lunchesNeeded"];
+            $data = $row["lunchesNeeded"];
         }
 
         $returnData = [
