@@ -188,7 +188,7 @@
         if(msg === 0) {
           displayAlert({
             title: "Thank You",
-            text: "Message here", // TODO: Write message here
+            text: "Your form has been submitted.", // TODO: Write message here
             onClose: ()=>{ window.location.href = '/'; }
           });
         } else {

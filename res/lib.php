@@ -24,30 +24,78 @@
       // Data verification checks
       if(isset($args["pickupMon"    ]) && in_array($args["pickupMon"], $boolTypes)) {
         $insertArgs["pickupMon"    ] = $args["pickupMon"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid pickupMon"
+        ];
+
+        return $returnData;
       }
       if(isset($args["pickupTue"    ]) && in_array($args["pickupTue"], $boolTypes)) {
         $insertArgs["pickupTue"    ] = $args["pickupTue"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid pickupTue"
+        ];
+
+        return $returnData;
       }
       if(isset($args["pickupWed"    ]) && in_array($args["pickupWed"], $boolTypes)) {
         $insertArgs["pickupWed"    ] = $args["pickupWed"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid pickupWed"
+        ];
+
+        return $returnData;
       }
       if(isset($args["pickupThu"    ]) && in_array($args["pickupThu"], $boolTypes)) {
         $insertArgs["pickupThu"    ] = $args["pickupThu"];
-      }
-      if(isset($args["timeSubmitted"])) {
-        $insertArgs["timeSubmitted"] = $args["timeSubmitted"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid pickupThu"
+        ];
+
+        return $returnData;
       }
       if(isset($args["location"     ]) && is_string($args["location"])) {
         $insertArgs["location"     ] = $args["location"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid location"
+        ];
+
+        return $returnData;
       }
       if(isset($args["isEnabled"    ]) && in_array($args["isEnabled"], $boolTypes)) {
         $insertArgs["isEnabled"    ] = $args["isEnabled"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid isEnabled"
+        ];
+
+        return $returnData;
       }
       if(isset($args["lunchesNeeded"]) && (0 <= $args["lunchesNeeded"])) {
         $insertArgs["lunchesNeeded"] = $args["lunchesNeeded"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid lunchesNeeded"
+        ];
+        return $returnData;
       }
       if(isset($args["allergies"    ])) {
         $insertArgs["allergies"    ] = $args["allergies"];
+      }
+      if(isset($args["timeSubmitted"])) {
+        $insertArgs["timeSubmitted"] = $args["timeSubmitted"];
       }
 
       // Get insert string
@@ -58,7 +106,7 @@
       $result = $conn->query($query);
       if ($result == FALSE) {
         $returnData = [
-          "code"    => 300,
+          "code"    => 310,
           "message" => "Query error"
         ];
       }
@@ -122,7 +170,7 @@
       $result = $conn->query($query);
       if ($result == FALSE) {
         $returnData = [
-          "code"    => 300,
+          "code"    => 310,
           "message" => "Query error"
         ];
       }
@@ -172,6 +220,9 @@
       if(isset($args["fbm"        ])) $insertArgs["facebookMessenger"] = $args["fbm"        ];
       if(isset($args["preferredContact"])) $insertArgs["preferredContact"] = $args["preferredContact"];
 
+      // Data verification check
+
+
       $insertStr = arrayToInsertString($insertArgs);
 
       $query = "INSERT INTO Individual $insertStr;";
@@ -179,7 +230,7 @@
       $result = $conn->query($query);
       if ($result == FALSE) {
         $returnData = [
-          "code"    => 300,
+          "code"    => 310,
           "message" => "Query error"
         ];
       }
@@ -215,7 +266,15 @@
       $returnData = [];
 
       // Data verification checks
-      if(isset($args["orgName"])) $insertArgs["orgName"] = $args["orgName"];
+      if(isset($args["orgName"])) {
+        $insertArgs["orgName"] = $args["orgName"];
+      } else {
+        $returnData = [
+          "code"    => 210,
+          "message" => "orgName not set"
+        ];
+        return $returnData;
+      }
       if(isset($args["mainContact"]) && is_numeric($args["mainContact"])){
         $insertArgs["mainContact"] = $args["mainContact"];
       } else {$insertArgs["mainContact"] = null;}
@@ -236,7 +295,7 @@
       $result = $conn->query($query);
       if ($result == FALSE) {
         $returnData = [
-          "code"    => 300,
+          "code"    => 310,
           "message" => "Query error"
         ];
       }
@@ -272,7 +331,7 @@
       $returnData = [];
 
       // Data verification checks
-      if (isset($args["formID"])) {
+      if (isset($args["formID"]) && is_numeric($args["formID"])) {
         $insertArgs["formID"] = $args["formID"];
       } else {
         $returnData = [
@@ -313,7 +372,7 @@
       $result = $conn->query($query);
       if ($result == FALSE) {
         $returnData = [
-          "code"    => 300,
+          "code"    => 310,
           "message" => "Query error"
         ];
       }
@@ -349,27 +408,62 @@
       $insertArgs = [];
 
       // Data verification checks
-      if (isset($args["orgID"           ])) {
+      if (isset($args["orgID"           ]) && is_numeric($args["orgID"])) {
         $insertArgs["orgID"] = $args["orgID"];
-      }
-      if (isset($args["timeSubmitted"   ])) {
-        $insertArgs["timeSubmitted"] = $args["timeSubmitted"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid orgID"
+        ];
+
+        return $returnData;
       }
       if (isset($args["weekInTheSummer" ]) && in_array($args["weekInTheSummer"], $boolTypes))
       {
         $insertArgs["weekInTheSummer"] = $args["weekInTheSummer"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid weekInTheSummer"
+        ];
+
+        return $returnData;
       }
       if (isset($args["bagDecoration"   ]) && in_array($args["bagDecoration"], $boolTypes))
       {
         $insertArgs["bagDecoration"] = $args["bagDecoration"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid bagDecoration"
+        ];
+
+        return $returnData;
       }
       if (isset($args["fundraising"    ]) && in_array($args["fundraising"], $boolTypes))
       {
         $insertArgs["fundraising"] = $args["fundraising"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid fundraising"
+        ];
+
+        return $returnData;
       }
       if (isset($args["supplyGathering"]) && in_array($args["supplyGathering"], $boolTypes))
       {
         $insertArgs["supplyGathering"] = $args["supplyGathering"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid supplyGathering"
+        ];
+
+        return $returnData;
+      }
+      if (isset($args["timeSubmitted"   ])) {
+        $insertArgs["timeSubmitted"] = $args["timeSubmitted"];
       }
 
       // Get insert string
@@ -381,7 +475,7 @@
 
       if ($result == FALSE) {
         $returnData = [
-          "code"    => 300,
+          "code"    => 310,
           "message" => "Query error"
         ];
       }
@@ -406,7 +500,7 @@
 
     /**
      * Creates a FormVolunteerLink entry in the database with the given values. It checks
-     * for data validity before calling arrayToInsertString and making the query.
+     * for data validity before calling arrayToInsertString and running the query.
      *
      * @param args The values to be inserted into the database.
      * @return returnData An array with code, message, and relevant metadata. 
@@ -446,7 +540,7 @@
       $result = $conn->query($query);
       if ($result == FALSE) {
         $returnData = [
-          "code"    => 300,
+          "code"    => 310,
           "message" => "Query error"
         ];
       }
