@@ -233,7 +233,6 @@ async function inspectForm(formData) {
   }
 
   // Display data for testing purposes
-  console.log(formData);
   console.log(freshFormData);
 
   let div = $("<div>", {class: "notification induce-blur"});
@@ -308,12 +307,43 @@ async function inspectForm(formData) {
     )
   }
 
-  // Display the people attached to this form
-  // post("/ajax/admin.php", { function: -1, formID: formData.formID},
-  //   function(obj) {
-  //     // console.log(obj);
-  //   }
-  // );
+
+  { // Draw the individuals in a table
+    let table = $("<table>");
+
+    // Create the header for the table
+    table.append($("<tr>").append(
+      $("<th>").text("Name"),
+      $("<th>").text("Actions"),
+    ));
+
+    for(let individual of freshFormData.individuals) {
+      let row = $("<tr>");
+      table.append(row);
+
+      console.log(individual);
+      row.append($("<td>").text(individual.individualName));
+
+      // Make action buttons
+      let viewButton = $("<button>").text("Inspect").click(()=>{
+        post("/ajax/admin.php", {
+          function: -1,
+          individualID: individualData.individualID
+        }, inspectIndividual);
+      });
+      let removeButton = $("<button>").text("Remove from Form").click(()=>{
+        post("/ajax/admin.php", {
+          function: -1,
+          individualID: individualData.individualID,
+          formID: freshFormData.formID
+        }, inspectIndividual);
+      });
+      row.append($("<td>").append(
+        viewButton, removeButton
+      ));
+    }
+    div.append(table);
+  }
 
   // Add a close button so the user isnt stuck
   div.append( $("<center>").append(
