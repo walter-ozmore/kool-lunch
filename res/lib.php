@@ -921,6 +921,114 @@
     }
 
     /**
+     * Get the distinct collections from Donation.
+     *
+     * @return returnData An array with code, message, relevant metadata,
+     *   and any data retrieved.
+    */
+    public static function getCollections() {
+      $conn = Secret::connectDB("lunch");
+      $data = [];
+      $returnData = [];
+
+      $query = "SELECT DISTINCT coll FROM Donation;";
+      $result = $conn-query($query);
+
+      if ($result == FALSE) {
+        $returnData = [
+          "code"    => 310,
+          "message" => "Query error"
+        ];
+      } else if ($result->num_rows == 0) {
+        $returnData = [
+          "numRows" => $result->num_rows,
+          "code"    => 120,
+          "message" => "No entries found"
+        ];
+      } else {
+        while ($row = $result->fetch_assoc()) { $data[] = $row; }
+
+        $returnData = [
+          "data"    => $data,
+          "numRows" => $result->num_rows,
+          "code"    => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
+     * Get the most recent donations for a collection. Optional limit and collection
+     * can be passed, will check whether the limit is valid.
+     *
+     * @param collection The collection to get donations for, defaults to NULL.
+     * @param limit The limit for the query, defaults to 8.
+     * @return returnData An array with code, message, relevant metadata,
+     *   and any data retrieved.
+     */
+    public static function getCollectionDonations($collection = NULL, $limit = 8) {
+      $conn = Secret::connectDB("lunch");
+      $data = [];
+      $returnData = [];
+
+      if ($collection != NULL && !is_string($collection)) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid collection"
+        ];
+
+        return $returnData;
+      }
+
+      if ($limit <= 0) {
+        $returnData = [
+          "code"    => 230,
+          "message" => "Invalid limit value" 
+        ];
+        
+        return $returnData;
+      }
+
+      $query = "SELECT * FROM Donation WHERE";
+      
+      if ($collection == NULL) {
+        $query .= " coll IS NULL"; 
+      } else {
+        $query .= " coll = $collection";
+      }
+
+      $query .= " ORDER BY year DESC LIMIT $limit;";
+
+      $result = $conn->query($query);
+
+      if ($result == FALSE) {
+        $returnData = [
+          "code"    => 310,
+          "message" => "Query error"
+        ];
+      } else if ($result->num_rows == 0) {
+        $returnData = [
+          "numRows" => $result->num_rows,
+          "code"    => 120,
+          "message" => "No entries found"
+        ];
+      } else {
+        while ($row = $result->fetch_assoc()) { $data[] = $row; }
+
+        $returnData = [
+          "data"    => $data,
+          "numRows" => $result->num_rows,
+          "code"    => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
      * Get the most recent donations. Optional limit can be passed, will
      * check whether the limit is valid.
      *
@@ -942,7 +1050,7 @@
         return $returnData;
       }
 
-      $query = "SELECT * FROM Donations ORDER BY year DESC LIMIT $limit;";
+      $query = "SELECT * FROM Donation ORDER BY year DESC LIMIT $limit;";
       $result = $conn->query($query);
 
       if ($result == FALSE) {
@@ -981,7 +1089,6 @@
     public static function getForm($formID) {
       $conn = Secret::connectDB("lunch");
       $resultData = [];
-      $data = [];
 
       if (!is_numeric($formID)) {
         $returnData = [
@@ -1007,10 +1114,9 @@
           "message" => "No matching entries found"
         ];
       } else {
-        while ($row = $result->fetch_assoc()) { $data[] = $row; }
 
         $returnData = [
-          "data"    => $data,
+          "data"    => $result->fetch_assoc(),
           "numRows" => $result->num_rows,
           "code"    => 110,
           "message" => "Success"
@@ -1338,7 +1444,6 @@
      */
     public static function getVolunteer($volunteerFormID) {
       $conn = Secret::connectDB("lunch");
-      $data = [];
       $returnData = [];
 
       // Data verification checks
@@ -1371,10 +1476,9 @@
           "message" => "No matching entries found"
         ];
       } else {
-        while ($row = $result->fetch_assoc()) { $data[] = $row; }
 
         $returnData = [
-          "data"    => $data,
+          "data"    => $result->fetch_assoc(),
           "numRows" => $result->num_rows,
           "code"    => 110,
           "message" => "Success"
