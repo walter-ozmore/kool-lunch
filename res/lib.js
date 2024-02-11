@@ -183,19 +183,23 @@ function inspectVolunteerForm(formData) {
 
   // Add checkbox stuff
   let checkbox;
-  checkbox = $("<input>", {type: "checkbox", disabled: true})
+  checkbox = $("<input>", {type: "checkbox", disabled: true});
+  checkbox.change(function() { updateServer($(this), -1, "value", {formID: formData.formID}) });
   if(formData.weekInTheSummer == "1") checkbox.prop('checked', true);
   div.append( checkbox, $("<label>").text("Week in the summer"), $("<br>"), );
 
-  checkbox = $("<input>", {type: "checkbox", disabled: true})
+  checkbox = $("<input>", {type: "checkbox", disabled: true});
+  checkbox.change(function() { updateServer($(this), -1, "value", {formID: formData.formID}) });
   if(formData.bagDecoration == "1") checkbox.prop('checked', true);
   div.append( checkbox, $("<label>").text("Bag Decoration"), $("<br>"), );
 
-  checkbox = $("<input>", {type: "checkbox", disabled: true})
+  checkbox = $("<input>", {type: "checkbox", disabled: true});
+  checkbox.change(function() { updateServer($(this), -1, "value", {formID: formData.formID}) });
   if(formData.fundraising == "1") checkbox.prop('checked', true);
   div.append( checkbox, $("<label>").text("Fundraising"), $("<br>"), );
 
-  checkbox = $("<input>", {type: "checkbox", disabled: true})
+  checkbox = $("<input>", {type: "checkbox", disabled: true});
+  checkbox.change(function() { updateServer($(this), -1, "value", {formID: formData.formID}) });
   if(formData.supplyGathering == "1") checkbox.prop('checked', true);
   div.append( checkbox, $("<label>").text("Supply Gathering"), $("<br>"), );
 
