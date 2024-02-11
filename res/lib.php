@@ -932,7 +932,7 @@
       $returnData = [];
 
       $query = "SELECT DISTINCT coll FROM Donation;";
-      $result = $conn-query($query);
+      $result = $conn->query($query);
 
       if ($result == FALSE) {
         $returnData = [
@@ -1088,6 +1088,7 @@
      */
     public static function getForm($formID) {
       $conn = Secret::connectDB("lunch");
+      $rawData = [];
       $resultData = [];
 
       if (!is_numeric($formID)) {
@@ -1099,7 +1100,13 @@
         return $returnData;
       }
 
-      $query = "SELECT * FROM Form WHERE FormID=$formID LIMIT 1;";
+      // Query
+      $query = "SELECT f.*, i.individualID, i.individualName"
+               ." FROM FormLink fl"
+               ." INNER JOIN Form f ON f.formID = fl.formID"
+               ." INNER JOIN Individual i ON fl.individualID = i.individualID"
+               ." WHERE f.formID = $formID;";
+
       $result = $conn->query($query);
 
       if ($result == FALSE) {
@@ -1107,16 +1114,43 @@
           "code"    => 310,
           "message" => "Query error"
         ];
-      } else if ($result->num_rows == 0) {
+      } else if ($result->num_rows == 0){
         $returnData = [
           "numRows" => $result->num_rows,
           "code"    => 120,
-          "message" => "No matching entries found"
+          "message" => "No entries found"
         ];
       } else {
-
+        while ($row = $result->fetch_assoc()){
+          $formID = $row["formID"];
+  
+          // If the formID is not already in $data, add it
+          if (!isset($rawData[$formID])) {
+            $rawData[$formID] = [
+              "formID"        => $row["formID"],
+              "pickupMon"     => $row["pickupMon"],
+              "pickupTue"     => $row["pickupTue"],
+              "pickupWed"     => $row["pickupWed"],
+              "pickupThu"     => $row["pickupThu"],
+              "pickupFri"     => $row["pickupFri"],
+              "timeSubmitted" => $row["timeSubmitted"],
+              "location"      => $row["location"],
+              "isEnabled"     => $row["isEnabled"],
+              "lunchesNeeded" => $row["lunchesNeeded"],
+              "allergies"     => $row["allergies"]
+            ];
+          }
+  
+          // Add the individual from this row to data
+          $rawData[$formID]["individuals"][] = [
+            "individualID"   => $row["individualID"],
+            "individualName" => $row["individualName"]
+          ];
+        }
+        
+        // Set return data
         $returnData = [
-          "data"    => $result->fetch_assoc(),
+          "data"    => $rawData[$formID],
           "numRows" => $result->num_rows,
           "code"    => 110,
           "message" => "Success"
