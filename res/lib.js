@@ -237,7 +237,7 @@ async function inspectForm(formData) {
   }
 
   // Display data for testing purposes
-  console.log(freshFormData);
+  // console.log(freshFormData);
 
   let div = $("<div>", {class: "notification induce-blur"});
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
@@ -325,22 +325,18 @@ async function inspectForm(formData) {
       let row = $("<tr>");
       table.append(row);
 
-      console.log(individual);
+      // console.log(individual);
       row.append($("<td>").text(individual.individualName));
 
       // Make action buttons
       let viewButton = $("<button>").text("Inspect").click(()=>{
         post("/ajax/admin.php", {
-          function: -1,
-          individualID: individualData.individualID
-        }, inspectIndividual);
+          function: 17,
+          individualID: individual.individualID
+        }, (obj)=>{inspectIndividual(obj.data);});
       });
-      let removeButton = $("<button>").text("Remove from Form").click(()=>{
-        post("/ajax/admin.php", {
-          function: -1,
-          individualID: individualData.individualID,
-          formID: freshFormData.formID
-        }, inspectIndividual);
+      let removeButton = $("<button>").text("Remove from Form").click(async ()=>{
+
       });
       row.append($("<td>").append(
         viewButton, removeButton
