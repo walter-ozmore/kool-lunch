@@ -231,10 +231,10 @@ async function inspectForm(formData) {
     displayError("Missing fresh form data");
     return;
   }
+
+  // Display data for testing purposes
+  console.log(formData);
   console.log(freshFormData);
-
-
-  // TODO: Fetch fresh form data because display data doesn't divide up pickup days and such
 
   let div = $("<div>", {class: "notification induce-blur"});
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
