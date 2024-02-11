@@ -155,5 +155,11 @@
       $formID = $_POST["formID"];
 
       echo json_encode(Database::deleteForm($formID));
+      break;
+    case 17: // Get an Individual entry
+      $individualID = $_POST["individualID"];
+
+      echo json_encode(Database::getIndividual($individualID));
+      break;
 	}
 ?>
