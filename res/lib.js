@@ -291,7 +291,7 @@ async function inspectForm(formData) {
   // Add enabled checkbox
   divGrid.append(
     $("<label>").text("Enabled:"),
-    $("<input>", {type: "checkbox"})
+    $("<input>", {type: "checkbox", style: "margin-right: auto;"})
       .prop("checked", (freshFormData.isEnabled == 1)? true: false)
       .change(function() {updateServer($(this), 10, "isEnabled", {formID: formData.formID})})
   )
@@ -300,7 +300,7 @@ async function inspectForm(formData) {
   for(let dateStr of ["Mon", "Tue", "Wed", "Thu"]) {
     divGrid.append(
       $("<label>").text("Pickup "+dateStr+":"),
-      $("<input>", {type: "checkbox"})
+      $("<input>", {type: "checkbox", style: "margin-right: auto;"})
         .prop("checked", (freshFormData["pickup"+dateStr] == 1)? true: false)
         .change(function() {
           updateServer($(this), 9, "setValue", { formID: formData.formID, dateStr: dateStr })
