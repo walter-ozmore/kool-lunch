@@ -1,8 +1,8 @@
 $(document).ready(async function() {
 	addPage("Forms", async (page)=>{
-		let data = await post("/ajax/admin.php", {
+		let data = (await post("/ajax/admin.php", {
 			function: 3
-		});
+		})).data;
 
     for(let row of data) {
       // Trim days to match the format of M Tu W Th F

@@ -20,9 +20,9 @@ function inspectOrganizations(organizationsData) {
 
 $(document).ready(async function() {
 	addPage("Organizations", async (page)=>{
-		let data = await post("/ajax/admin.php", {
+		let data = (await post("/ajax/admin.php", {
 			function: 4
-		});
+		})).data;
 
 		let tableDiv = mktable(data, {
 			headerNames: tableHeaderNames,

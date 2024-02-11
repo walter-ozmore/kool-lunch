@@ -44,7 +44,8 @@ function inspectIndividual(individualData) {
   post("/ajax/admin.php", {
     function: 7,
     individualID: individualData.individualID
-  }, (data)=>{
+  }, (json)=>{
+    let data = json.data;
     let formIDEle = $("<p>");
     let volunteerFormIDEle = $("<p>");
     divGrid.append($("<label>").text("Signup Forms:"), formIDEle);
@@ -150,8 +151,8 @@ function inspectVolunteerForm(formData) {
         post("/ajax/admin.php", {
           function: 6,
           formID: formData.volunteerFormID
-        }, (obj)=>{
-          if(obj.code == 0) location.reload();
+        }, (json)=>{
+          if(json.code == 0) location.reload();
         });
       }),
     $("<button>")
@@ -196,16 +197,16 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
   postArgs[valueKey] = value;
 
   // Send the data to the server
-  post("/ajax/admin", postArgs, (obj)=>{
+  post("/ajax/admin", postArgs, (json)=>{
     // Update the value to the server value if it exists
-    if(obj.code == 0 && "value" in obj)
+    if(json.code == 0 && "value" in json)
       if (ele.is(":checkbox"))
-        ele.prop("checked", obj.value);
+        ele.prop("checked", json.value);
       else
-        ele.val(obj.value)
+        ele.val(json.value)
 
     // Failed, set input back
-    if(obj.code != 0)
+    if(json.code != 0)
       if (ele.is(":checkbox"))
         ele.prop("checked", !setValue);
       else
