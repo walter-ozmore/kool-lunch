@@ -23,11 +23,16 @@
   $args["pickupThu"] = $pickupDays["Thu"];
 
   // Create Form entry
-  $formID = Database::createForm($args);
-  if ($formID < 1) {
-    echo -1;
-  }
+  $result = Database::createForm($args);
   unset($args);
+
+  // Verify the Form entry was successful
+	if ($result["code"] != 110) {
+		echo $result["message"];
+		exit();
+	}
+
+  $formID = $result["entryID"];
 
   // Create Pickup entry
   $args = [
@@ -35,11 +40,19 @@
     "pickupTime" => time(),
     "amount" => $_POST["lunchesNeeded"]
   ];
-
-  if(Database::createPickup($args) != 0) {
-    echo -2;
-  }
+  
+  $result = Database::createPickup($args);
   unset($args);
+
+  // Verify the Pickup entry was successful
+  if ($result["code"] != 110) {
+    Database::deleteForm($formID);
+		echo "Error submitting your form. Please try again later.";
+
+    exit();
+	}
+
+  $pickupID = $result["entryID"];
 
   // Create Individual and FormLink entries as needed (based on # adults)
   $adults = $_POST["adults"];
@@ -51,22 +64,35 @@
       "remindStatus" => $adultValues["wantsRemind"]
     ];
 
-    $individualID = Database::createIndividual($args);
-    if ($formID < 1) {
-      echo -3;
-    }
+    $result = Database::createIndividual($args);
     unset($args);
+    
+    // Verify the Individual entry was successful
+    if ($result["code"] != 110) {
+      Database::deletePickup($pickupID);
+      Database::deleteForm($formID);
+      echo "Error submitting your form. Please try again later.";
+      exit();
+    }
 
-    // Get values for the formlink entry
+    $individualID = $result["entryID"];
+
+    // Get values for the FormLink entry
     $args = [
-      "individualID" => $individualID,
+      "individualID" => $result["entryID"],
       "formID"       => $formID
     ];
 
-    if(Database::createFormLink($args) != 0) {
-      echo -4;
-    }
+    $result = Database::createFormLink($args);
     unset($args);
+
+    if ($result["code"] != 110) {
+      Database::deleteIndividual($individualID);
+      Database::deletePickup($pickupID);
+      Database::deleteForm($formID);
+      echo "Error submitting your form. Please try again later.";
+      exit();
+    }
   }
 
   echo 0;
