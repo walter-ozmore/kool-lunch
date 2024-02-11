@@ -1284,6 +1284,15 @@
       $returnData = [];
       $data = [];
 
+      if (!isset($date)) {
+        $returnData = [
+          "code"    => 210,
+          "message" => "date not set"
+        ];
+
+        return $returnData;
+      }
+
       $query = "SELECT f.formID, f.lunchesNeeded, f.location, f.allergies, i.individualName"
               ." FROM FormLink fl"
               ." INNER JOIN Form f ON f.formID = fl.formID"
@@ -1651,7 +1660,7 @@
 
       // Check formID, return if invalid
       $formID = $args["formID"];
-      if (!is_numeric($formID) || $formID < 1) {
+      if (!is_numeric($formID)) {
         $returnData = [
           "code"    => 220,
           "message" => "Invalid formID"
