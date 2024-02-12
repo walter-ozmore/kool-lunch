@@ -404,13 +404,12 @@
      */
     public static function createFormVolunteer($args) {
       $conn = Secret::connectDB("lunch");
-      $boolTypes = [0,1];
       $insertArgs = [];
 
       // Data verification checks
-      if (isset($args["orgID"           ]) && is_numeric($args["orgID"])) {
+      if (isset($args["orgID"]) && is_numeric($args["orgID"])) {
         $insertArgs["orgID"] = $args["orgID"];
-      } else {
+      } else if (isset($args["orgID"])){
         $returnData = [
           "code"    => 200,
           "message" => "Invalid orgID"
@@ -418,49 +417,21 @@
 
         return $returnData;
       }
-      if (isset($args["weekInTheSummer" ]) && in_array($args["weekInTheSummer"], $boolTypes))
+      if (isset($args["weekInTheSummer" ]))
       {
         $insertArgs["weekInTheSummer"] = $args["weekInTheSummer"];
-      } else {
-        $returnData = [
-          "code"    => 200,
-          "message" => "Invalid weekInTheSummer"
-        ];
-
-        return $returnData;
       }
-      if (isset($args["bagDecoration"   ]) && in_array($args["bagDecoration"], $boolTypes))
+      if (isset($args["bagDecoration"   ]))
       {
         $insertArgs["bagDecoration"] = $args["bagDecoration"];
-      } else {
-        $returnData = [
-          "code"    => 200,
-          "message" => "Invalid bagDecoration"
-        ];
-
-        return $returnData;
       }
-      if (isset($args["fundraising"    ]) && in_array($args["fundraising"], $boolTypes))
+      if (isset($args["fundraising"    ]))
       {
         $insertArgs["fundraising"] = $args["fundraising"];
-      } else {
-        $returnData = [
-          "code"    => 200,
-          "message" => "Invalid fundraising"
-        ];
-
-        return $returnData;
       }
-      if (isset($args["supplyGathering"]) && in_array($args["supplyGathering"], $boolTypes))
+      if (isset($args["supplyGathering"]))
       {
         $insertArgs["supplyGathering"] = $args["supplyGathering"];
-      } else {
-        $returnData = [
-          "code"    => 200,
-          "message" => "Invalid supplyGathering"
-        ];
-
-        return $returnData;
       }
       if (isset($args["timeSubmitted"   ])) {
         $insertArgs["timeSubmitted"] = $args["timeSubmitted"];
