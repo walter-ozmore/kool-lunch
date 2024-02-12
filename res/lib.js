@@ -183,19 +183,23 @@ function inspectVolunteerForm(formData) {
 
   // Add checkbox stuff
   let checkbox;
-  checkbox = $("<input>", {type: "checkbox", disabled: true})
+  checkbox = $("<input>", {type: "checkbox", disabled: true});
+  checkbox.change(function() { updateServer($(this), -1, "value", {formID: formData.formID}) });
   if(formData.weekInTheSummer == "1") checkbox.prop('checked', true);
   div.append( checkbox, $("<label>").text("Week in the summer"), $("<br>"), );
 
-  checkbox = $("<input>", {type: "checkbox", disabled: true})
+  checkbox = $("<input>", {type: "checkbox", disabled: true});
+  checkbox.change(function() { updateServer($(this), -1, "value", {formID: formData.formID}) });
   if(formData.bagDecoration == "1") checkbox.prop('checked', true);
   div.append( checkbox, $("<label>").text("Bag Decoration"), $("<br>"), );
 
-  checkbox = $("<input>", {type: "checkbox", disabled: true})
+  checkbox = $("<input>", {type: "checkbox", disabled: true});
+  checkbox.change(function() { updateServer($(this), -1, "value", {formID: formData.formID}) });
   if(formData.fundraising == "1") checkbox.prop('checked', true);
   div.append( checkbox, $("<label>").text("Fundraising"), $("<br>"), );
 
-  checkbox = $("<input>", {type: "checkbox", disabled: true})
+  checkbox = $("<input>", {type: "checkbox", disabled: true});
+  checkbox.change(function() { updateServer($(this), -1, "value", {formID: formData.formID}) });
   if(formData.supplyGathering == "1") checkbox.prop('checked', true);
   div.append( checkbox, $("<label>").text("Supply Gathering"), $("<br>"), );
 
@@ -233,7 +237,7 @@ async function inspectForm(formData) {
   }
 
   // Display data for testing purposes
-  console.log(freshFormData);
+  // console.log(freshFormData);
 
   let div = $("<div>", {class: "notification induce-blur"});
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
@@ -321,22 +325,18 @@ async function inspectForm(formData) {
       let row = $("<tr>");
       table.append(row);
 
-      console.log(individual);
+      // console.log(individual);
       row.append($("<td>").text(individual.individualName));
 
       // Make action buttons
       let viewButton = $("<button>").text("Inspect").click(()=>{
         post("/ajax/admin.php", {
-          function: -1,
-          individualID: individualData.individualID
-        }, inspectIndividual);
+          function: 17,
+          individualID: individual.individualID
+        }, (obj)=>{inspectIndividual(obj.data);});
       });
-      let removeButton = $("<button>").text("Remove from Form").click(()=>{
-        post("/ajax/admin.php", {
-          function: -1,
-          individualID: individualData.individualID,
-          formID: freshFormData.formID
-        }, inspectIndividual);
+      let removeButton = $("<button>").text("Remove from Form").click(async ()=>{
+
       });
       row.append($("<td>").append(
         viewButton, removeButton
