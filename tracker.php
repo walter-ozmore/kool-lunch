@@ -2,12 +2,11 @@
 <html>
   <head>
     <title>Tracker | Kool Lunches</title>
-
+    <meta name="robots" content="noindex">
     <?php
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
     ?>
-
     <style>
       /* Row/Form of information */
       .row {

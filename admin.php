@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Admin | KoolLunches</title>
+    <meta name="robots" content="noindex">
     <?php
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
       require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";

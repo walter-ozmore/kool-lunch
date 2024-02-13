@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Test Cases | Kool Lunches</title>
-
+    <meta name="robots" content="noindex">
     <?php
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
     ?>
