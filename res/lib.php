@@ -122,7 +122,7 @@
           "entryID" => $conn->insert_id,
           "affectedRows" => $conn->affected_rows,
           "code"    => 110,
-          "message" => "Success" 
+          "message" => "Success"
         ];
       }
 
@@ -185,7 +185,7 @@
         $returnData = [
           "affectedRows" => $conn->affected_rows,
           "code"    => 110,
-          "message" => "Success" 
+          "message" => "Success"
         ];
       }
 
@@ -197,7 +197,7 @@
      * for data validity before calling arrayToInsertString and making the query.
      *
      * @param args The values to be inserted into the database.
-     * @return returnData An array with code, message, and relevant metadata. 
+     * @return returnData An array with code, message, and relevant metadata.
      */
     public static function createIndividual($args) {
       $conn = Secret::connectDB("lunch");
@@ -211,7 +211,7 @@
       if(isset($args["firstName" ]) && isset($args["lastName" ]))
         $name = $args["firstName"] ." ". $args["lastName"];
       if(isset($args["name"      ])) $name = $args["name"];
-  
+
       $insertArgs["individualName"] = $name;
 
       // Check for contact info
@@ -246,7 +246,7 @@
           "entryID" => $conn->insert_id,
           "affectedRows" => $conn->affected_rows,
           "code"    => 110,
-          "message" => "Success" 
+          "message" => "Success"
         ];
       }
 
@@ -258,7 +258,7 @@
      * for data validity before calling arrayToInsertString and making the query.
      *
      * @param args The values to be inserted into the database.
-     * @return returnData An array with code, message, and relevant metadata. 
+     * @return returnData An array with code, message, and relevant metadata.
      */
     public static function createOrganization($args) {
       $conn = Secret::connectDB("lunch");
@@ -311,7 +311,7 @@
           "entryID" => $conn->insert_id,
           "affectedRows" => $conn->affected_rows,
           "code"    => 110,
-          "message" => "Success" 
+          "message" => "Success"
         ];
       }
 
@@ -323,7 +323,7 @@
      * for data validity before calling arrayToInsertString and making the query.
      *
      * @param args The values to be inserted into the database.
-     * @return returnData An array with code, message, and relevant metadata. 
+     * @return returnData An array with code, message, and relevant metadata.
      */
     public static function createPickup($args) {
       $conn = Secret::connectDB("lunch");
@@ -358,7 +358,7 @@
           "code"    => 200,
           "message" => "Invalid amount"
         ];
-        
+
         return $returnData;
       }
 
@@ -388,7 +388,7 @@
           "entryID" => $conn->insert_id,
           "affectedRows" => $conn->affected_rows,
           "code"    => 110,
-          "message" => "Success" 
+          "message" => "Success"
         ];
       }
 
@@ -400,7 +400,7 @@
      * for data validity before calling arrayToInsertString and making the query.
      *
      * @param args The values to be inserted into the database.
-     * @return returnData An array with code, message, and relevant metadata. 
+     * @return returnData An array with code, message, and relevant metadata.
      */
     public static function createFormVolunteer($args) {
       $conn = Secret::connectDB("lunch");
@@ -462,7 +462,7 @@
           "entryID" => $conn->insert_id,
           "affectedRows" => $conn->affected_rows,
           "code"    => 110,
-          "message" => "Success" 
+          "message" => "Success"
         ];
       }
 
@@ -474,7 +474,7 @@
      * for data validity before calling arrayToInsertString and running the query.
      *
      * @param args The values to be inserted into the database.
-     * @return returnData An array with code, message, and relevant metadata. 
+     * @return returnData An array with code, message, and relevant metadata.
      */
     public static function createFormVolunteerLink($args) {
       $conn = Secret::connectDB("lunch");
@@ -488,7 +488,7 @@
           "code"    => 200,
           "message" => "Invalid individualID"
         ];
-        
+
         return $returnData;
       }
       if (isset($args["volunteerFormID"]) && (0 < $args["volunteerFormID"])) {
@@ -498,7 +498,7 @@
           "code"    => 200,
           "message" => "Invalid volunteerFormID"
         ];
-        
+
         return $returnData;
       }
 
@@ -526,7 +526,7 @@
         $returnData = [
           "affectedRows" => $conn->affected_rows,
           "code"    => 110,
-          "message" => "Success" 
+          "message" => "Success"
         ];
       }
 
@@ -538,11 +538,11 @@
      * and limits the deletion to one entry.
      *
      * @param formID The ID of the target row.
-     * @return returnData An array with code, message, and relevant metadata. 
+     * @return returnData An array with code, message, and relevant metadata.
      */
     public static function deleteForm($formID) {
       $conn = Secret::connectDB("lunch");
-      if (!is_numeric($formID)) { 
+      if (!is_numeric($formID)) {
         $returnData = [
           "code"    => 220,
           "message" => "Invalid formID"
@@ -581,7 +581,7 @@
      * and limits the deletion to one entry.
      *
      * @param args An array with the IDs of the target row.
-     * @return returnData An array with code, message, and relevant metadata. 
+     * @return returnData An array with code, message, and relevant metadata.
      */
     public static function deleteFormLink($args) {
       $conn = Secret::connectDB("lunch");
@@ -628,7 +628,7 @@
           "message"      => "Success"
         ];
       }
-      
+
       return $returnData;
     }
 
@@ -637,7 +637,7 @@
      * formID is numeric, and limits the deletion to one entry.
      *
      * @param volunteerFormID The ID of the target row.
-     * @return returnData An array with code, message, and relevant metadata. 
+     * @return returnData An array with code, message, and relevant metadata.
      */
     public static function deleteFormVolunteer($volunteerFormID) {
       $conn = Secret::connectDB("lunch");
@@ -671,7 +671,7 @@
           "message"      => "Success"
         ];
       }
-      
+
       return $returnData;
     }
 
@@ -680,7 +680,7 @@
      * formID is numeric, and limits the deletion to one entry.
      *
      * @param individualID The ID of the target row.
-     * @return returnData An array with code, message, and relevant metadata. 
+     * @return returnData An array with code, message, and relevant metadata.
      */
     public static function deleteIndividual($individualID) {
       $conn = Secret::connectDB("lunch");
@@ -714,7 +714,7 @@
           "message"      => "Success"
         ];
       }
-      
+
       return $returnData;
     }
 
@@ -723,7 +723,7 @@
      * ID is numeric, and limits the deletion to one entry.
      *
      * @param orgID The ID of the target row.
-     * @return returnData An array with code, message, and relevant metadata. 
+     * @return returnData An array with code, message, and relevant metadata.
      */
     public static function deleteOrganization($orgID) {
       $conn = Secret::connectDB("lunch");
@@ -757,7 +757,7 @@
           "message"      => "Success"
         ];
       }
-      
+
       return $returnData;
     }
 
@@ -766,7 +766,7 @@
      * ID is numeric, and limits the deletion to one entry.
      *
      * @param pickupID The ID of the target row.
-     * @return returnData An array with code, message, and relevant metadata. 
+     * @return returnData An array with code, message, and relevant metadata.
      */
     public static function deletePickup($pickupID) {
       $conn = Secret::connectDB("lunch");
@@ -800,7 +800,7 @@
           "message"      => "Success"
         ];
       }
-      
+
       return $returnData;
     }
 
@@ -832,7 +832,7 @@
       $query = "SELECT volunteerFormID, timeSubmitted FROM FormVolunteer"
               ." WHERE volunteerFormID ="
               ." (SELECT volunteerFormID FROM FormVolunteerLink WHERE individualID = $individualID);";
-      
+
       $result = $conn->query($query);
 
       if ($result == FALSE) {
@@ -852,7 +852,7 @@
           $data["FormVolunteer"][] = $row;
         }
       }
-      
+
       // Start second query
       $data["Form"] = [];
       $query = "SELECT formID FROM FormLink WHERE individualID = $individualID;";
@@ -956,16 +956,16 @@
       if ($limit <= 0) {
         $returnData = [
           "code"    => 230,
-          "message" => "Invalid limit value" 
+          "message" => "Invalid limit value"
         ];
-        
+
         return $returnData;
       }
 
       $query = "SELECT * FROM Donation WHERE";
-      
+
       if ($collection == NULL) {
-        $query .= " coll IS NULL"; 
+        $query .= " coll IS NULL";
       } else {
         $query .= " coll = '$collection'";
       }
@@ -1015,9 +1015,9 @@
       if ($limit <= 0) {
         $returnData = [
           "code"    => 230,
-          "message" => "Invalid limit value" 
+          "message" => "Invalid limit value"
         ];
-        
+
         return $returnData;
       }
 
@@ -1094,7 +1094,7 @@
       } else {
         while ($row = $result->fetch_assoc()){
           $formID = $row["formID"];
-  
+
           // If the formID is not already in $data, add it
           if (!isset($rawData[$formID])) {
             $rawData[$formID] = [
@@ -1111,7 +1111,7 @@
               "allergies"     => $row["allergies"]
             ];
           }
-  
+
           // Add the individual from this row to data
           $rawData[$formID]["individuals"][] = [
             "individualID"   => $row["individualID"],
@@ -1133,7 +1133,7 @@
 
     /**
      * Get all Form entries and all Individual entries linked to
-     * those Form entries. 
+     * those Form entries.
      *
      * @return returnData An array with code, message, relevant metadata,
      *   and any data retrieved.
@@ -1168,9 +1168,9 @@
       } else {
         while ($row = $result->fetch_assoc()){
           $formID = $row["formID"];
-  
+
           if (!in_array($formID, $order)) {$order[] = $formID;}
-  
+
           // If the formID is not already in $data, add it
           if (!isset($rawData[$formID])) {
             $rawData[$formID] = [
@@ -1187,14 +1187,14 @@
               "allergies"     => $row["allergies"]
             ];
           }
-  
+
           // Add the individual from this row to data
           $rawData[$formID]["individuals"][] = [
             "individualID"   => $row["individualID"],
             "individualName" => $row["individualName"]
           ];
         }
-  
+
         // Place in final array with correct order
         foreach ($order as $formID) {
           $data[] = $rawData[$formID];
@@ -1214,7 +1214,7 @@
 
     /**
      * Get Individual entry matching passed ID.
-     * 
+     *
      * @param individualID The ID of the target entry.
      * @return returnData An array with code, message, relevant metadata,
      *   and any data retrieved.
@@ -1255,13 +1255,13 @@
           "message" => "Success"
         ];
       }
-      
+
       return $returnData;
     }
 
     /**
      * Get all Individual entries.
-     * 
+     *
      * @return returnData An array with code, message, relevant metadata,
      *   and any data retrieved.
      */
@@ -1382,7 +1382,7 @@
         $returnData = [
           "data"    => $data,
           "numRows" => $result->num_rows,
-          "code"    => 110, 
+          "code"    => 110,
           "message" => "Success"
         ];
       }
@@ -1433,7 +1433,7 @@
      * Get all meals for a specific pickup day.
      *
      * @param date The day of the week to check for in three letter format.
-     * 
+     *
      * @return returnData An array with code, message, relevant metadata,
      *   and any data retrieved.
      */
@@ -1488,7 +1488,7 @@
     /**
      * Get all information for an volunteer from FormVolunteer and Individual given
      * a volunteerFormID.
-     * 
+     *
      * @param volunteerFormID The ID of the target volunteer.
      *
      * @return returnData An array with code, message, relevant metadata,
@@ -1508,7 +1508,7 @@
         return $returnData;
       }
 
-      $query = "SELECT fv.*, i.individualName, i.phoneNumber, i.email, i.facebookMessenger, i.preferredContact"
+      $query = "SELECT fv.*, i.individualID, i.individualName, i.phoneNumber, i.email, i.facebookMessenger, i.preferredContact"
               ." FROM FormVolunteerLink as fvl"
               ." INNER JOIN FormVolunteer fv ON fv.volunteerFormID = fvl.volunteerFormID"
               ." INNER JOIN Individual i ON i.individualID = fvl.individualID"
@@ -1551,7 +1551,7 @@
       $data = [];
       $returnData = [];
 
-      $query = "SELECT fv.*, i.individualName, i.phoneNumber, i.email, i.facebookMessenger, i.preferredContact"
+      $query = "SELECT fv.*, i.individualID, i.individualName, i.phoneNumber, i.email, i.facebookMessenger, i.preferredContact"
               ." FROM FormVolunteerLink as fvl"
               ." INNER JOIN FormVolunteer fv ON fv.volunteerFormID = fvl.volunteerFormID"
               ." INNER JOIN Individual i ON i.IndividualID = fvl.individualID"
@@ -1587,7 +1587,7 @@
     /**
      * Update the allergies field for target Form entry. Verifies all values
      * in args are valid.
-     * 
+     *
      * @param args An array containing the new value and the ID for target entry.
      *
      * @return returnData An array with code, message, relevant metadata,
@@ -1644,7 +1644,7 @@
     /**
      * Update the isEnabled field for target Form entry. Verifies all values
      * in args are valid.
-     * 
+     *
      * @param args An array containing the new value and the ID for target entry.
      *
      * @return returnData An array with code, message, relevant metadata,
@@ -1685,14 +1685,14 @@
           "message" => "Success"
         ];
       }
-      
+
       return $returnData;
     }
 
     /**
      * Update the location field for target Form entry. Verifies all values in args
      * are valid.
-     * 
+     *
      * @param args An array containing the new value and the ID for target entry.
      *
      * @return returnData An array with code, message, relevant metadata,
@@ -1741,14 +1741,14 @@
           "message" => "Success"
         ];
       }
-      
+
       return $returnData;
     }
 
     /**
      * Update the lunchesNeeded field for target Form entry. Verifies all values
      * in args are valid.
-     * 
+     *
      * @param args An array containing the new value and the ID for target entry.
      *
      * @return returnData An array with code, message, relevant metadata,
@@ -1797,14 +1797,14 @@
           "message" => "Success"
         ];
       }
-      
+
       return $returnData;
     }
 
      /**
      * Update one of the pickupday fields for target Form entry. Verifies all values in args
      * are valid.
-     * 
+     *
      * @param args An array containing the new value, column to update, and the ID for target entry.
      *
      * @return returnData An array with code, message, relevant metadata,
@@ -1879,7 +1879,7 @@
           "message" => "Success"
         ];
       }
-      
+
       return $returnData;
     }
   }

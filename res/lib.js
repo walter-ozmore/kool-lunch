@@ -216,7 +216,16 @@ function inspectVolunteerForm(formData) {
         });
       }),
     $("<button>")
-      .text("OK")
+      .text("View Individual")
+      .click(()=>{
+        console.log(formData);
+        post("/ajax/admin.php", {
+          function: 17,
+          individualID: formData.individualID
+        }, (obj)=>{inspectIndividual(obj.data);});
+      }),
+    $("<button>")
+      .text("Close")
       .click(async ()=>{ div.remove(); checkBlur(); }),
   ));
   $("body").append(div);
@@ -335,7 +344,7 @@ async function inspectForm(formData) {
           individualID: individual.individualID
         }, (obj)=>{inspectIndividual(obj.data);});
       });
-      let removeButton = $("<button>").text("Remove from Form").click(async ()=>{
+      let removeButton = $("<button>", {disabled: true}).text("Remove from Form").click(async ()=>{
 
       });
       row.append($("<td>").append(
