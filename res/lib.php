@@ -1643,6 +1643,104 @@
     }
 
     /**
+     * Update the bagDecoration field for target FormVolunteer entry. Verifies
+     * all values in args are valid.
+     *
+     * @param args An array containing the new value and the ID for target entry.
+     *
+     * @return returnData An array with code, message, relevant metadata,
+     *   and any data retrieved.
+     */
+    public static function updateBagDecoration($args) {
+      $conn = Secret::connectDB("lunch");
+      $returnData = [];
+
+      // Data verificiation checks
+      if (!is_numeric($args["volunteerFormID"])) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid volunteerFormID"
+        ];
+        return $returnData;
+      }
+      $bagDecoration = $args["bagDecoration"];
+      $volunteerFormID = $args["volunteerFormID"];
+
+      $query = "UPDATE FormVolunteer SET bagDecoration = $bagDecoration WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
+
+      $result = $conn->query($query);
+      if ($result == FALSE) {
+        $returnData = [
+          "code" => 310,
+          "message" => "Query error"
+        ];
+      } else if ($conn->affected_rows == 0){
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 120,
+          "message" => "No matching entries found"
+        ];
+      } else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
+     * Update the fundraising field for target FormVolunteer entry. Verifies
+     * all values in args are valid.
+     *
+     * @param args An array containing the new value and the ID for target entry.
+     *
+     * @return returnData An array with code, message, relevant metadata,
+     *   and any data retrieved.
+     */
+    public static function updateFundraising($args) {
+      $conn = Secret::connectDB("lunch");
+      $returnData = [];
+
+      // Data verificiation checks
+      if (!is_numeric($args["volunteerFormID"])) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid volunteerFormID"
+        ];
+        return $returnData;
+      }
+      $fundraising = $args["fundraising"];
+      $volunteerFormID = $args["volunteerFormID"];
+
+      $query = "UPDATE FormVolunteer SET fundraising = $fundraising WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
+
+      $result = $conn->query($query);
+      if ($result == FALSE) {
+        $returnData = [
+          "code" => 310,
+          "message" => "Query error"
+        ];
+      } else if ($conn->affected_rows == 0){
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 120,
+          "message" => "No matching entries found"
+        ];
+      } else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
      * Update the isEnabled field for target Form entry. Verifies all values
      * in args are valid.
      *
@@ -1862,6 +1960,202 @@
       $query .= " WHERE formID = $formID LIMIT 1;";
       $result = $conn->query($query);
 
+      if ($result == FALSE) {
+        $returnData = [
+          "code" => 310,
+          "message" => "Query error"
+        ];
+      } else if ($conn->affected_rows == 0){
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 120,
+          "message" => "No matching entries found"
+        ];
+      } else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
+     * Update the supplyGathering field for target FormVolunteer entry. Verifies
+     * all values in args are valid.
+     *
+     * @param args An array containing the new value and the ID for target entry.
+     *
+     * @return returnData An array with code, message, relevant metadata,
+     *   and any data retrieved.
+     */
+    public static function updateSupplyGathering($args) {
+      $conn = Secret::connectDB("lunch");
+      $returnData = [];
+
+      // Data verificiation checks
+      if (!is_numeric($args["volunteerFormID"])) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid volunteerFormID"
+        ];
+        return $returnData;
+      }
+      $supplyGathering = $args["supplyGathering"];
+      $volunteerFormID = $args["volunteerFormID"];
+
+      $query = "UPDATE FormVolunteer SET supplyGathering = $supplyGathering WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
+
+      $result = $conn->query($query);
+      if ($result == FALSE) {
+        $returnData = [
+          "code" => 310,
+          "message" => "Query error"
+        ];
+      } else if ($conn->affected_rows == 0){
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 120,
+          "message" => "No matching entries found"
+        ];
+      } else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
+     * Update the individualName field for target Individual entry given a
+     * volunteerFormID. Verifies all values in args are valid.
+     *
+     * @param args An array containing the new value and the ID for target entry.
+     *
+     * @return returnData An array with code, message, relevant metadata,
+     *   and any data retrieved.
+     */
+    public static function updateVolunteerName($args) {
+      $conn = Secret::connectDB("lunch");
+
+      // Data verificiation checks
+      if (!is_numeric($args["volunteerFormID"])) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid volunteerFormID"
+        ];
+        return $returnData;
+      }
+      $volunteerFormID = $args["volunteerFormID"];
+      $individualName = $args["individualName"];
+
+      $query  = "UPDATE Individual SET individualName = $individualName WHERE individualID =";
+      $query .= " (SELECT individualID FROM FormVolunteerLink WHERE volunteerFormID = $volunteerFormID);";
+
+      $result = $conn->query($query);
+      if ($result == FALSE) {
+        $returnData = [
+          "code" => 310,
+          "message" => "Query error"
+        ];
+      } else if ($conn->affected_rows == 0){
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 120,
+          "message" => "No matching entries found"
+        ];
+      } else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
+     * Update the phoneNumber field for target Individual entry given a
+     * volunteerFormID. Verifies all values in args are valid.
+     *
+     * @param args An array containing the new value and the ID for target entry.
+     *
+     * @return returnData An array with code, message, relevant metadata,
+     *   and any data retrieved.
+     */
+    public static function updateVolunteerPhoneNumber($args) {
+      $conn = Secret::connectDB("lunch");
+
+      // Data verificiation checks
+      if (!is_numeric($args["volunteerFormID"])) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid volunteerFormID"
+        ];
+        return $returnData;
+      }
+      $volunteerFormID = $args["volunteerFormID"];
+      $phoneNumber = $args["phoneNumber"];
+
+      $query  = "UPDATE Individual SET phoneNumber = $phoneNumber WHERE individualID =";
+      $query .= " (SELECT individualID FROM FormVolunteerLink WHERE volunteerFormID = $volunteerFormID);";
+
+      $result = $conn->query($query);
+      if ($result == FALSE) {
+        $returnData = [
+          "code" => 310,
+          "message" => "Query error"
+        ];
+      } else if ($conn->affected_rows == 0){
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 120,
+          "message" => "No matching entries found"
+        ];
+      } else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
+     * Update the weekInTheSummer field for target FormVolunteer entry. Verifies
+     * all values in args are valid.
+     *
+     * @param args An array containing the new value and the ID for target entry.
+     *
+     * @return returnData An array with code, message, relevant metadata,
+     *   and any data retrieved.
+     */
+    public static function updateWeekInTheSummer($args) {
+      $conn = Secret::connectDB("lunch");
+      $returnData = [];
+
+      // Data verificiation checks
+      if (!is_numeric($args["volunteerFormID"])) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid volunteerFormID"
+        ];
+        return $returnData;
+      }
+      $weekInTheSummer = $args["weekInTheSummer"];
+      $volunteerFormID = $args["volunteerFormID"];
+
+      $query = "UPDATE FormVolunteer SET weekInTheSummer = $weekInTheSummer WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
+
+      $result = $conn->query($query);
       if ($result == FALSE) {
         $returnData = [
           "code" => 310,

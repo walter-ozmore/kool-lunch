@@ -161,5 +161,53 @@
 
       echo json_encode(Database::getIndividual($individualID));
       break;
+    case 18: // updateWeekInTheSummer
+      $args = [
+        "volunteerFormID" => $_POST["volunteerFormID"],
+        "weekInTheSummer" => $_POST["weekInTheSummer"]
+      ];
+
+      echo json_encode(Database::updateWeekInTheSummer($args));
+      break;
+    case 19: // updateBagDecoration
+      $args = [
+        "volunteerFormID" => $_POST["volunteerFormID"],
+        "bagDecoration"   => $_POST["bagDecoration"]
+      ];
+
+      echo json_encode(Database::updateBagDecoration($args));
+      break;
+    case 20: // updateFundraising
+      $args = [
+        "volunteerFormID" => $_POST["volunteerFormID"],
+        "fundraising"     => $_POST["fundraising"]
+      ];
+
+      echo json_encode(Database::updateFundraising($args));
+      break;
+    case 21: // updateSupplyGathering
+      $args = [
+        "volunteerFormID" => $_POST["volunteerFormID"],
+        "supplyGathering" => $_POST["supplyGathering"]
+      ];
+
+      echo json_encode(Database::updateSupplyGathering($args));
+      break;
+    case 22: // updateVolunteerName
+      $args = [
+        "volunteerFormID" => $_POST["volunteerFormID"],
+        "individualName"  => $_POST["individualName"]
+      ];
+
+      echo json_encode(Database::updateVolunteerName($args));
+      break;
+    case 23: // updateVolunteerPhoneNumber
+      $args = [
+        "volunteerFormID" => $_POST["volunteerFormID"],
+        "phoneNumber"     => $_POST["phoneNumber"]
+      ];
+
+      echo json_encode(Database::updateVolunteerPhoneNumber($args));
+      break;
 	}
 ?>
