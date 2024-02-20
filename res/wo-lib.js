@@ -196,6 +196,10 @@ function mktable(data, args = {}) {
     // Create a row for each entry
     let row = $("<tr>");
 
+    if("rowTrigger" in args) {
+      args["rowTrigger"](row, entry);
+    }
+
     // Check for if the row has a click action
     if("onRowClick" in args) {
       row.click( function() {args["onRowClick"](entry);} );

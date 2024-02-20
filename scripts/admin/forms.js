@@ -38,7 +38,12 @@ $(document).ready(async function() {
 		let tableDiv = mktable(data, {
 			headerNames: tableHeaderNames,
 			triggers: tableTriggers,
-      onRowClick: inspectForm
+      onRowClick: inspectForm,
+      rowTrigger: function(row, rowData) {
+        if(rowData.isEnabled != 1) {
+          row.css({"background-color":"#B9B8B5"})
+        }
+      },
 		});
 		page.append(tableDiv);
 	});
