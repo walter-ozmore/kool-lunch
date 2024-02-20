@@ -207,24 +207,25 @@ async function inspectVolunteerForm(formData) {
   if(formData.facebookMessenger != null) divGrid.append($("<label>").text("Messenger:"), $("<p>").text(formData.facebookMessenger));
 
   // Add checkbox stuff
+  console.log(formData);
   let checkbox;
-  checkbox = $("<input>", {type: "checkbox", disabled: true});
-  checkbox.change(function() { updateServer($(this), -1, "value", {formID: formData.formID}) });
+  checkbox = $("<input>", {type: "checkbox"});
+  checkbox.change(function() { updateServer($(this), 18, "weekInTheSummer", {volunteerFormID: formData.volunteerFormID}); });
   if(formData.weekInTheSummer == "1") checkbox.prop('checked', true);
   div.append( checkbox, $("<label>").text("Week in the summer"), $("<br>"), );
 
-  checkbox = $("<input>", {type: "checkbox", disabled: true});
-  checkbox.change(function() { updateServer($(this), -1, "value", {formID: formData.formID}) });
+  checkbox = $("<input>", {type: "checkbox"});
+  checkbox.change(function() {updateServer($(this), 19, "bagDecoration", {volunteerFormID: formData.volunteerFormID}) });
   if(formData.bagDecoration == "1") checkbox.prop('checked', true);
   div.append( checkbox, $("<label>").text("Bag Decoration"), $("<br>"), );
 
-  checkbox = $("<input>", {type: "checkbox", disabled: true});
-  checkbox.change(function() { updateServer($(this), -1, "value", {formID: formData.formID}) });
+  checkbox = $("<input>", {type: "checkbox"});
+  checkbox.change(function() { updateServer($(this), 20, "fundraising", {volunteerFormID: formData.volunteerFormID}) });
   if(formData.fundraising == "1") checkbox.prop('checked', true);
   div.append( checkbox, $("<label>").text("Fundraising"), $("<br>"), );
 
-  checkbox = $("<input>", {type: "checkbox", disabled: true});
-  checkbox.change(function() { updateServer($(this), -1, "value", {formID: formData.formID}) });
+  checkbox = $("<input>", {type: "checkbox"});
+  checkbox.change(function() { updateServer($(this), 21, "supplyGathering", {volunteerFormID: formData.volunteerFormID}) });
   if(formData.supplyGathering == "1") checkbox.prop('checked', true);
   div.append( checkbox, $("<label>").text("Supply Gathering"), $("<br>"), );
 
