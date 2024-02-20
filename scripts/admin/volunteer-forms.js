@@ -3,7 +3,6 @@ $(document).ready(async function() {
 		let data = (await post("/ajax/admin.php", {
 			function: 1
 		})).data;
-    console.log(data);
 
 		let tableDiv = mktable(data, {
 			headerNames: tableHeaderNames,
