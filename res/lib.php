@@ -1226,7 +1226,8 @@
       if (!is_numeric($individualID)) {
         $returnData = [
           "code"    => 220,
-          "message" => "Invalid individualID"
+          "message" => "Invalid individualID",
+          "args"    => ["individualID"=>$individualID]
         ];
 
         return $returnData;

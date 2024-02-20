@@ -61,9 +61,23 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
  * to see where the user is linked too. The user also has access to edit the user
  * or even delete them as long as they are not tied to another table
  *
+ * If a number is passed in as the data then it will attempt to fetch the data
+ * from the database using function
+ *
  * @param {obj} individualData
  */
-function inspectIndividual(individualData) {
+async function inspectIndividual(individualData) {
+  // Check if this data need to be fetched
+  if (typeof individualData === 'number' || typeof individualData === 'string') {
+    let individualID = individualData;
+    let data = await post("/ajax/admin.php", {
+      function: 17,
+      individualID: individualID
+    });
+    if(data.code < 100 || data.code > 200) return;
+    individualData = data["data"];
+  }
+
   let div = $("<div>", {class: "notification induce-blur"});
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
   div.append(
@@ -163,7 +177,18 @@ function inspectIndividual(individualData) {
 }
 
 
-function inspectVolunteerForm(formData) {
+async function inspectVolunteerForm(formData) {
+  // Check if this data need to be fetched
+  if (typeof formData === 'number' || typeof formData === 'string') {
+    let uniqueID = formData;
+    let data = await post("/ajax/admin.php", {
+      function: 1,
+      volunteerFormID: uniqueID
+    });
+    if(data.code < 100 || data.code > 200) return;
+    formData = data["data"];
+  }
+
   let div = $("<div>", {class: "notification induce-blur"});
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
   div.append(

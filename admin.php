@@ -41,27 +41,37 @@
     </style>
 
     <script>
+      let pages = {};
+
       /**
        * Adds a page to the document by adding the sidebar content
        */
       function addPage(name, func) {
-        let select = function() {
-          // Remove highlights from all other sidebar elements & highlight
-          $("#sidebar").find(".highlight").removeClass("highlight");
-          sidebarEle.addClass("highlight");
-
-          // Clear and pass the page
-          let page = $("#view-pane").empty().show();
-          func(page);
-        };
         let sidebarEle = $("<p>", {class: "clickable"}).text(name);
-        sidebarEle.click(select);
+        sidebarEle.click(()=>{selectPage(name)});
 
         $("#sidebar").append(sidebarEle);
-        if(autoSelected) return;
+        pages[name] = {
+          sidebarEle: sidebarEle,
+          func: func
+        };
+      }
 
-        select();
-        autoSelected = true;
+      function selectPage(index) {
+        // Remove highlights from all other sidebar elements & highlight
+        $("#sidebar").find(".highlight").removeClass("highlight");
+        pages[index].sidebarEle.addClass("highlight");
+
+        // Clear view pane and make a new page to prevent content from one page
+        // from loading on the other
+        let page = $("<div>");
+        let pane = $("#view-pane")
+          .empty()
+          .show()
+          .append(page)
+          .addClass("content")
+        ;
+        pages[index].func(page);
       }
 
       let autoSelected = false;
@@ -104,10 +114,16 @@
           return;
         }
 
+        let val;
         const urlParams = new URLSearchParams(window.location.search);
-        page = urlParams.get('page');
-        // console.log(page);
-        // Somehow go to that page
+
+        // Check if
+        val = urlParams.get('page');
+        if (val !== null) selectPage( urlParams.get('page') );
+
+        // Check if inspect individual is selected
+        val = urlParams.get('InspectIndividual');
+        if (val !== null) await inspectIndividual(val);
       });
     </script>
 
@@ -127,7 +143,7 @@
 		<!-- Dropdown for pages -->
     <div class="admin-container">
       <div class="sidebar content" id="sidebar"></div>
-      <div class="view-pane content" id="view-pane"></div>
+      <div class="view-pane" id="view-pane"></div>
     </div>
 
     <?php include realpath($_SERVER["DOCUMENT_ROOT"])."/res/footer.php"; ?>
