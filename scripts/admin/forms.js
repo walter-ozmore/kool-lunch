@@ -44,6 +44,19 @@ $(document).ready(async function() {
           row.css({"background-color":"#B9B8B5"})
         }
       },
+      onContext: {
+        "Delete": async (row)=>{
+          console.log(row);
+          // Delete form
+          let obj = await post("/ajax/admin.php", {
+            function: 16,
+            formID: row.formID
+          });
+          if(obj.code >= 100 && obj.code < 200) {
+            location.reload();
+          }
+        }
+      }
 		});
 		page.append(tableDiv);
 	});

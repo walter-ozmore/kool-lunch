@@ -94,3 +94,22 @@ input:disabled { cursor:not-allowed }
   background-color: gray;
   cursor: pointer;
 }
+
+
+/* Context menu */
+.context-menu {
+  display: none;
+  position: absolute;
+  background-color: #999;
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+.context-menu * {
+  padding: .25em;
+  margin: 0em;
+}
+.context-menu *:hover {
+  background-color: rgb(100,100,100);
+  cursor: pointer;
+}
