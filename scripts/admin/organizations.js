@@ -27,7 +27,7 @@ $(document).ready(async function() {
 		let tableDiv = mktable(data, {
 			headerNames: tableHeaderNames,
 			triggers: tableTriggers,
-      // onRowClick: inspectOrganizations
+      onRowClick: inspectOrganization
 		});
 		page.append(tableDiv);
 	});

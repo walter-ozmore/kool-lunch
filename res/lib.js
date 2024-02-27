@@ -416,6 +416,9 @@ async function inspectForm(formData) {
   checkBlur();
 }
 
+async function inspectOrganization(orgData) {
+  console.log(orgData);
+}
 
 // Old code
 
