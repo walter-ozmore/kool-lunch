@@ -89,7 +89,7 @@ async function inspectIndividual(individualData) {
   divGrid.append(
     $("<label>").text("Individual Name:"),
     $("<input>", {type: "text", value: individualData.individualName})
-      .change(function() {updateServer($(this), 24, "name", {individualID: individualData.individualID})})
+      .change(function() {updateServer($(this), 24, "individualName", {individualID: individualData.individualID})})
   );
 
   // Show the individual's contact information if they have it
@@ -120,7 +120,7 @@ async function inspectIndividual(individualData) {
   {
     let checkbox;
     checkbox = $("<input>", {type: "checkbox"});
-    checkbox.change(function() { updateServer($(this), 24, "weekInTheSummer", {individualID: individualData.individualID}); });
+    checkbox.change(function() { updateServer($(this), 24, "allowPhotos", {individualID: individualData.individualID}); });
     if(individualData.allowPhotos == "1") checkbox.prop('checked', true);
     div.append( checkbox, $("<label>").text("Allow Photos:"), $("<br>"), );
   }

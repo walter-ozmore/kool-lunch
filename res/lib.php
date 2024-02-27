@@ -1846,14 +1846,14 @@
         $data["allowPhotos"] = $args["allowPhotos"];
       }
       if (isset($args["facebookMessenger"])){
-        if (!is_numeric($args["facebookMessenger"])) {
-          $returnData = [
-            "code"    => 220,
-            "message" => "Invalid facebookMessenger"
-          ];
+        // if (!is_numeric($args["facebookMessenger"])) {
+        //   $returnData = [
+        //     "code"    => 220,
+        //     "message" => "Invalid facebookMessenger"
+        //   ];
 
-          return $returnData;
-        }
+        //   return $returnData;
+        // }
 
         $data["facebookMessenger"] = $args["facebookMessenger"];
       }
@@ -1871,6 +1871,8 @@
       }
 
       $query = "UPDATE Individual SET " . arrayToUpdateString($data) . " WHERE individualID = $individualID;";
+
+      // return $query;
 
       $result = $conn->query($query);
       if ($result == FALSE) {
@@ -2521,17 +2523,22 @@
 
     $formattedValues = [];
     $returnString = "";
+
+    // For each value in the values of data
     foreach ($values as $value) {
+      // if it is numeric or is null, format as is
       if (is_numeric($value) || is_null($value)) {
         $formattedValues[] = $value;
         continue;
       }
+
+      // Otherwise, format as a string
       $formattedValues[] = "'".addslashes($value)."'";
     }
 
     for ($i = 0; $i < count($keys); $i++) {
       if ($i > 0) { $returnString .= ", "; }
-      $returnString .= $keys[$i] . " = " . $values[$i];
+      $returnString .= $keys[$i] . " = " . $formattedValues[$i];
     }
 
     return $returnString;
