@@ -1741,6 +1741,139 @@
     }
 
     /**
+     * Update the corrosponding field in target Individual entry. Verify the values
+     * are valid.
+     * 
+     * @param args An array containing the new value and the ID for hte target entry.
+     * 
+     * @return returnData An array with code, message, and relavent metadata.
+     */
+    public static function updateIndividual($args) {
+      $conn = Secret::connectDB("lunch");
+      $returnData = [];
+      $data = [];
+
+      if (!is_numeric($args["individualID"])) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid individualID"
+        ];
+        return $returnData;
+      }
+      $individualID = $args["individualID"];
+
+      if (isset($args["individualName"])){
+        if (!is_string($args["individualName"])) {
+          $returnData = [
+            "code"    => 220,
+            "message" => "Invalid individualName"
+          ];
+
+          return $returnData;
+        }
+
+        $data["individualName"] = $args["individualName"];
+      }
+      if (isset($args["phoneNumber"])){
+        if (is_null($args["phoneNumber"])) {
+          $returnData = [
+            "code"    => 220,
+            "message" => "Invalid phoneNumber"
+          ];
+
+          return $returnData;
+        }
+
+        $data["phoneNumber"] = $args["phoneNumber"];
+      }
+      if (isset($args["email"])){
+        if (!is_string($args["email"])) {
+          $returnData = [
+            "code"    => 220,
+            "message" => "Invalid email"
+          ];
+
+          return $returnData;
+        }
+
+        $data["email"] = $args["email"];
+      }
+      if (isset($args["remindStatus"])){
+        if (!is_numeric($args["remindStatus"])) {
+          $returnData = [
+            "code"    => 220,
+            "message" => "Invalid remindStatus"
+          ];
+
+          return $returnData;
+        }
+
+        $data["remindStatus"] = $args["remindStatus"];
+      }
+      if (isset($args["allowPhotos"])){
+        if (!is_numeric($args["allowPhotos"])) {
+          $returnData = [
+            "code"    => 220,
+            "message" => "Invalid allowPhotos"
+          ];
+
+          return $returnData;
+        }
+
+        $data["allowPhotos"] = $args["allowPhotos"];
+      }
+      if (isset($args["facebookMessenger"])){
+        if (!is_numeric($args["facebookMessenger"])) {
+          $returnData = [
+            "code"    => 220,
+            "message" => "Invalid facebookMessenger"
+          ];
+
+          return $returnData;
+        }
+
+        $data["facebookMessenger"] = $args["facebookMessenger"];
+      }
+      if (isset($args["preferredContact"])){
+        if (!is_numeric($args["preferredContact"])) {
+          $returnData = [
+            "code"    => 220,
+            "message" => "Invalid preferredContact"
+          ];
+
+          return $returnData;
+        }
+
+        $data["preferredContact"] = $args["preferredContact"];
+      }
+
+      $query = "UPDATE Individual SET " . arrayToUpdateString($data) . " WHERE individualID = $individualID;";
+
+      $result = $conn->query($query);
+      if ($result == FALSE) {
+        $returnData = [
+          "code" => 310,
+          "message" => "Query error"
+        ];
+      } else if ($conn->affected_rows == 0){
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 120,
+          "message" => "No matching entries found"
+        ];
+      } else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+
+    /**
      * Update the isEnabled field for target Form entry. Verifies all values
      * in args are valid.
      *
@@ -2285,5 +2418,27 @@
     $valuesString = implode(', ', $formattedValues);
 
     return "($columnsString) VALUES ($valuesString)";
+  }
+
+  function arrayToUpdateString($data) {
+    $keys = array_keys($data);
+    $values = array_values($data);
+
+    $formattedValues = [];
+    $returnString = "";
+    foreach ($values as $value) {
+      if (is_numeric($value) || is_null($value)) {
+        $formattedValues[] = $value;
+        continue;
+      }
+      $formattedValues[] = "'".addslashes($value)."'";
+    }
+
+    for ($i = 0; $i < $keys.length(); $i++) {
+      if ($i > 0) { $returnString .= ", "; }
+      $returnString .= $keys[$i] . " = " . $values[$i];
+    }
+
+    return $returnString;
   }
 ?>

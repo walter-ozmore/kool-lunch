@@ -209,5 +209,31 @@
 
       echo json_encode(Database::updateVolunteerPhoneNumber($args));
       break;
+    case 24: // UpdateIndividual
+      $args = ["individualID" => $_POST["individualID"]];
+      if (isset($_POST["individualName"])) {
+        $args["individualName"] = $_POST["individualName"];
+      }
+      if (isset($_POST["phoneNumber"])) {
+        $args["phoneNumber"] = $_POST["phoneNumber"];
+      }
+      if (isset($_POST["email"])) {
+        $args["email"] = $_POST["email"];
+      }
+      if (isset($_POST["remindStatus"])) {
+        $args["remindStatus"] = $_POST["remindStatus"];
+      }
+      if (isset($_POST["allowPhotos"])) {
+        $args["allowPhotos"] = $_POST["allowPhotos"];
+      }
+      if (isset($_POST["facebookMessenger"])) {
+        $args["facebookMessenger"] = $_POST["facebookMessenger"];
+      }
+      if (isset($_POST["preferredContact"])) {
+        $args["preferredContact"] = $_POST["preferredContact"];
+      }
+
+      echo json_encode(Database::updateIndividual($args));
+      break;
 	}
 ?>
