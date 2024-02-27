@@ -87,17 +87,43 @@ async function inspectIndividual(individualData) {
 
   // Apply to div grid
   divGrid.append(
-    $("<label>").text("Individual Name:"), $("<p>").text(individualData.individualName),
+    $("<label>").text("Individual Name:"),
+    $("<input>", {type: "text", value: individualData.individualName})
+      .change(function() {updateServer($(this), 24, "name", {individualID: individualData.individualID})})
   );
 
   // Show the individual's contact information if they have it
-  if(individualData.phoneNumber != null) divGrid.append($("<label>").text("Phone Number:"), $("<p>").text(individualData.phoneNumber));
-  if(individualData.email != null) divGrid.append($("<label>").text("Email:"), $("<p>").text(individualData.email));
-  if(individualData.facebookMessenger != null) divGrid.append($("<label>").text("Messenger:"), $("<p>").text(individualData.facebookMessenger));
+  if(individualData.phoneNumber != null)
+    divGrid.append(
+      $("<label>").text("Phone Number:"),
+      $("<input>", {type: "text", value: individualData.phoneNumber})
+        .change(function() {updateServer($(this), 24, "phoneNumber", {individualID: individualData.individualID})})
+    );
+  if(individualData.email != null)
+    divGrid.append(
+      $("<label>").text("Email:"),
+      $("<input>", {type: "text", value: individualData.email})
+        .change(function() {updateServer($(this), 24, "email", {individualID: individualData.individualID})})
+    );
+  if(individualData.facebookMessenger != null)
+    divGrid.append(
+      $("<label>").text("Messenger:"),
+      $("<input>", {type: "text", value: individualData.facebookMessenger})
+        .change(function() {updateServer($(this), 24, "facebookMessenger", {individualID: individualData.individualID})})
+    );
   divGrid.append(
     $("<label>").text("Prefered Contact:"),
-    $("<p>").text((individualData.preferredContact == null)? "None Specified": individualData.preferredContact),
+    $("<input>", {type: "text", value: (individualData.preferredContact == null)? "None Specified": individualData.preferredContact})
+      .change(function() {updateServer($(this), 24, "preferredContact", {individualID: individualData.individualID})})
   );
+
+  {
+    let checkbox;
+    checkbox = $("<input>", {type: "checkbox"});
+    checkbox.change(function() { updateServer($(this), 24, "weekInTheSummer", {individualID: individualData.individualID}); });
+    if(individualData.allowPhotos == "1") checkbox.prop('checked', true);
+    div.append( checkbox, $("<label>").text("Allow Photos:"), $("<br>"), );
+  }
 
   // Create the delete button ahead of time and enabled it later
   let deleteButton = $("<button>", {disabled: true})
