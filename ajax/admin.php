@@ -209,7 +209,7 @@
 
       echo json_encode(Database::updateVolunteerPhoneNumber($args));
       break;
-    case 24: // UpdateIndividual
+    case 24: // updateIndividual
       $args = ["individualID" => $_POST["individualID"]];
       if (isset($_POST["individualName"])) {
         $args["individualName"] = $_POST["individualName"];
@@ -234,6 +234,18 @@
       }
 
       echo json_encode(Database::updateIndividual($args));
+      break;
+    case 25: // updateOrganization
+      $args = ["orgID" => $_POST["orgID"]];
+
+      if (isset($_POST["orgName"])) {
+        $args["orgName"] = $_POST["orgName"];
+      }
+      if (isset($_POST["mainContact"])) {
+        $args["mainContact"] = $_POST["mainContact"];
+      }
+
+      echo json_encode(Database::updateOrganization($args));
       break;
 	}
 ?>

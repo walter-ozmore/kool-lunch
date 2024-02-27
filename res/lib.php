@@ -2033,6 +2033,78 @@
       return $returnData;
     }
 
+    /** 
+     * Update fields for a specific Organization entry using given values.
+     * 
+     * @param args An array containing the new value and the ID for the target entry.
+     * 
+     * @return returnData An array with code, message, and relavent metadata.
+     */
+    public static function updateOrganization($args) {
+      $conn = Secret::connectDB("lunch");
+      $returnData = [];
+      $data = [];
+
+      if (!is_numeric($args["orgID"])) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid orgID"
+        ];
+        return $returnData;
+      }
+      $orgID = $args["orgID"];
+
+      if (isset($args["orgName"])){
+        if (!is_string($args["orgName"])) {
+          $returnData = [
+            "code"    => 220,
+            "message" => "Invalid orgName"
+          ];
+
+          return $returnData;
+        }
+
+        $data["orgName"] = $args["orgName"];
+      }
+
+      if (isset($args["mainContact"])){
+        if (!is_numeric($args["mainContact"])) {
+          $returnData = [
+            "code"    => 220,
+            "message" => "Invalid mainContact"
+          ];
+
+          return $returnData;
+        }
+
+        $data["mainContact"] = $args["mainContact"];
+      }
+
+      $query = "UPDATE Organization SET " . arrayToUpdateString($data) . " WHERE orgID = $orgID;";
+
+      $result = $conn->query($query);
+      if ($result == FALSE) {
+        $returnData = [
+          "code" => 310,
+          "message" => "Query error"
+        ];
+      } else if ($conn->affected_rows == 0){
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 120,
+          "message" => "No matching entries found"
+        ];
+      } else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
      /**
      * Update one of the pickupday fields for target Form entry. Verifies all values in args
      * are valid.
