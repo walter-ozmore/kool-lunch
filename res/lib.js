@@ -126,7 +126,7 @@ async function inspectIndividual(individualData) {
   }
 
   // Create the delete button ahead of time and enabled it later
-  let deleteButton = $("<button>", {disabled: true})
+  let deleteButton = $("<button>")
     .text("Delete")
     .click(async ()=>{post("/ajax/admin.php", {
       function: 8,
