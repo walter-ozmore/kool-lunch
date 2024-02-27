@@ -1858,7 +1858,7 @@
         $data["facebookMessenger"] = $args["facebookMessenger"];
       }
       if (isset($args["preferredContact"])){
-        if (!is_numeric($args["preferredContact"])) {
+        if (!is_string($args["preferredContact"])) {
           $returnData = [
             "code"    => 220,
             "message" => "Invalid preferredContact"
