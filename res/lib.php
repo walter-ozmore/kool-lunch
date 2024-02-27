@@ -551,6 +551,29 @@
         return $returnData;
       }
 
+      $query = "DELETE FROM FormLink WHERE formID = $formID;";
+      $result = $conn->query($query);
+
+      if ($result == FALSE) {
+        $returnData = [
+          "code"         => 310,
+          "message"      => "Query error"
+        ];
+      } else if ($conn->affected_rows == 0) {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code"         => 120,
+          "message"      => "No entries deleted"
+        ];
+      } else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code"         => 110,
+          "message"      => "Success"
+        ];
+      }
+      if (isset($returnData)) {return $returnData;}
+
       $query = "DELETE FROM Form WHERE formID = $formID LIMIT 1;";
       $result = $conn->query($query);
 
@@ -2506,7 +2529,7 @@
       $formattedValues[] = "'".addslashes($value)."'";
     }
 
-    for ($i = 0; $i < $keys.length(); $i++) {
+    for ($i = 0; $i < count($keys); $i++) {
       if ($i > 0) { $returnString .= ", "; }
       $returnString .= $keys[$i] . " = " . $values[$i];
     }
