@@ -1456,10 +1456,10 @@
           ];
           
           // Get information for the signupContact, if set
-          if (!is_null($row["signupContact"])) { continue; }
+          if (is_null($row["signupContact"])) { continue; }
           $signupContactID = $row["signupContact"];
           $signupContactQuery = "SELECT individualName FROM Individual WHERE individualID = $signupContactID LIMIT 1;";
-          $signupContactResult = $conn->query($signupContactID);
+          $signupContactResult = $conn->query($signupContactQuery);
 
           $data["signupContact"] = [
             "individualID"   => $signupContactID,
