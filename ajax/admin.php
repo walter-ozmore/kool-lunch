@@ -83,7 +83,6 @@
       echo json_encode(["code"=>$code]);
       break;
     case 9: // Updates a pickup day for a specific form
-      // TODO: Make this return the updated value
       // Get all args for update
       $args["formID"] = $_POST["formID"];
 

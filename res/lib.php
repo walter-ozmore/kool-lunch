@@ -1440,7 +1440,32 @@
           "message" => "No entries found"
         ];
       } else {
-        while ($row = $result->fetch_assoc()) { $data[] = $row; }
+        while ($row = $result->fetch_assoc()) {
+          // Set the base information for the orgs.
+          $data["orgID"] = $row["orgID"];
+          $data["orgName"] = $row["orgName"];
+          
+          // Get information for the mainContact and set it
+          $mainContactID = $row["mainContact"];
+          $mainContactQuery = "SELECT individualName FROM Individual WHERE individualID = $mainContactID LIMIT 1;";
+          $mainContactResult = $conn->query($mainContactQuery);
+
+          $data["mainContact"] = [
+            "individualID"   => $mainContactID,
+            "individualName" => $mainContactResult->fetch_assoc()["individualName"]
+          ];
+          
+          // Get information for the signupContact, if set
+          if (!is_null($row["signupContact"])) { continue; }
+          $signupContactID = $row["signupContact"];
+          $signupContactQuery = "SELECT individualName FROM Individual WHERE individualID = $signupContactID LIMIT 1;";
+          $signupContactResult = $conn->query($signupContactID);
+
+          $data["signupContact"] = [
+            "individualID"   => $signupContactID,
+            "individualName" => $signupContactResult->fetch_assoc()["individualName"]
+          ];
+        }
 
         $returnData = [
           "data"    => $data,
