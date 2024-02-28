@@ -23,7 +23,7 @@ $(document).ready(async function() {
 		let data = (await post("/ajax/admin.php", {
 			function: 4
 		})).data;
-
+    
     // Pull data out to be one layer
     for(let row of data) {
       if("mainContact" in row) {

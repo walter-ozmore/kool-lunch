@@ -1424,6 +1424,7 @@
       $conn = Secret::connectDB("lunch");
       $returnData = [];
       $data = [];
+      $rawData = [];
 
       $query = "SELECT * FROM Organization ORDER BY orgName;";
       $result = $conn->query($query);
@@ -1442,29 +1443,33 @@
       } else {
         while ($row = $result->fetch_assoc()) {
           // Set the base information for the orgs.
-          $data["orgID"] = $row["orgID"];
-          $data["orgName"] = $row["orgName"];
+          $rawData["orgID"] = $row["orgID"];
+          $rawData["orgName"] = $row["orgName"];
           
           // Get information for the mainContact and set it
           $mainContactID = $row["mainContact"];
-          $mainContactQuery = "SELECT individualName FROM Individual WHERE individualID = $mainContactID LIMIT 1;";
+          $mainContactQuery = "SELECT individualName FROM Individual WHERE individualID = $mainContactID;";
           $mainContactResult = $conn->query($mainContactQuery);
 
-          $data["mainContact"] = [
+          $rawData["mainContact"] = [
             "individualID"   => $mainContactID,
             "individualName" => $mainContactResult->fetch_assoc()["individualName"]
           ];
           
           // Get information for the signupContact, if set
-          if (is_null($row["signupContact"])) { continue; }
-          $signupContactID = $row["signupContact"];
-          $signupContactQuery = "SELECT individualName FROM Individual WHERE individualID = $signupContactID LIMIT 1;";
-          $signupContactResult = $conn->query($signupContactQuery);
+          if (!is_null($row["signupContact"])) {
+            $signupContactID = $row["signupContact"];
+            $signupContactQuery = "SELECT individualName FROM Individual WHERE individualID = $signupContactID;";
+            $signupContactResult = $conn->query($signupContactQuery);
+  
+            $rawData["signupContact"] = [
+              "individualID"   => $signupContactID,
+              "individualName" => $signupContactResult->fetch_assoc()["individualName"]
+            ];
+          }
 
-          $data["signupContact"] = [
-            "individualID"   => $signupContactID,
-            "individualName" => $signupContactResult->fetch_assoc()["individualName"]
-          ];
+          $data[] = $rawData;
+          unset($rawData);
         }
 
         $returnData = [
