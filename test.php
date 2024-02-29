@@ -16,6 +16,12 @@
 
         console.log(data);
       }
+
+      async function postTest() {
+        let obj = JSON.parse($("#postTestJson").val());
+        let data = await post("/ajax/admin.php", obj);
+        console.log(data);
+      }
     </script>
   </head>
 
@@ -27,6 +33,14 @@
     <div class="content">
       <p>User logged in as <span name="account-username"></span></p>
       <button onclick="buttonClick()">Test</button>
+    </div>
+    <div class="content">
+      <h2>Manual Post</h2>
+      <div>
+        <label>Json</label>
+        <textarea id="postTestJson" rows="4" cols="50"></textarea>
+      </div>
+      <button onclick="postTest()">Test</button>
     </div>
   </body>
 
