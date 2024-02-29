@@ -699,6 +699,62 @@
     }
 
     /**
+     * Deletes a FormVolunteerLink entry based on the passed IDs. Verifies the
+     * IDs are numeric and limits the deletion to one entry.
+     *
+     * @param args An array with the IDs of the target row.
+     * @return returnData An array with code, message, and relevant metadata.
+     */
+    public static function deleteFormVolunteerLink($args) {
+      $conn = Secret::connectDB("lunch");
+
+      // Data verification checks
+      if (!is_numeric($volunteerFormID)) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid volunteerFormID"
+        ];
+
+        return $returnData;
+      }
+      if (!is_numeric($args["individualID"])) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid individualID"
+        ];
+
+        return $returnData;
+      }
+
+      $volunteerFormID = $args["volunteerFormID"];
+      $individualID = $args["individualID"];
+
+      $query = "DELETE FROM FormVolunteerLink WHERE volunteerFormID = $volunteerFormID AND individualID = $individualID LIMIT 1;";
+      $result = $conn->query($query);
+
+      if ($result == FALSE) {
+        $returnData = [
+          "code"         => 310,
+          "message"      => "Query error"
+        ];
+      } else if ($conn->affected_rows == 0) {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code"         => 120,
+          "message"      => "No entries deleted"
+        ];
+      } else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code"         => 110,
+          "message"      => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
      * Deletes an Individual entry based on the passed ID. Verifies the
      * formID is numeric, and limits the deletion to one entry.
      *
@@ -1632,6 +1688,55 @@
           "numRows" => $result->num_rows,
           "code"    => 110,
           "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
+     * Search for all individuals with a name containing the provided search term.
+     * 
+     * @param searchTerm The string search term.
+     * 
+     * @return returnData An array with code, message, relevant metadata,
+     *   and any data retrieved.
+     */
+    public static function searchIndividuals($searchTerm) {
+      $conn = Secret::connectDB("lunch");
+
+      if (!is_string($searchTerm)) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid search term"
+        ];
+
+        return $returnData;
+      }
+      $searchString = "%" . $searchTerm . "%";
+
+      $query = "SELECT * FROM Individual WHERE individualName LIKE $searchString ORDER BY LOCATE($searchTerm, individualName);";
+
+      $result = $conn->query($query);
+      if ($result == FALSE) {
+        $returnData = [
+          "code"    => 310,
+          "message" => "Query error"
+        ];
+      } else if ($conn->affected_rows == 0){
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code"         => 120,
+          "message"      => "No matching entries found"
+        ];
+      } else {
+        while ($row = $result->fetch_assoc()) { $data[] = $row; }
+
+        $returnData = [
+          "data"         => $data,
+          "affectedRows" => $conn->affected_rows,
+          "code"         => 110,
+          "message"      => "Success"
         ];
       }
 

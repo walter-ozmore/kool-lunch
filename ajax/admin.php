@@ -246,5 +246,10 @@
 
       echo json_encode(Database::updateOrganization($args));
       break;
+    case 26: // Search individuals
+      $searchTerm = $_POST["searchTerm"];
+
+      echo json_encode(Database::searchIndividuals($searchTerm));
+      break;
 	}
 ?>
