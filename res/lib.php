@@ -1715,8 +1715,8 @@
       }
       $searchString = "%" . $searchTerm . "%";
 
-      $query = "SELECT * FROM Individual WHERE individualName LIKE $searchString ORDER BY LOCATE($searchTerm, individualName);";
-
+      $query = "SELECT * FROM Individual WHERE individualName LIKE '$searchString' ORDER BY LOCATE('$searchTerm', individualName);";
+      
       $result = $conn->query($query);
       if ($result == FALSE) {
         $returnData = [
