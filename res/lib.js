@@ -521,6 +521,10 @@ function searchIndividuals(returnFunction) {
     $("<ui>", {id: "results"}),
     $("<p>", {id: "loadingMessage"}).text("Loading...")
   )
+  div.append($("<button>").text("Cancel").click(()=>{
+    div.remove();
+    checkBlur();
+  }));
   $("body").append(div);
 }
 
