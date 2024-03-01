@@ -92,6 +92,7 @@
 		echo "Error submitting your form. Please try again later.";
 		exit();
 	}
+	echo 0;
 	// // Create the individual
 	// $args = [
 	// 	"firstName"=> $_POST["firstName"],
