@@ -1713,10 +1713,18 @@
 
         return $returnData;
       }
+      $case0 = $searchTerm . "%";
+      $case1 = "%" . $searchTerm;
+      $case2 = "%" . $searchTerm . "%";
 
       $query = "SELECT * FROM Individual";
       $query .= " WHERE MATCH(individualName) AGAINST('$searchTerm' IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION)";
-      $query .= " OR SOUNDEX(individualName) LIKE CONCAT(SUBSTRING(SOUNDEX('$searchTerm'), 1, LENGTH(SOUNDEX(individualName) - 1)), '%');";
+      $query .= " OR SOUNDEX(individualName) LIKE CONCAT(SUBSTRING(SOUNDEX('$searchTerm'), 1, LENGTH(SOUNDEX(individualName) - 1)), '%')";
+      $query .= " ORDER BY CASE";
+      $query .= " WHEN individualName LIKE '$case0' THEN 0";
+      $query .= " WHEN individualName LIKE '$case1' THEN 1";
+      $query .= " WHEN individualName LIKE '$case2' THEN 2";
+      $query .= " ELSE 3 END;";
 
       $result = $conn->query($query);
       if ($result == FALSE) {
