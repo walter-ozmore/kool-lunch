@@ -38,7 +38,48 @@
         background-color: gray;
         color: white;
       }
+
+      #results {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      #results li {
+        cursor: pointer;
+        padding: 5px;
+        border: 1px solid #ccc;
+        margin: 2px;
+      }
+
+      #loadingMessage {
+        display: none;
+      }
     </style>
+
+    <script>
+      // let searchTimeout;
+
+      // function displayResults(results) {
+      //   const resultsList = $('#results');
+      //   resultsList.empty();
+
+      //   // Display the top 5 names
+      //   results.slice(0, 5).forEach((result) => {
+      //     console.log(result)
+      //     const listItem = $('<li>').text(result.individualName);
+      //     listItem.click(() => handleSelection(result));
+      //     resultsList.append(listItem);
+      //   });
+      // }
+
+      // function handleSelection(selectedItem) {
+      //   // Fill in the text box with the selected name
+      //   $('#inputBox').val(selectedItem.individualName);
+
+      //   // Print the entire object to the console
+      //   console.log(selectedItem);
+      // }
+    </script>
 
     <script>
       let pages = {};

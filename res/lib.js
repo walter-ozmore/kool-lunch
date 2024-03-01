@@ -436,6 +436,59 @@ function inspectOrganizations(orgData) {
   checkBlur();
 }
 
+function searchIndividuals(returnFunction) {
+  let searchTimeout;
+  let div = $("<div>", {class: "notification induce-blur"});
+
+  let searchInput = $("<input>", {type: "text", id: "inputBox", placeholder: "Individual's Name Here"});
+  searchInput.on('input', function() {
+    // Handle input
+    clearTimeout(searchTimeout);
+
+    // Get the input value
+    const inputValue = searchInput.val();
+
+    // Show loading message
+    $('#loadingMessage').show();
+    $("#results").empty();
+
+    // Set a timeout to call the 'post' function after 1 second
+    searchTimeout = setTimeout(async () => {
+      try {
+        let returnData = await post("/ajax/admin.php", {function: 26, searchTerm: inputValue});
+        const resultArray = returnData.data;
+
+        // Display the top 5 names
+        const resultsList = $('#results');
+        resultsList.empty();
+
+        // Display the top 5 names
+        resultArray.slice(0, 5).forEach((result) => {
+          const listItem = $('<li>').text(result.individualName);
+          // listItem.click(() => returnFunction(result));
+          listItem.click(()=>{
+            returnFunction(result);
+            div.remove();
+            checkBlur();
+          });
+          resultsList.append(listItem);
+        });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        // Hide loading message
+        $('#loadingMessage').hide();
+      }
+    }, 1000);
+  });
+  div.append(
+    searchInput,
+    $("<ui>", {id: "results"}),
+    $("<p>", {id: "loadingMessage"}).text("Loading...")
+  )
+  $("body").append(div);
+}
+
 // Old code
 
 function blink() {
