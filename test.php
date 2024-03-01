@@ -21,6 +21,57 @@
         let obj = JSON.parse($("#postTestJson").val());
         let data = await post("/ajax/admin.php", obj);
         console.log(data);
+        jsonToHtml($("#output"), data);
+      }
+
+      function syntaxHighlight(json) {
+        if (typeof json != 'string') {
+            json = JSON.stringify(json, undefined, 2);
+        }
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            var cls = 'number';
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'key';
+                } else {
+                    cls = 'string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'boolean';
+            } else if (/null/.test(match)) {
+                cls = 'null';
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+      }
+
+      function jsonToHtml(jqueryObject, data, indent=0) {
+        for(let key in data) {
+          let value = data[key];
+
+          let labelEle = $("<label>").text(key+": ");
+          labelEle.css({color: "blue"});
+          let valueEle = $("<label>");
+
+          if (typeof value === 'object') {
+            valueEle.text( typeof value );
+            if(Array.isArray(value)) {
+              valueEle.text( "Array" );
+            }
+          }
+
+          if(typeof value == "number") {
+            valueEle.text(value);
+            valueEle.css({color: "green"});
+          }
+
+          if(typeof value == "string") {
+            valueEle.text( "\""+value+"\"" );
+            valueEle.css({color: "purple"});
+          }
+          jqueryObject.append(labelEle, valueEle, $("<br>"));
+        }
       }
     </script>
   </head>
@@ -40,7 +91,8 @@
         <label>Json</label>
         <textarea id="postTestJson" rows="4" cols="50"></textarea>
       </div>
-      <button onclick="postTest()">Test</button>
+      <button onclick="postTest()">Post</button>
+      <p id="output"></p>
     </div>
   </body>
 

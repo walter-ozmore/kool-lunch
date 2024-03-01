@@ -6,9 +6,10 @@ async function openSearchWindow(returnFunction) {
     divGrid,
   );
 
+  let nameInput = $("<input>", {type: "text"});
   divGrid.append(
     $("<label>").text("Name"),
-    $("<input>", {type: "text"})
+    nameInput
   );
 
   // Add a close button so the user isnt stuck
@@ -22,7 +23,7 @@ async function openSearchWindow(returnFunction) {
         // Fetch data
         let data = (await post("/ajax/admin.php", {
           function: 26,
-          searchTerm: "brandy"
+          searchTerm: nameInput.val()
         })).data;
         returnFunction(data);
 
@@ -45,6 +46,14 @@ $(document).ready(async function() {
         openSearchWindow((searchResult)=>{
           data = searchResult;
           console.log(data);
+
+          page.empty();
+          let tableDiv = mktable(data, {
+            headerNames: tableHeaderNames,
+            triggers: tableTriggers,
+            // onRowClick: inspectOrganization
+          });
+          page.append(tableDiv);
         });
       })
     ;
