@@ -673,13 +673,35 @@
         return $returnData;
       }
 
+      $query = "DELETE FROM FormVolunteerLink WHERE volunteerFormID = $volunteerFormID;";
+      $result = $conn->query($query);
+
+      // Check deleting links
+      if ($result == FALSE) {
+        $returnData = [
+          "code"         => 310,
+          "message"      => "Query error on deleting FormVolunteerLinks"
+        ];
+      } else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code"         => 110,
+          "message"      => "Success"
+        ];
+      }
+
+      if ($returnData["code"] != 110) {
+        return $returnData;
+      }
+
+
       $query = "DELETE FROM FormVolunteer WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
       $result = $conn->query($query);
 
       if ($result == FALSE) {
         $returnData = [
           "code"         => 310,
-          "message"      => "Query error"
+          "message"      => "Query error on deleting FormVolunteer"
         ];
       } else if ($conn->affected_rows == 0) {
         $returnData = [
