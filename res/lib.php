@@ -610,7 +610,7 @@
       $conn = Secret::connectDB("lunch");
 
       // Data verification checks
-      if (!is_numeric($formID)) {
+      if (!is_numeric($args["formID"])) {
         $returnData = [
           "code"    => 220,
           "message" => "Invalid formID"
@@ -1859,13 +1859,66 @@
     }
 
     /**
+     * Update the individualID field of a FormVolunteerLink entry matching a specific
+     * volunteerFormID.
+     * 
+     * @param args An array containing the new value and the ID for target entry.
+     * 
+     * @return returnData An array with code, message, and relavent metadata.
+     */
+    public static function updateFormVolunteerLink($args) {
+      $conn = Secret::connectDB("lunch");
+      $returnData = [];
+
+      // Data verificiation checks
+      if (!is_numeric($args["volunteerFormID"])) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid volunteerFormID"
+        ];
+        return $returnData;
+      }
+      if (!is_numeric($args["individualID"])) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid individualID"
+        ];
+        return $returnData;
+      }
+      $volunteerFormID = $args["volunteerFormID"];
+      $individualID = $args["individualID"];
+
+      $query = "UPDATE FormVolunteerLink SET individualID = $individualID WHERE volunteerFormID = $volunteerFormID;";
+      $result = $conn->query($query);
+      if ($result == FALSE) {
+        $returnData = [
+          "code" => 310,
+          "message" => "Query error"
+        ];
+      } else if ($conn->affected_rows == 0){
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 120,
+          "message" => "No matching entries found"
+        ];
+      } else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
      * Update the fundraising field for target FormVolunteer entry. Verifies
      * all values in args are valid.
      *
      * @param args An array containing the new value and the ID for target entry.
      *
-     * @return returnData An array with code, message, relevant metadata,
-     *   and any data retrieved.
+     * @return returnData An array with code, message, and relavent metadata.
      */
     public static function updateFundraising($args) {
       $conn = Secret::connectDB("lunch");
