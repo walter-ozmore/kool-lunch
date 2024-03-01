@@ -251,5 +251,14 @@
 
       echo json_encode(Database::searchIndividuals($searchTerm));
       break;
+    case 27: // Attach an individual to a form
+      $individualID = $_POST["individualID"];
+      $formID = $_POST["formID"];
+
+      echo json_encode(Database::createFormLink([
+        "individualID"=>$individualID,
+        "formID"=>$formID
+      ]));
+      break;
 	}
 ?>

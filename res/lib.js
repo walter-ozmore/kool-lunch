@@ -396,9 +396,21 @@ async function inspectForm(formData) {
           individualID: individual.individualID
         }, (obj)=>{inspectIndividual(obj.data);});
       });
-      let removeButton = $("<button>", {disabled: true}).text("Remove from Form").click(async ()=>{
-
-      });
+      let removeButton = $("<button>")
+        .text("Remove from Form")
+        .click(async ()=>{
+          let obj = await post("/ajax/admin.php", {
+            function: 15,
+            formID: formData.formID,
+            individualID: individual.individualID
+          });
+          if(obj.code >= 100 && obj.code < 200) {
+            inspectForm(formData);
+            div.remove();
+            checkBlur();
+          }
+        })
+      ;
       row.append($("<td>").append(
         viewButton, removeButton
       ));
@@ -408,6 +420,18 @@ async function inspectForm(formData) {
 
   // Add a close button so the user isnt stuck
   div.append( $("<center>").append(
+    $("<button>")
+      .text("Add an Individual")
+      .click(()=>searchIndividuals(async (individual)=>{
+        // console.log(individual);
+        await post("/ajax/admin.php", {
+          function: 27,
+          formID: formData.formID,
+          individualID: individual.individualID
+        });
+        inspectForm(formData);
+        div.remove(); checkBlur();
+      })),
     $("<button>")
       .text("Close")
       .click(async ()=>{ div.remove(); checkBlur(); }),
