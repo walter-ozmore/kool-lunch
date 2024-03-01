@@ -1713,10 +1713,11 @@
 
         return $returnData;
       }
-      $searchString = "%" . $searchTerm . "%";
 
-      $query = "SELECT * FROM Individual WHERE individualName LIKE '$searchString' ORDER BY LOCATE('$searchTerm', individualName);";
-      
+      $query = "SELECT * FROM Individual";
+      $query .= " WHERE MATCH(individualName) AGAINST('$searchTerm' IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION)";
+      $query .= " OR SOUNDEX(individualName) LIKE CONCAT(SUBSTRING(SOUNDEX('$searchTerm'), 1, LENGTH(SOUNDEX(individualName) - 1)), '%');";
+
       $result = $conn->query($query);
       if ($result == FALSE) {
         $returnData = [
