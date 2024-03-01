@@ -6,37 +6,35 @@
     <?php
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
       include realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
+      require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
 
       // Grabs and lists all monitary donations to the screen, if there is any
-      // error we just skip it all
+      // error skip
       function drawMonetaryDonations() {
 
         $drawString = "";
 
-        // Connect to the database
-        if (!class_exists('Secret')) return;
-        $conn = Secret::connectDB("lunch");
-        if(isset($conn) == false) return;
-
-
+        $result = Database::getCollections();
+        if ($result["code"] != 110) {return;}
         $drawString .= '<div style="margin-bottom: 1em"> <h2 class="center-text" style="color: black">Monetary Donations</h2>';
+        $drawStringColData = "<center><h3>Unable to retrieve donation information at this time.</h3></center>";
+  
+        $data = $result["data"];
+        foreach ($data as $col) {
+          if ($col["coll"] != NULL) {
+            $drawStringColData = "<center><h3>".$col["coll"]."</h3></center>";
+          } else {
+            $drawStringColData = "<center><h3>Others</h3></center>";
+          }
 
-        $query = "SELECT DISTINCT coll FROM Donation";
-        $list = [];
-        $result = $conn->query( $query );
-        while ($row = $result->fetch_assoc()) {
-          $list[] = $row["coll"];
-        }
+          $drawString .= $drawStringColData;
+          $drawString .=  "<table style='margin: 0em auto;'>";
 
+          $result = Database::getCollectionDonations($col["coll"]);
 
-        for($x = 0;$x < sizeof($list);$x++) {
-          $col = $list[$x];
-          $drawString.= "<center><h3>" . ((strlen($col) > 0)? $col : "Others") . "</h3></center>";
+          $data = $result["data"];
 
-          $drawString.=  "<table style='margin: 0em auto;'>";
-          $query = "SELECT * FROM Donation ".( (strlen($col) > 0)?"WHERE coll='$col' " : "WHERE coll IS NULL ") . "ORDER BY amount DESC";
-          $result = $conn->query( $query );
-          while ($row = $result->fetch_assoc()) {
+          foreach($data as $row) {
             $name = $row["donatorName"];
             $amount = $row["amount"];
             $drawString.=  "
@@ -48,7 +46,10 @@
           }
           $drawString.=  "</table>";
         }
+
         $drawString.=  '</div>';
+
+        echo $drawString;
       }
     ?>
 
@@ -141,7 +142,7 @@
     <div class="content">
       <!-- <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQ15Qlu6CeWJkAIDFFkFgO2MIPIco7-KkOZWg3DJfRJSrrIpordmYhTj-ZnqBoKsDhYiC8ptKGL65NG/embed?start=true&loop=true&delayms=3000&amp;rm=minimal" frameborder="0" class="section"></iframe> -->
 
-      <?php drawMonetaryDonations(); ?>
+      <?php @drawMonetaryDonations();?>
       <div class="center-text thank-you-grid">
         <div>
           <h2>Board Members</h2>
