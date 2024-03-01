@@ -258,6 +258,17 @@ async function inspectVolunteerForm(formData) {
   // Add a close button so the user isnt stuck
   div.append( $("<center>").append(
     $("<button>")
+      .text("Select Individual")
+      .click(()=>searchIndividuals(async (individual)=>{
+        await post("/ajax/admin.php", {
+          function: 28,
+          volunteerFormID: formData.volunteerFormID,
+          individualID: individual.individualID
+        });
+        inspectForm(formData);
+        div.remove(); checkBlur();
+      })),
+    $("<button>")
       .text("Delete")
       .click(async ()=>{
         post("/ajax/admin.php", {

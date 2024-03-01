@@ -260,5 +260,14 @@
         "formID"=>$formID
       ]));
       break;
+    case 28: // Set individual on volunteer form
+      $individualID = $_POST["individualID"];
+      $volunteerFormID = $_POST["volunteerFormID"];
+
+      // echo json_encode(Database::createFormLink([
+      //   "individualID"=>$individualID,
+      //   "volunteerFormID"=>$volunteerFormID
+      // ]));
+      break;
 	}
 ?>
