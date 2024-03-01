@@ -517,7 +517,7 @@ function searchIndividuals(returnFunction) {
     }, 1000);
   });
   div.append(
-    searchInput,
+    searchInput,$("<br>"),
     $("<ui>", {id: "results"}),
     $("<p>", {id: "loadingMessage"}).text("Loading...")
   )
