@@ -13,12 +13,12 @@
       function drawMonetaryDonations() {
 
         $drawString = "";
-
-        $result = Database::getCollections();
+        $result = [];
+        // $result = Database::getCollections();
         if ($result["code"] != 110) {return;}
         $drawString .= '<div style="margin-bottom: 1em"> <h2 class="center-text" style="color: black">Monetary Donations</h2>';
         $drawStringColData = "<center><h3>Unable to retrieve donation information at this time.</h3></center>";
-  
+
         $data = $result["data"];
         foreach ($data as $col) {
           if ($col["coll"] != NULL) {
