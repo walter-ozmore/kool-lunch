@@ -451,7 +451,7 @@ async function inspectForm(formData) {
   checkBlur();
 }
 
-function inspectOrganizations(orgData) {
+function inspectOrganization(orgData) {
   console.log(orgData);
 
   let div = $("<div>", {class: "notification induce-blur"});
