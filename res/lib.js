@@ -267,7 +267,9 @@ async function inspectVolunteerForm(formData) {
           function: 6,
           formID: formData.volunteerFormID
         }, (json)=>{
-          if(json.code == 110) window.location.reload();
+          if(json.code == 110) {
+            window.location.href = window.location.origin + "/admin?page=Volunteer Forms";
+          }
         });
       }),
     $("<button>")
