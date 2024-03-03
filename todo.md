@@ -15,7 +15,7 @@
  - [X] allowPhotos should be on Form, not Individual
  - [x] Add space between formids when inspecting individuals
  - [ ] When inspecting individuals and click on form linked to that individual, the page is just refreshed. FIXME
- - [ ] Needs to show all different contact methods
+ - [x] Needs to show all different contact methods
  - [ ] Add uids to display frontend for individual search
  - [ ] On signup page, pickeruppers -> Continue and Add Adult buttons need to be flipped
 

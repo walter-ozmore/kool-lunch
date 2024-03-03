@@ -93,29 +93,26 @@ async function inspectIndividual(individualData) {
       .change(function() {updateServer($(this), 24, "individualName", {individualID: individualData.individualID})})
   );
 
-  // Show the individual's contact information if they have it
-  if(individualData.phoneNumber != null)
-    divGrid.append(
-      $("<label>").text("Phone Number:"),
-      $("<input>", {type: "text", value: individualData.phoneNumber})
-        .change(function() {updateServer($(this), 24, "phoneNumber", {individualID: individualData.individualID})})
-    );
-  if(individualData.email != null)
-    divGrid.append(
-      $("<label>").text("Email:"),
-      $("<input>", {type: "text", value: individualData.email})
-        .change(function() {updateServer($(this), 24, "email", {individualID: individualData.individualID})})
-    );
-  if(individualData.facebookMessenger != null)
-    divGrid.append(
-      $("<label>").text("Messenger:"),
-      $("<input>", {type: "text", value: individualData.facebookMessenger})
-        .change(function() {updateServer($(this), 24, "facebookMessenger", {individualID: individualData.individualID})})
-    );
+  // Show the individual's contact information
   divGrid.append(
     $("<label>").text("Prefered Contact:"),
     $("<input>", {type: "text", value: (individualData.preferredContact == null)? "None Specified": individualData.preferredContact})
       .change(function() {updateServer($(this), 24, "preferredContact", {individualID: individualData.individualID})})
+  );
+  divGrid.append(
+    $("<label>").text("Phone Number:"),
+    $("<input>", {type: "text", value: individualData.phoneNumber})
+      .change(function() {updateServer($(this), 24, "phoneNumber", {individualID: individualData.individualID})})
+  );
+  divGrid.append(
+    $("<label>").text("Email:"),
+    $("<input>", {type: "text", value: individualData.email})
+      .change(function() {updateServer($(this), 24, "email", {individualID: individualData.individualID})})
+  );
+  divGrid.append(
+    $("<label>").text("Messenger:"),
+    $("<input>", {type: "text", value: individualData.facebookMessenger})
+      .change(function() {updateServer($(this), 24, "facebookMessenger", {individualID: individualData.individualID})})
   );
 
   // Create the delete button ahead of time and enabled it later
