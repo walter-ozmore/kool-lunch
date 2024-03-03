@@ -87,6 +87,7 @@ async function inspectIndividual(individualData) {
 
   // Apply to div grid
   divGrid.append(
+    $("<label>").text("Individual ID:"),$("<p>").text(individualData.individualID),
     $("<label>").text("Individual Name:"),
     $("<input>", {type: "text", value: individualData.individualName})
       .change(function() {updateServer($(this), 24, "individualName", {individualID: individualData.individualID})})
@@ -216,10 +217,12 @@ async function inspectVolunteerForm(formData) {
 
   // Apply to div grid
   divGrid.append(
+    $("<label>").text("Vounteer Form ID:"), $("<p>").text(formData.volunteerFormID),
     $("<label>").text("Individual Name:"), $("<p>").text(formData.individualName),
     $("<label>").text("Time Submitted:"), $("<p>").text(unixToHuman(formData.timeSubmitted)),
   );
 
+  // Only show the contact methods that have data
   if(formData.phoneNumber != null) divGrid.append($("<label>").text("Phone Number:"), $("<p>").text(formData.phoneNumber));
   if(formData.email != null) divGrid.append($("<label>").text("Email:"), $("<p>").text(formData.email));
   if(formData.facebookMessenger != null) divGrid.append($("<label>").text("Messenger:"), $("<p>").text(formData.facebookMessenger));
