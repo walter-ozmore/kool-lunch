@@ -117,14 +117,6 @@ async function inspectIndividual(individualData) {
       .change(function() {updateServer($(this), 24, "preferredContact", {individualID: individualData.individualID})})
   );
 
-  {
-    let checkbox;
-    checkbox = $("<input>", {type: "checkbox"});
-    checkbox.change(function() { updateServer($(this), 24, "allowPhotos", {individualID: individualData.individualID}); });
-    if(individualData.allowPhotos == "1") checkbox.prop('checked', true);
-    div.append( checkbox, $("<label>").text("Allow Photos:"), $("<br>"), );
-  }
-
   // Create the delete button ahead of time and enabled it later
   let deleteButton = $("<button>")
     .text("Delete")
@@ -370,6 +362,14 @@ async function inspectForm(formData) {
       .prop("checked", (freshFormData.isEnabled == 1)? true: false)
       .change(function() {updateServer($(this), 10, "isEnabled", {formID: formData.formID})})
   )
+
+  {
+    let checkbox;
+    checkbox = $("<input>", {type: "checkbox", style: "margin-right: auto;"});
+    checkbox.change(function() { updateServer($(this), 24, "allowPhotos", {formID: formData.formID}); });
+    if(formData.allowPhotos == "1") checkbox.prop('checked', true);
+    divGrid.append( $("<label>").text("Allow Photos:"), checkbox );
+  }
 
   // Add date checkboxes
   for(let dateStr of ["Mon", "Tue", "Wed", "Thu"]) {
