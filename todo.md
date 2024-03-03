@@ -20,4 +20,5 @@
  - [x] DeleteFormVolunteer is not working
  - [x] createFormLink -> Should verify that that individual is not already linked to that form
  - [x] Delete Form/VolunteerForm should auto delete the FormLink/FormVolunteerLink entries for the form
- - [ ] No email for Individual created via Form -> remove that option from the Signup Form frontend
+ - [x] No email for Individual created via Form -> remove that option from the Signup Form frontend
+ - [x] Change DB so that allowPhotos in on the form, not the individual
