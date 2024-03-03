@@ -107,7 +107,7 @@
           return $returnData;
         }
 
-        $data["allowPhotos"] = $args["allowPhotos"];
+        $insertArgs["allowPhotos"] = $args["allowPhotos"];
       }
 
       // Get insert string
