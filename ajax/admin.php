@@ -70,8 +70,8 @@
       // echo json_encode(Database::createPickup($args));
       break;
     case 6:
-      $code = Database::deleteFormVolunteer($_POST["formID"]);
-      echo json_encode(["code"=>$code]);
+      // $code = Database::deleteFormVolunteer($_POST["formID"]);
+      echo json_encode(Database::deleteFormVolunteer($_POST["formID"]));
       break;
     case 7: // Collect all links for a given user
       $individualID = $_POST["individualID"];

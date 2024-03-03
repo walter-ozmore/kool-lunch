@@ -142,7 +142,7 @@
       $returnData = [];
 
       if (isset($args["individualID"]) && is_numeric($args["individualID"])) {
-        $insertArgs["individualID"] = $args["individualID"];
+        $individualID = $args["individualID"];
       } else {
         $returnData = [
           "code"    => 200,
@@ -152,7 +152,7 @@
         return $returnData;
       }
       if (isset($args["formID"]) && is_numeric($args["formID"])) {
-        $insertArgs["formID"] = $args["formID"];
+        $formID = $args["formID"];
       } else {
         $returnData = [
           "code"    => 200,
@@ -162,6 +162,21 @@
         return $returnData;
       }
 
+      // Verify that person is not already linked
+      $checkQuery = "SELECT * FROM FormLink WHERE individualID = $individualID AND formID = $formID";
+      $checkResult = $conn->query($checkQuery);
+      if ($result != 0) {
+        $returnData = [
+          "code"    => 300,
+          "message" => "Invalid link candidate"
+        ];
+        return $returnData;
+      }
+
+      $insertArgs = [
+        "formID"       => $formID,
+        "individualID" => $individualID
+      ];
       // Get insert string
       $insertStr = arrayToInsertString($insertArgs);
 
@@ -557,7 +572,7 @@
       if ($result == FALSE) {
         $returnData = [
           "code"         => 310,
-          "message"      => "Query error"
+          "message"      => "Query error on deleting links"
         ];
       } else if ($conn->affected_rows == 0) {
         $returnData = [
@@ -572,7 +587,7 @@
           "message"      => "Success"
         ];
       }
-      if (isset($returnData)) {return $returnData;}
+      if (isset($returnData) && $returnData["code"] == 310) {return $returnData;}
 
       $query = "DELETE FROM Form WHERE formID = $formID LIMIT 1;";
       $result = $conn->query($query);
@@ -580,7 +595,7 @@
       if ($result == FALSE) {
         $returnData = [
           "code"         => 310,
-          "message"      => "Query error"
+          "message"      => "Query error on deleting form"
         ];
       } else if ($conn->affected_rows == 0) {
         $returnData = [
@@ -676,11 +691,16 @@
       $query = "DELETE FROM FormVolunteerLink WHERE volunteerFormID = $volunteerFormID;";
       $result = $conn->query($query);
 
-      // Check deleting links
       if ($result == FALSE) {
         $returnData = [
           "code"         => 310,
-          "message"      => "Query error on deleting FormVolunteerLinks"
+          "message"      => "Query error on deleting links"
+        ];
+      } else if ($conn->affected_rows == 0) {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code"         => 120,
+          "message"      => "No entries deleted"
         ];
       } else {
         $returnData = [
@@ -689,10 +709,7 @@
           "message"      => "Success"
         ];
       }
-
-      if ($returnData["code"] != 110) {
-        return $returnData;
-      }
+      if (isset($returnData) && $returnData["code"] == 310) {return $returnData;}
 
 
       $query = "DELETE FROM FormVolunteer WHERE volunteerFormID = $volunteerFormID LIMIT 1;";
