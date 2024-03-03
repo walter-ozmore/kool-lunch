@@ -97,6 +97,18 @@
       if(isset($args["timeSubmitted"])) {
         $insertArgs["timeSubmitted"] = $args["timeSubmitted"];
       }
+      if (isset($args["allowPhotos"])){
+        if (!is_numeric($args["allowPhotos"])) {
+          $returnData = [
+            "code"    => 220,
+            "message" => "Invalid allowPhotos"
+          ];
+
+          return $returnData;
+        }
+
+        $data["allowPhotos"] = $args["allowPhotos"];
+      }
 
       // Get insert string
       $insertStr = arrayToInsertString($insertArgs);
@@ -2068,18 +2080,6 @@
         }
 
         $data["remindStatus"] = $args["remindStatus"];
-      }
-      if (isset($args["allowPhotos"])){
-        if (!is_numeric($args["allowPhotos"])) {
-          $returnData = [
-            "code"    => 220,
-            "message" => "Invalid allowPhotos"
-          ];
-
-          return $returnData;
-        }
-
-        $data["allowPhotos"] = $args["allowPhotos"];
       }
       if (isset($args["facebookMessenger"])){
         // if (!is_numeric($args["facebookMessenger"])) {

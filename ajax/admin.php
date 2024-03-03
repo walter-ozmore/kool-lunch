@@ -222,9 +222,6 @@
       if (isset($_POST["remindStatus"])) {
         $args["remindStatus"] = $_POST["remindStatus"];
       }
-      if (isset($_POST["allowPhotos"])) {
-        $args["allowPhotos"] = $_POST["allowPhotos"];
-      }
       if (isset($_POST["facebookMessenger"])) {
         $args["facebookMessenger"] = $_POST["facebookMessenger"];
       }

@@ -12,6 +12,7 @@
     "allergies"     => $_POST["allergies"],
     "location"      => $_POST["pickupLocation"],
     "timeSubmitted" => time(),
+    "allowPhotos"   => $_POST["allowPhotos"],
     "isEnabled"     => 1
   ];
 
