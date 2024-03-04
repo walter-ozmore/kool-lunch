@@ -276,8 +276,8 @@
       </center>
       <div id="pickerUppersDiv"></div>
       <center>
-        <button type="submit" class="large-button" onclick="addPickerUpper();">Add Adult</button>
         <button type="submit" class="large-button" onclick="showBottomSec();">Continue</button>
+        <button type="submit" class="large-button" onclick="addPickerUpper();">Add Adult</button>
       </center>
     </div>
 
