@@ -501,7 +501,8 @@ function searchIndividuals(returnFunction) {
 
         // Display the top 5 names
         resultArray.slice(0, 5).forEach((result) => {
-          const listItem = $('<li>').text(result.individualName);
+          let text = result.individualID+": "+result.individualName;
+          const listItem = $('<li>').text(text);
           // listItem.click(() => returnFunction(result));
           listItem.click(()=>{
             returnFunction(result);

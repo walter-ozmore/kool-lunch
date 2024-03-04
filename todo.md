@@ -12,7 +12,7 @@
  - [x] Add space between formids when inspecting individuals
  - [ ] When inspecting individuals and click on form linked to that individual, the page is just refreshed instead of displaying linked form
  - [x] Needs to show all different contact methods
- - [ ] Add uids to display frontend for individual search
+ - [x] Add uids to display frontend for individual search
  - [x] On signup page, pickeruppers -> Continue and Add Adult buttons need to be flipped
 
 # Rayna's
