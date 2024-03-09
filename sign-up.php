@@ -171,14 +171,15 @@
         }
 
         // Grab the misc section
+        submitObj.allowPhotos = $("#pickupMon").is(":checked")
         submitObj.lunchesNeeded = $("#lunchesNeeded").val();
         submitObj.allergies = $("#allergies").val();
         submitObj.pickupLocation = $("input[name='location']:checked").val();
         submitObj.pickupDays = {
-          Mon: ($("#pickupMon").is(":checked"))? 1: 0,
-          Tue: ($("#pickupTue").is(":checked"))? 1: 0,
-          Wed: ($("#pickupWed").is(":checked"))? 1: 0,
-          Thu: ($("#pickupThu").is(":checked"))? 1: 0,
+          Mon: ($("#pickupMon").is(":checked")),
+          Tue: ($("#pickupTue").is(":checked")),
+          Wed: ($("#pickupWed").is(":checked")),
+          Thu: ($("#pickupThu").is(":checked")),
         };
 
         // Post the data to the server
@@ -286,6 +287,11 @@
         <div class="section">
           <label># Of Lunches Needed</label>
           <input type="number" id="lunchesNeeded" min=1 value=1 required>
+        </div>
+
+        <div class="section">
+          <label>Allow photos?</label>
+          <input type="checkbox" id="photoConsent">
         </div>
 
         <!-- Somehow t -->

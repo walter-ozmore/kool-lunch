@@ -1,16 +1,15 @@
 2 Weeks -> SITE WILL BE SENT TO USERS -> Volunteers and orgs should have full functionality.
 
 # Unassigned
- - [ ] add photo consent to form, disabled by default
- - [x] Volunteer Form -> checkbox for "is 18 or older" -> if under request that they have their parent/guardian signup for them and kick back to homepage
-
  - [ ] Monetary Donations -> Unsure if should show amount, or at all. Ask Brandy next week
  - [ ] Merge function -> Given individualID old and new, replace all individualID-old links with individualID-new (next year)
 
 # Walter's
+ - [x] add photo consent to form, disabled by default
  - [x] allowPhotos should be on Form, not Individual
  - [x] Add space between formids when inspecting individuals
  - [ ] When inspecting individuals and click on form linked to that individual, the page is just refreshed instead of displaying linked form
+ - [x] Volunteer Form -> checkbox for "is 18 or older" -> if under request that they have their parent/guardian signup for them and kick back to homepage
  - [x] Needs to show all different contact methods
  - [x] Add uids to display frontend for individual search
  - [x] On signup page, pickeruppers -> Continue and Add Adult buttons need to be flipped

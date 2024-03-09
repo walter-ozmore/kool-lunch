@@ -41,7 +41,7 @@
     "pickupTime" => time(),
     "amount" => $_POST["lunchesNeeded"]
   ];
-  
+
   $result = Database::createPickup($args);
   unset($args);
 
@@ -67,7 +67,7 @@
 
     $result = Database::createIndividual($args);
     unset($args);
-    
+
     // Verify the Individual entry was successful
     if ($result["code"] != 110) {
       Database::deletePickup($pickupID);
