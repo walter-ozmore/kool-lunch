@@ -174,7 +174,7 @@ async function inspectIndividual(individualData) {
             inspectVolunteerForm(volunteerForm);
           })
       );
-    }inspectIn
+    }
 
     if(data.FormVolunteer.length + data.Form.length <= 0) {
       deleteButton.prop("disabled", false);
