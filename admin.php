@@ -57,31 +57,6 @@
     </style>
 
     <script>
-      // let searchTimeout;
-
-      // function displayResults(results) {
-      //   const resultsList = $('#results');
-      //   resultsList.empty();
-
-      //   // Display the top 5 names
-      //   results.slice(0, 5).forEach((result) => {
-      //     console.log(result)
-      //     const listItem = $('<li>').text(result.individualName);
-      //     listItem.click(() => handleSelection(result));
-      //     resultsList.append(listItem);
-      //   });
-      // }
-
-      // function handleSelection(selectedItem) {
-      //   // Fill in the text box with the selected name
-      //   $('#inputBox').val(selectedItem.individualName);
-
-      //   // Print the entire object to the console
-      //   console.log(selectedItem);
-      // }
-    </script>
-
-    <script>
       let pages = {};
 
       /**
@@ -174,7 +149,6 @@
     <script src="/scripts/admin/volunteer-forms.js"></script>
     <script src="/scripts/admin/individuals.js"></script>
     <script src="/scripts/admin/organizations.js"></script>
-    <script src="/scripts/admin/search-test.js"></script>
   </head>
 
   <header>
