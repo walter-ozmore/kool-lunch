@@ -2,7 +2,7 @@
 
 # Unassigned
  - [ ] add photo consent to form, disabled by default
- - [ ] Volunteer Form -> checkbox for "is 18 or older" -> if under request that they have their parent/guardian signup for them and kick back to homepage
+ - [x] Volunteer Form -> checkbox for "is 18 or older" -> if under request that they have their parent/guardian signup for them and kick back to homepage
 
  - [ ] Monetary Donations -> Unsure if should show amount, or at all. Ask Brandy next week
  - [ ] Merge function -> Given individualID old and new, replace all individualID-old links with individualID-new (next year)
