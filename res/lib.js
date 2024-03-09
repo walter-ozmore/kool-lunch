@@ -454,8 +454,6 @@ async function inspectForm(formData) {
 }
 
 function inspectOrganization(orgData) {
-  console.log(orgData);
-
   let div = $("<div>", {class: "notification induce-blur"});
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
   div.append(
@@ -463,8 +461,39 @@ function inspectOrganization(orgData) {
     divGrid,
   );
 
+  divGrid.append(
+    $("<label>").text("Name:"),
+    $("<input>", {type: "text", value: orgData.orgName})
+      .change(function() {updateServer($(this), 25, "orgName", {orgID: orgData.orgID})}),
+  );
+
+  divGrid.append(
+    $("<label>").text("Main Contact:"),
+    $("<p>").text(orgData.mainContact)
+  );
+
+  divGrid.append(
+    $("<label>").text("Signup Contact:"),
+    $("<p>").text(orgData.signupContact)
+  );
+
   // Add a close button so the user isnt stuck
   div.append( $("<center>").append(
+    $("<button>")
+      .text("Change Main Contact")
+      .click(async ()=>{
+        searchIndividuals(async (result)=>{
+          console.log(result);
+          // TODO: Update our main contact
+          await post("/ajax/admin.php", {
+            function: 25,
+            orgID: orgData.orgID,
+            mainContact: result.individualID
+          });
+          inspectOrganization(orgData);
+          div.remove(); checkBlur();
+        })
+      }),
     $("<button>")
       .text("OK")
       .click(async ()=>{ div.remove(); checkBlur(); }),
