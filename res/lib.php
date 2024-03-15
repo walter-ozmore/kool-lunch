@@ -98,14 +98,6 @@
         $insertArgs["timeSubmitted"] = $args["timeSubmitted"];
       }
       if (isset($args["allowPhotos"])){
-        if (!is_numeric($args["allowPhotos"])) {
-          $returnData = [
-            "code"    => 220,
-            "message" => "Invalid allowPhotos"
-          ];
-
-          return $returnData;
-        }
 
         $insertArgs["allowPhotos"] = $args["allowPhotos"];
       }
