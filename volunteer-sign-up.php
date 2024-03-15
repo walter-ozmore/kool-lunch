@@ -113,6 +113,13 @@
         }
       }
 
+      function sh(number, show=True) {
+        if(show)
+          for(let x=0;x<=number;x++) $('#wait-'+x).show();
+        else
+          for(let x=number; x<10; x++) $('#wait-'+x).hide();
+      }
+
       $(document).ready(function() {
         // Unselect all checkboxes & radio buttons
         $('input[type="checkbox"]').prop('checked', false);
@@ -124,6 +131,10 @@
         $("input[name='volunteer-type']").change(check);
         $("input[name='is-main-contact']").change(check);
         $("input[name='prefer-comms']").change(check);
+
+        $('input[name="age-gate"]').change(function() {
+          sh(0, $(this).is(':checked'));
+        });
       });
     </script>
   </head>
@@ -139,8 +150,13 @@
         <p style="color: rgb(50,50,50)">The KOOL Lunches Program is growing and we are finding more ways for you to get involved! If you wish to get involved, please fill out this form and we will get in touch.</p>
       </div>
 
-
       <div class="section">
+        <input type="checkbox" name="age-gate">
+        <label style="display: inline;">I am 18 or older</label>
+      </div>
+
+
+      <div class="section" id="wait-0" style="display: none">
         <label>Are you signing up yourself or your organization?</label>
         <div class="radio">
           <input type="radio" value="false" name="volunteer-type"><label>I am an individual</label><br>

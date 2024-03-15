@@ -65,13 +65,13 @@ async function post(url, args = {}, returnFunction = null) {
   }
 
   // Parse and return
+  let data;
   try {
-    let data = JSON.parse(response);
-    if(returnFunction != null) returnFunction(data);
-    return data;
+    data = JSON.parse(response);
   } catch(error) {
     console.error(
-      "Response String:", response.length,
+      "Response String:", "'"+response+"'",
+      "\nResponse Length:", response.length,
       "\nURL: "+url,
       "\nArgs: ", args,
       // "\n\n", error, error.stack
@@ -83,6 +83,9 @@ async function post(url, args = {}, returnFunction = null) {
 
     return null;
   }
+
+  if(returnFunction != null) returnFunction(data);
+  return data;
 }
 
 
