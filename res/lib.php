@@ -22,7 +22,7 @@
       $returnData = [];
 
       // Data verification checks
-      if(isset($args["pickupMon"    ]) && in_array($args["pickupMon"], $boolTypes)) {
+      if(isset($args["pickupMon"    ])) {
         $insertArgs["pickupMon"    ] = $args["pickupMon"];
       } else {
         $returnData = [
@@ -32,7 +32,7 @@
 
         return $returnData;
       }
-      if(isset($args["pickupTue"    ]) && in_array($args["pickupTue"], $boolTypes)) {
+      if(isset($args["pickupTue"    ])) {
         $insertArgs["pickupTue"    ] = $args["pickupTue"];
       } else {
         $returnData = [
@@ -42,7 +42,7 @@
 
         return $returnData;
       }
-      if(isset($args["pickupWed"    ]) && in_array($args["pickupWed"], $boolTypes)) {
+      if(isset($args["pickupWed"    ])) {
         $insertArgs["pickupWed"    ] = $args["pickupWed"];
       } else {
         $returnData = [
@@ -52,7 +52,7 @@
 
         return $returnData;
       }
-      if(isset($args["pickupThu"    ]) && in_array($args["pickupThu"], $boolTypes)) {
+      if(isset($args["pickupThu"    ])) {
         $insertArgs["pickupThu"    ] = $args["pickupThu"];
       } else {
         $returnData = [
@@ -62,7 +62,7 @@
 
         return $returnData;
       }
-      if(isset($args["location"     ]) && is_string($args["location"])) {
+      if(isset($args["location"     ])) {
         $insertArgs["location"     ] = $args["location"];
       } else {
         $returnData = [
@@ -72,7 +72,7 @@
 
         return $returnData;
       }
-      if(isset($args["isEnabled"    ]) && in_array($args["isEnabled"], $boolTypes)) {
+      if(isset($args["isEnabled"    ])) {
         $insertArgs["isEnabled"    ] = $args["isEnabled"];
       } else {
         $returnData = [
