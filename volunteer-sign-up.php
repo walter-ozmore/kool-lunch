@@ -110,7 +110,7 @@
             text: "We look forward to working with you and will be in touch soon.",
             onClose: ()=>{
               // Redirect to home page
-              // window.location.href = '/';
+              window.location.href = '/';
             }
           });
         }
