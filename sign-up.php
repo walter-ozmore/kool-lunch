@@ -183,7 +183,9 @@
         };
 
         // Post the data to the server
+        console.log("Submitting:", submitObj);
         let msg = await post("/ajax/su.php", submitObj);
+        console.log("Response:", msg);
 
         // Display job done
         if(msg === 0) {

@@ -23,6 +23,12 @@
   $args["pickupWed"] = $pickupDays["Wed"];
   $args["pickupThu"] = $pickupDays["Thu"];
 
+  // Debug messages to make sure that these boolean are coming over right
+  // echo "pickupMon:". $args["pickupMon"] ."\n";
+  // echo "pickupTue:". $args["pickupTue"] ."\n";
+  // echo "pickupWed:". $args["pickupWed"] ."\n";
+  // echo "pickupThu:". $args["pickupThu"] ."\n";
+
   // Create Form entry
   $result = Database::createForm($args);
   unset($args);

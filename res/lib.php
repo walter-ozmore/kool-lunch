@@ -17,51 +17,25 @@
      */
     public static function createForm($args) {
       $conn = Secret::connectDB("lunch");
-      $boolTypes = [0,1];
       $insertArgs = [];
       $returnData = [];
 
       // Data verification checks
-      if(isset($args["pickupMon"    ])) {
-        $insertArgs["pickupMon"    ] = $args["pickupMon"];
-      } else {
-        $returnData = [
-          "code"    => 200,
-          "message" => "Invalid pickupMon"
-        ];
 
-        return $returnData;
-      }
-      if(isset($args["pickupTue"    ])) {
-        $insertArgs["pickupTue"    ] = $args["pickupTue"];
-      } else {
-        $returnData = [
-          "code"    => 200,
-          "message" => "Invalid pickupTue"
-        ];
+      // Check booleans
+      $boolNames = ["pickupMon", "pickupTue", "pickupWed", "pickupThu", "allowPhotos"];
+      foreach($boolNames as $name) {
+        if(isset($args[$name]) == false)
+          return ["code"=> 200, "message" => "Invalid $name"];
 
-        return $returnData;
+        $bool = toBoolean($args[$name]);
+        # Should only run on null, but $bool==null run when its false
+        if($bool != true && $bool != false)
+          return ["code"=> 200, "message" => "Invalid $name, bool is null. $name=".$args[$name]];
+        $insertArgs[$name] = ($bool)? 1: 0;
       }
-      if(isset($args["pickupWed"    ])) {
-        $insertArgs["pickupWed"    ] = $args["pickupWed"];
-      } else {
-        $returnData = [
-          "code"    => 200,
-          "message" => "Invalid pickupWed"
-        ];
 
-        return $returnData;
-      }
-      if(isset($args["pickupThu"    ])) {
-        $insertArgs["pickupThu"    ] = $args["pickupThu"];
-      } else {
-        $returnData = [
-          "code"    => 200,
-          "message" => "Invalid pickupThu"
-        ];
 
-        return $returnData;
-      }
       if(isset($args["location"     ])) {
         $insertArgs["location"     ] = $args["location"];
       } else {
@@ -96,10 +70,6 @@
       }
       if(isset($args["timeSubmitted"])) {
         $insertArgs["timeSubmitted"] = $args["timeSubmitted"];
-      }
-      if (isset($args["allowPhotos"])){
-
-        $insertArgs["allowPhotos"] = $args["allowPhotos"];
       }
 
       // Get insert string
@@ -1544,7 +1514,7 @@
           // Set the base information for the orgs.
           $rawData["orgID"] = $row["orgID"];
           $rawData["orgName"] = $row["orgName"];
-          
+
           // Get information for the mainContact and set it
           $mainContactID = $row["mainContact"];
           $mainContactQuery = "SELECT individualName FROM Individual WHERE individualID = $mainContactID;";
@@ -1554,13 +1524,13 @@
             "individualID"   => $mainContactID,
             "individualName" => $mainContactResult->fetch_assoc()["individualName"]
           ];
-          
+
           // Get information for the signupContact, if set
           if (!is_null($row["signupContact"])) {
             $signupContactID = $row["signupContact"];
             $signupContactQuery = "SELECT individualName FROM Individual WHERE individualID = $signupContactID;";
             $signupContactResult = $conn->query($signupContactQuery);
-  
+
             $rawData["signupContact"] = [
               "individualID"   => $signupContactID,
               "individualName" => $signupContactResult->fetch_assoc()["individualName"]
@@ -1739,9 +1709,9 @@
 
     /**
      * Search for all individuals with a name containing the provided search term.
-     * 
+     *
      * @param searchTerm The string search term.
-     * 
+     *
      * @return returnData An array with code, message, relevant metadata,
      *   and any data retrieved.
      */
@@ -1904,9 +1874,9 @@
     /**
      * Update the individualID field of a FormVolunteerLink entry matching a specific
      * volunteerFormID.
-     * 
+     *
      * @param args An array containing the new value and the ID for target entry.
-     * 
+     *
      * @return returnData An array with code, message, and relavent metadata.
      */
     public static function updateFormVolunteerLink($args) {
@@ -2006,9 +1976,9 @@
     /**
      * Update the corrosponding field in target Individual entry. Verify the values
      * are valid.
-     * 
+     *
      * @param args An array containing the new value and the ID for hte target entry.
-     * 
+     *
      * @return returnData An array with code, message, and relavent metadata.
      */
     public static function updateIndividual($args) {
@@ -2286,11 +2256,11 @@
       return $returnData;
     }
 
-    /** 
+    /**
      * Update fields for a specific Organization entry using given values.
-     * 
+     *
      * @param args An array containing the new value and the ID for the target entry.
-     * 
+     *
      * @return returnData An array with code, message, and relavent metadata.
      */
     public static function updateOrganization($args) {
@@ -2635,6 +2605,25 @@
 
       return $returnData;
     }
+  }
+
+  /**
+   * Check if the input is a valid boolean, and returns true if the input is
+   * indicating as true and false if its false. If this input is not a boolean
+   * or a string indicating true of false then return null
+   */
+  function toBoolean($input) {
+    // Already a boolean, job done
+    if(is_bool($input)) return $input;
+
+    // Input is not a string, fail
+    if (is_string($input) == false) return null;
+
+    // Maybe its a literal string
+    $input = str_replace([" "], "", strtolower($input));
+    if( $input === "true" ) return true;
+    if( $input === "false" ) return false;
+    return null;
   }
 
   function checkUser() {
