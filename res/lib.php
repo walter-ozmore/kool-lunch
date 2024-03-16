@@ -169,7 +169,7 @@
       // Verify that person is not already linked
       $checkQuery = "SELECT * FROM FormLink WHERE individualID = $individualID AND formID = $formID";
       $checkResult = $conn->query($checkQuery);
-      if ($result != 0) {
+      if ($checkResult->num_rows != 0) {
         $returnData = [
           "code"    => 300,
           "message" => "Invalid link candidate"
