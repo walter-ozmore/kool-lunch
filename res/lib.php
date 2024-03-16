@@ -23,7 +23,7 @@
       // Data verification checks
 
       // Check booleans
-      $boolNames = ["pickupMon", "pickupTue", "pickupWed", "pickupThu", "allowPhotos"];
+      $boolNames = ["pickupMon", "pickupTue", "pickupWed", "pickupThu", "allowPhotos", "isEnabled"];
       foreach($boolNames as $name) {
         if(isset($args[$name]) == false)
           return ["code"=> 200, "message" => "Invalid $name"];
@@ -42,16 +42,6 @@
         $returnData = [
           "code"    => 200,
           "message" => "Invalid location"
-        ];
-
-        return $returnData;
-      }
-      if(isset($args["isEnabled"    ])) {
-        $insertArgs["isEnabled"    ] = $args["isEnabled"];
-      } else {
-        $returnData = [
-          "code"    => 200,
-          "message" => "Invalid isEnabled"
         ];
 
         return $returnData;
@@ -2616,6 +2606,9 @@
     // Already a boolean, job done
     if(is_bool($input)) return $input;
 
+    if( $input === 1 ) return true;
+    if( $input === 0 ) return false;
+
     // Input is not a string, fail
     if (is_string($input) == false) return null;
 
@@ -2623,6 +2616,9 @@
     $input = str_replace([" "], "", strtolower($input));
     if( $input === "true" ) return true;
     if( $input === "false" ) return false;
+
+    if( $input === "1" ) return true;
+    if( $input === "0" ) return false;
     return null;
   }
 
