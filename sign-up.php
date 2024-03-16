@@ -290,8 +290,7 @@
         </div>
 
         <div class="section">
-          <label>Allow photos?</label>
-          <input type="checkbox" id="photoConsent">
+          <input type="checkbox" id="photoConsent"> <label style="display: inline">Allow photos?</label>
         </div>
 
         <!-- Somehow t -->
