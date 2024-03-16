@@ -88,9 +88,9 @@
         };
 
         // Check if part of org, adds information if so
-        let isOrg = $("input[name='volunteer-type']").val();
+        let isOrg = $("input[name='volunteer-type']:checked").val()
         // isOrg is a string, therefore always try by itself
-        if (isOrg == true) {
+        if (isOrg == "true") {
           let org = {
             isMainContact: $("input[name='is-main-contact']").val(),
             orgName: $("#org-name").val()
@@ -108,7 +108,10 @@
           displayAlert({
             title: "Thank You",
             text: "We look forward to working with you and will be in touch soon.",
-            onClose: ()=>{ window.location.href = '/'; }
+            onClose: ()=>{
+              // Redirect to home page
+              // window.location.href = '/';
+            }
           });
         }
       }
@@ -122,8 +125,8 @@
 
       $(document).ready(function() {
         // Unselect all checkboxes & radio buttons
-        $('input[type="checkbox"]').prop('checked', false);
-        $('input[type="radio"]').prop('checked', false);
+        // $('input[type="checkbox"]').prop('checked', false);
+        // $('input[type="radio"]').prop('checked', false);
 
         $("*[name='contact-person']").hide();
 
