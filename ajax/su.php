@@ -48,7 +48,7 @@
   // Verify the Pickup entry was successful
   if ($result["code"] != 110) {
     Database::deleteForm($formID);
-		echo "Error submitting your form. Please try again later.";
+		echo "Error submitting your form. Please try again later 1.";
 
     exit();
 	}
@@ -72,7 +72,7 @@
     if ($result["code"] != 110) {
       Database::deletePickup($pickupID);
       Database::deleteForm($formID);
-      echo "Error submitting your form. Please try again later.";
+      echo "Error submitting your form. Please try again later 2.";
       exit();
     }
 
@@ -88,10 +88,10 @@
     unset($args);
 
     if ($result["code"] != 110) {
-      Database::deleteIndividual($individualID);
-      Database::deletePickup($pickupID);
-      Database::deleteForm($formID);
-      echo "Error submitting your form. Please try again later.";
+      $pu = Database::deletePickup($pickupID);
+      $in = Database::deleteIndividual($individualID);
+      $fm = Database::deleteForm($formID);
+      echo "Error submitting your form. Please try again later 3.";
       exit();
     }
   }
