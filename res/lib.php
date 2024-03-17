@@ -1813,6 +1813,54 @@
     }
 
     /**
+     * Update the allowPhotos field for target Form entry. Verifies all values
+     * in args are valid.
+     *
+     * @param args An array containing the new value and the ID for target entry.
+     *
+     * @return returnData An array with code, message, relevant metadata,
+     *   and any data retrieved.
+     */
+    public static function updateAllowPhotos($args) {
+      $conn = Secret::connectDB("lunch");
+
+      // Data verificiation checks
+      if (!is_numeric($args["formID"])) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid formID"
+        ];
+        return $returnData;
+      }
+      $formID = $args["formID"];
+      $allowPhotos = $args["allowPhotos"];
+
+      $query = "UPDATE Form SET allowPhotos = $allowPhotos WHERE formID = $formID LIMIT 1;";
+
+      $result = $conn->query($query);
+      if ($result == FALSE) {
+        $returnData = [
+          "code" => 310,
+          "message" => "Query error"
+        ];
+      } else if ($conn->affected_rows == 0){
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 120,
+          "message" => "No matching entries found"
+        ];
+      } else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
      * Update the bagDecoration field for target FormVolunteer entry. Verifies
      * all values in args are valid.
      *

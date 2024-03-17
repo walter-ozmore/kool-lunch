@@ -267,5 +267,13 @@
 
       echo json_encode(Database::updateFormVolunteerLink($args));
       break;
+    case 29: // Update allowPhotos
+      $args = [
+        "formID" => $_POST["formID"],
+        "allowPhotos" => $_POST["allowPhotos"]
+      ];
+
+      echo json_encode(Database::updateAllowPhotos($args));
+      break;
 	}
 ?>
