@@ -198,6 +198,7 @@
       if(isset($args["phoneNumber"])) $insertArgs["phoneNumber"      ] = $args["phoneNumber"];
       if(isset($args["fbm"        ])) $insertArgs["facebookMessenger"] = $args["fbm"        ];
       if(isset($args["preferredContact"])) $insertArgs["preferredContact"] = $args["preferredContact"];
+      if(isset($args["remindStatus"])) $insertArgs["remindStatus"] = $args["remindStatus"];
 
       // Data verification check
 
