@@ -1,6 +1,6 @@
 <?php
-	error_reporting(E_ALL);
-	ini_set('display_errors', '1');
+	// error_reporting(E_ALL);
+	// ini_set('display_errors', '1');
 
 	require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
 
@@ -46,7 +46,7 @@
 			if ($org["isMainContact"]) {
 				$args["mainContact"] = $individualID;
 			}
-			
+
 			$result = Database::createOrganization($args);
 			unset($args);
 
@@ -128,7 +128,7 @@
 	// 	if ($org["isMainContact"]) {
 	// 		$args["mainContact"] = $individualID;
 	// 	}
-		
+
 	// 	$result = Database::createOrganization($args);
 	// 	unset($args);
 
