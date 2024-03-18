@@ -115,6 +115,17 @@ async function inspectIndividual(individualData) {
       .change(function() {updateServer($(this), 24, "facebookMessenger", {individualID: individualData.individualID})})
   );
 
+  console.log(individualData, individualData.remindStatus);
+  divGrid.append(
+    $("<label>").text("Remind Status:"),
+    $("<select>", {disabled: true})
+      .append(
+        $("<option>", {value: 0, selected: individualData.remindStatus == 0}).text("No Remind Requested"),
+        $("<option>", {value: 1, selected: individualData.remindStatus == 1}).text("Remind Requested"),
+        $("<option>", {value: 2, selected: individualData.remindStatus == 2}).text("Remind Sent"),
+      )
+  );
+
   // Create the delete button ahead of time and enabled it later
   let deleteButton = $("<button>")
     .text("Delete")
