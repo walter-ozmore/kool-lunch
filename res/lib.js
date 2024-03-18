@@ -133,6 +133,7 @@ async function inspectIndividual(individualData) {
       function: 8,
       individualID: individualData.individualID
     }, (data)=>{
+      // console.log(data);
       if(data.code == 0) location.reload();
     })})
   ;
@@ -279,6 +280,13 @@ async function inspectVolunteerForm(formData) {
           formID: formData.volunteerFormID
         }, (json)=>{
           if(json.code == 110) {
+            // Success
+
+            // Close the window
+            div.remove();
+            checkBlur();
+
+            // Reload table
             window.location.href = window.location.origin + "/admin?page=Volunteer Forms";
           }
         });
