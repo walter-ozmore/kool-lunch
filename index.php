@@ -5,47 +5,99 @@
 
     <?php
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
-      include realpath($_SERVER["DOCUMENT_ROOT"])."/res/db.php";
+      include realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
+      require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
 
+      // Grabs and lists all monitary donations to the screen, if there is any
+      // error skip
       function drawMonetaryDonations() {
-        global $db_conn;
 
-        if(!isset($db_conn)) return;
+        $drawString = "";
+        $result = [];
+        // $result = Database::getCollections();
+        if ($result["code"] != 110) {return;}
+        $drawString .= '<div style="margin-bottom: 1em"> <h2 class="center-text" style="color: black">Monetary Donations</h2>';
+        $drawStringColData = "<center><h3>Unable to retrieve donation information at this time.</h3></center>";
 
-        echo '<div style="margin-bottom: 1em"> <h2 class="center-text" style="color: black">Monetary Donations</h2>';
-        
-        $query = "SELECT DISTINCT coll FROM Donation";
-        $list = [];
-        $result = $db_conn->query( $query );
-        while ($row = $result->fetch_assoc()) {
-          $list[] = $row["coll"];
-        }
+        $data = $result["data"];
+        foreach ($data as $col) {
+          if ($col["coll"] != NULL) {
+            $drawStringColData = "<center><h3>".$col["coll"]."</h3></center>";
+          } else {
+            $drawStringColData = "<center><h3>Others</h3></center>";
+          }
 
+          $drawString .= $drawStringColData;
+          $drawString .=  "<table style='margin: 0em auto;'>";
 
-        for($x = 0;$x < sizeof($list);$x++) {
-          $col = $list[$x];
-          echo "<center><h3>" . ((strlen($col) > 0)? $col : "Others") . "</h3></center>";
+          $result = Database::getCollectionDonations($col["coll"]);
 
-          echo "<table style='margin: 0em auto;'>";
-          $query = "SELECT * FROM Donation ".( (strlen($col) > 0)?"WHERE coll='$col' " : "WHERE coll IS NULL ") . "ORDER BY amount DESC";
-          $result = $db_conn->query( $query );
-          while ($row = $result->fetch_assoc()) {
+          $data = $result["data"];
+
+          foreach($data as $row) {
             $name = $row["donatorName"];
             $amount = $row["amount"];
-            echo "
+            $drawString.=  "
             <tr>
               <td>$$amount</td>
               <td>$name</td>
             </tr>
             ";
           }
-          echo "</table>";
+          $drawString.=  "</table>";
         }
-        echo '</div>';
+
+        $drawString.=  '</div>';
+
+        echo $drawString;
       }
     ?>
 
-    <script src="/scripts/index.js"></script>
+    <script>
+      $(document).ready(function() {
+        addFaq(
+          "Where are the pick-up/drop-off locations?",
+          `Simpson Park - <span class="subtle">Simpson Park is the park by I.W.Evans and L.H.Rather. You can meet us near the pavilion.</span><br><br>
+          Powder Creek Park - <span class="subtle">Powder Creek Park is on South 5th St. in Bonham. You can meet us near the playground.</span><br><br>
+          Pizza Hut - <span class="subtle">Here you can meet us near the back of the parking lot.</span><br><br>
+          Housing Authority T.E.A.M Center building - <span class="subtle">Our lunches are dropped off at 806 W. 16th St. in Bonham. Here you should go into the building to pick up your lunches</span><br><br>`
+        );
+
+        addFaq(
+          "I've signed up to receive Kool Lunches. What should I expect?",
+          "Once we receive your form, your name is automatically added to the next serving day and you will be able to start picking up then. All lunches are free for children in our community."
+        );
+
+        addFaq(
+          "What can be found in the sack lunch?",
+          "Everyone who signs up will pick up a sack lunch consisting of a sandwich -peanut butter and jelly Tuesdays and Thursdays and meat (turkey or bologna) and cheese Mondays and Wednesdays-, chips, fruit cup, dessert and a juice. Sometimes, notes and other surprises can be found as well."
+        );
+
+        addFaq(
+          "My child has food allergies? Can we still participate?",
+          "Absolutely! Your lunches will be packed in a white bag with a label on the front with your child's name and their allergens listed. Your name will also be highlighted on the check off sheet and your drop off volunteer will be made aware of your situation. Brandy takes care of all of the allergy bags to make sure that everything is allergen free. The more specific you are when listing allergens, the better."
+        );
+
+        addFaq(
+          "How many volunteers are needed each week?",
+          "A minimum of 4 people that will be able to drive and deliver lunches. Between 8-12 people to help pack and double check lunches and make sandwiches."
+        );
+
+        addFaq(
+          "I would like to volunteer with you but do not want to be involved in making sandwiches. Can I still help?",
+          "We are always looking for volunteers to help with other things such as bagging cookies or decorating lunch sacks!"
+        );
+
+        // addFaq(
+        //   "", // Question
+        //   ""  // Answer
+        // );
+      });
+
+      function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+      }
+    </script>
   </head>
 
   <header>
@@ -90,7 +142,7 @@
     <div class="content">
       <!-- <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQ15Qlu6CeWJkAIDFFkFgO2MIPIco7-KkOZWg3DJfRJSrrIpordmYhTj-ZnqBoKsDhYiC8ptKGL65NG/embed?start=true&loop=true&delayms=3000&amp;rm=minimal" frameborder="0" class="section"></iframe> -->
 
-      <?php drawMonetaryDonations(); ?>
+      <?php @drawMonetaryDonations();?>
       <div class="center-text thank-you-grid">
         <div>
           <h2>Board Members</h2>

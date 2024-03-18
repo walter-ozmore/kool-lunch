@@ -1,0 +1,41 @@
+name: FTP File Replacement
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  check_code:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Check PHP code
+        run: |
+          if grep -r -E '^[^#\/]*error_reporting\(E_ALL\)|^[^#\/]*ini_set\('display_errors', '1'\)' ./*.php; then
+            echo "Error: Found unwanted code in PHP files. Deployment canceled."
+            exit 1
+          else
+            echo "No unwanted code found in PHP files. Proceeding with deployment."
+          fi
+
+
+  deploy:
+    needs: check_code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy
+        uses: actions/checkout@v3
+
+      - name: Sync Files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: /koollunches.org/
