@@ -1,0 +1,115 @@
+/* Notification stuff */
+.notification {
+  position: fixed;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: fit-content;
+  max-width: min(30em, 90%);
+
+  /* background-color: rgb(40, 40, 40); */
+  background-color: #4b4b4b;
+  border-color: black;
+  box-shadow: 0px 0px 5px 2px black;
+
+  padding: 1em;
+
+  border-radius: 10px;
+  padding: 1em;
+
+  z-index: 101;
+  color: white;
+}
+.notification > *:first-child {
+  margin-top: 0em;
+  padding-top: 0em;
+}
+.notification h2 { text-align: center; }
+
+
+/* Screen Blur */
+#blur-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px); /* Adjust the blur amount as needed */
+  display: none;
+  z-index: 100;
+}
+
+
+/* Nice to have */
+.clickable {cursor: pointer;}
+input:disabled { cursor:not-allowed }
+
+
+/* Account stuff */
+.account-window {
+  max-width: 25em;
+}
+.account-offset {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+}
+.account-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: .5em 0em 1em 0em;
+
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.account-grid * {
+  padding: 0em;
+  margin: 0em;
+  display: inline;
+}
+.account-grid a, .account-grid p {
+  /* font-size: .75em; */
+  font-size: 1em;
+}
+
+.account-grid p {
+  display: block;
+}
+
+.account-grid p:hover {
+  background-color: gray;
+  cursor: pointer;
+}
+.account-grid input {
+  margin: 0em .5em;
+}
+.account-grid div:nth-child(odd) { text-align: left; }
+.account-grid div:nth-child(even) { text-align: right; }
+.account-hover {
+  width: 100%;
+  display: block;
+}
+.account-hover:hover {
+  background-color: gray;
+  cursor: pointer;
+}
+
+
+/* Context menu */
+.context-menu {
+  display: none;
+  position: absolute;
+  background-color: #999;
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+.context-menu * {
+  padding: .25em;
+  margin: 0em;
+}
+.context-menu *:hover {
+  background-color: rgb(100,100,100);
+  cursor: pointer;
+}

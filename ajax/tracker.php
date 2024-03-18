@@ -1,4 +1,8 @@
 <?php
+  /**
+   * Ajax for the tracker selection, this allows the admin users to be able to 
+   * check off who has picked up lunches
+   */
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/version-3/lib.php";
 

@@ -1,0 +1,6 @@
+user-agent: *
+disallow: /ajax
+disallow: /res
+disallow: /account
+disallow: /scripts
+sitemap: https://koollunches.org/sitemap.txt

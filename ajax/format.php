@@ -1,4 +1,10 @@
 <?php
+  /**
+   * This function formats phone numbers like a sane person. No longer used, but
+   * should be kept for refrence for when this is made a function is JS.
+   *
+   * If this is kept it should be moved to scripts
+   */
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
 
   function formatPhoneNumber($phoneNumber) {
