@@ -1,4 +1,51 @@
 /**
+ * Quick way of making a inspect with values that update
+ *
+ * @param {jqueryDocumentObject} parentElement
+ * @param {array of jsons} items
+ */
+function basicRowItems(parentElement, data, items) {
+  for(let item of items) {
+    parentElement.append($("<label>").text(item.label))
+
+    // Check to see if this type is something we reconise
+    if("type" in item) {
+      let ele = null;
+      if(item.type == "text") {
+        ele = $("<input>", {type: "text", value: data[item.key]});
+      }
+
+      if(item.type == "dropdown") {
+        ele = $("<select>");
+
+        // Add options to the select
+        for(let key in item.options) {
+          let value = key;
+          let label = item.options[key];
+
+          let optionEle = $("<option>", {value: value}).text(label);
+          ele.append(optionEle);
+        }
+      }
+
+      if(ele != null) {
+        parentElement.append(ele); // Add to parent element
+        // Add listener for when this element is changed
+        if("apiFunction" in item && item["apiFunction"] != null && Number(item["apiFunction"]) > 0)
+          ele.change(function() { updateServer($(this), item.apiFunction, item.key, item.args) });
+        else
+          ele.prop("disabled", true);
+        continue
+      }
+    }
+
+    // If the code has gotten here then no element must have been append via
+    // other means, we will just print the value out
+    parentElement.append($("<p>").text(data[item.key]))
+  }
+}
+
+/**
  * Using the given element this function will send a post request to the server
  * in an attempt to update the element. The element will be disabled while the
  * post is being carried out. If the element failed to update with the server it
@@ -86,45 +133,16 @@ async function inspectIndividual(individualData) {
   );
 
   // Apply to div grid
-  divGrid.append(
-    $("<label>").text("Individual ID:"),$("<p>").text(individualData.individualID),
-    $("<label>").text("Individual Name:"),
-    $("<input>", {type: "text", value: individualData.individualName})
-      .change(function() {updateServer($(this), 24, "individualName", {individualID: individualData.individualID})})
-  );
-
-  // Show the individual's contact information
-  divGrid.append(
-    $("<label>").text("Prefered Contact:"),
-    $("<input>", {type: "text", value: (individualData.preferredContact == null)? "None Specified": individualData.preferredContact})
-      .change(function() {updateServer($(this), 24, "preferredContact", {individualID: individualData.individualID})})
-  );
-  divGrid.append(
-    $("<label>").text("Phone Number:"),
-    $("<input>", {type: "text", value: individualData.phoneNumber})
-      .change(function() {updateServer($(this), 24, "phoneNumber", {individualID: individualData.individualID})})
-  );
-  divGrid.append(
-    $("<label>").text("Email:"),
-    $("<input>", {type: "text", value: individualData.email})
-      .change(function() {updateServer($(this), 24, "email", {individualID: individualData.individualID})})
-  );
-  divGrid.append(
-    $("<label>").text("Messenger:"),
-    $("<input>", {type: "text", value: individualData.facebookMessenger})
-      .change(function() {updateServer($(this), 24, "facebookMessenger", {individualID: individualData.individualID})})
-  );
-
-  console.log(individualData, individualData.remindStatus);
-  divGrid.append(
-    $("<label>").text("Remind Status:"),
-    $("<select>", {disabled: true})
-      .append(
-        $("<option>", {value: 0, selected: individualData.remindStatus == 0}).text("No Remind Requested"),
-        $("<option>", {value: 1, selected: individualData.remindStatus == 1}).text("Remind Requested"),
-        $("<option>", {value: 2, selected: individualData.remindStatus == 2}).text("Remind Sent"),
-      )
-  );
+  basicRowItems(divGrid, individualData, [
+    {label: "Individual ID"          , key: "individualID"},
+    {label: "Individual Name"        , key: "individualName"   , type: "text"    , apiFunction: 24, args: {individualID: individualData.individualID}},
+    {label: "Prefered Contact Method", key: "preferredContact" , type: "text"    , apiFunction: 24, args: {individualID: individualData.individualID}},
+    {label: "Phone Number"           , key: "phoneNumber"      , type: "text"    , apiFunction: 24, args: {individualID: individualData.individualID}},
+    {label: "Email"                  , key: "email"            , type: "text"    , apiFunction: 24, args: {individualID: individualData.individualID}},
+    {label: "Messenger"              , key: "facebookMessenger", type: "text"    , apiFunction: 24, args: {individualID: individualData.individualID}},
+    {label: "Remind Status"          , key: "remindStatus"     , type: "dropdown", apiFunction: -1, args: {individualID: individualData.individualID},
+      options: {0:"No Remind Requested", 1:"Remind Requested", 2:"Remind Sended"} },
+  ]);
 
   // Create the delete button ahead of time and enabled it later
   let deleteButton = $("<button>")
