@@ -88,6 +88,17 @@
           .addClass("content")
         ;
         pages[index].func(page);
+        selectedPageIndex = index;
+      }
+
+      /**
+       * Refreshes the page if the selected page matches the given index, if the
+       * index is undefined then it will always refresh
+       */
+      function refreshPage(expectedIndex=undefined) {
+        if(expectedIndex != undefined && expectedIndex != selectedPageIndex)
+          return
+        selectPage(selectedPageIndex);
       }
 
       let autoSelected = false;
@@ -121,6 +132,7 @@
 				}
 			];
 
+      let selectedPageIndex = undefined;
       let page = undefined;
       $(document).ready(async function() {
         // Check if we have a user logged in
@@ -158,7 +170,9 @@
   <body>
 		<!-- Dropdown for pages -->
     <div class="admin-container">
-      <div class="sidebar content" id="sidebar"></div>
+      <div class="sidebar content" id="sidebar">
+        <button onclick="refreshPage()">Refresh</button>
+      </div>
       <div class="view-pane" id="view-pane"></div>
     </div>
 
