@@ -1,6 +1,6 @@
 <?php
-  // error_reporting(E_ALL);
-  // ini_set('display_errors', '1');
+  error_reporting(E_ALL);
+  ini_set('display_errors', '1');
 
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/lib.php";
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
@@ -1154,6 +1154,39 @@
         return $returnData;
       }
 
+      // See if form has individuals
+      $checkQuery = "SELECT COUNT(*) FROM FormLink WHERE formID = $formID;";
+      $checkResult = $conn->query($checkQuery);
+      $check = $checkResult->fetch_assoc()["COUNT(*)"];
+
+      if ($check != 1) {
+        $query = "SELECT * FROM Form WHERE formID = $formID;";
+        $result = $conn->query($query);
+
+        if ($result == FALSE) {
+          $returnData = [
+            "code"    => 310,
+            "message" => "Query error"
+          ];
+        } else if ($result->num_rows == 0){
+          $returnData = [
+            "numRows" => $result->num_rows,
+            "code"    => 120,
+            "message" => "No entries found"
+          ];
+        } else {
+          // Set return data
+          $returnData = [
+            "data"    => $result->fetch_assoc(),
+            "numRows" => $result->num_rows,
+            "code"    => 110,
+            "message" => "Success"
+          ];
+        }
+        
+        return $returnData;
+      }
+
       // Query
       $query = "SELECT f.*, i.individualID, i.individualName"
                ." FROM FormLink fl"
@@ -1190,6 +1223,7 @@
               "timeSubmitted" => $row["timeSubmitted"],
               "location"      => $row["location"],
               "isEnabled"     => $row["isEnabled"],
+              "allowPhotos"   => $row["allowPhotos"],
               "lunchesNeeded" => $row["lunchesNeeded"],
               "allergies"     => $row["allergies"]
             ];
