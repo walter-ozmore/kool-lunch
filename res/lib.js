@@ -6,7 +6,7 @@
  */
 function basicRowItems(parentElement, data, items) {
   for(let item of items) {
-    parentElement.append($("<label>").text(item.label))
+    parentElement.append($("<label>").text(item.label+":"))
 
     // Check to see if this type is something we reconise
     if("type" in item) {
@@ -28,6 +28,11 @@ function basicRowItems(parentElement, data, items) {
         }
       }
 
+      if(item.type == "checkbox") {
+        ele = $("<input>", {type: "checkbox", style: "margin-right: auto;"});
+        if(data[item.key] == "1") ele.prop('checked', true);
+      }
+
       if(ele != null) {
         parentElement.append(ele); // Add to parent element
         // Add listener for when this element is changed
@@ -35,12 +40,17 @@ function basicRowItems(parentElement, data, items) {
           ele.change(function() { updateServer($(this), item.apiFunction, item.key, item.args) });
         else
           ele.prop("disabled", true);
+
         continue
       }
     }
 
     // If the code has gotten here then no element must have been append via
     // other means, we will just print the value out
+    if("value" in item) {
+      parentElement.append($("<p>").text(data[item.value]))
+      continue
+    }
     parentElement.append($("<p>").text(data[item.key]))
   }
 }
@@ -113,7 +123,7 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
  * If a number is passed in as the data then it will attempt to fetch the data
  * from the database using function
  *
- * @param {obj} individualData
+ * @param {obj, string, number} individualData
  */
 async function inspectIndividual(individualData) {
   // Check if the given data is a string or number, if it is then go fetch the
@@ -139,7 +149,7 @@ async function inspectIndividual(individualData) {
   // Create title
   div.append( $("<h2>").text("Inspect Individual"), divGrid );
 
-  // Apply to div grid
+  // Apply items to div grid
   basicRowItems(divGrid, individualData, [
     {label: "Individual ID"          , key: "individualID"},
     {label: "Individual Name"        , key: "individualName"   , type: "text"    , apiFunction: 24, args: {individualID: individualData.individualID}},
@@ -251,40 +261,21 @@ async function inspectVolunteerForm(formData) {
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
   div.append( $("<h2>").text("Inspect Volunteer Form"), divGrid );
 
-  // Apply to div grid
-  divGrid.append(
-    $("<label>").text("Vounteer Form ID:"), $("<p>").text(formData.volunteerFormID),
-    $("<label>").text("Individual Name:"), $("<p>").text(formData.individualName),
-    $("<label>").text("Time Submitted:"), $("<p>").text(unixToHuman(formData.timeSubmitted)),
-  );
+  // Convert some data for display
 
-  // Only show the contact methods that have data
-  if(formData.phoneNumber != null) divGrid.append($("<label>").text("Phone Number:"), $("<p>").text(formData.phoneNumber));
-  if(formData.email != null) divGrid.append($("<label>").text("Email:"), $("<p>").text(formData.email));
-  if(formData.facebookMessenger != null) divGrid.append($("<label>").text("Messenger:"), $("<p>").text(formData.facebookMessenger));
-
-  // Add checkbox stuff
-  console.log(formData);
-  let checkbox;
-  checkbox = $("<input>", {type: "checkbox"});
-  checkbox.change(function() { updateServer($(this), 18, "weekInTheSummer", {volunteerFormID: formData.volunteerFormID}); });
-  if(formData.weekInTheSummer == "1") checkbox.prop('checked', true);
-  div.append( checkbox, $("<label>").text("Week in the summer"), $("<br>"), );
-
-  checkbox = $("<input>", {type: "checkbox"});
-  checkbox.change(function() {updateServer($(this), 19, "bagDecoration", {volunteerFormID: formData.volunteerFormID}) });
-  if(formData.bagDecoration == "1") checkbox.prop('checked', true);
-  div.append( checkbox, $("<label>").text("Bag Decoration"), $("<br>"), );
-
-  checkbox = $("<input>", {type: "checkbox"});
-  checkbox.change(function() { updateServer($(this), 20, "fundraising", {volunteerFormID: formData.volunteerFormID}) });
-  if(formData.fundraising == "1") checkbox.prop('checked', true);
-  div.append( checkbox, $("<label>").text("Fundraising"), $("<br>"), );
-
-  checkbox = $("<input>", {type: "checkbox"});
-  checkbox.change(function() { updateServer($(this), 21, "supplyGathering", {volunteerFormID: formData.volunteerFormID}) });
-  if(formData.supplyGathering == "1") checkbox.prop('checked', true);
-  div.append( checkbox, $("<label>").text("Supply Gathering"), $("<br>"), );
+  // Apply items to div grid
+  basicRowItems(divGrid, formData, [
+    {label: "Vounteer Form ID"  , key: "volunteerFormID"},
+    {label: "Individual Name"   , key: "individualName"},
+    {label: "Time Submitted"    , value: unixToHuman(formData.timeSubmitted)},
+    {label: "Phone Number"      , key: "phoneNumber"      },
+    {label: "Email"             , key: "email"            },
+    {label: "Messenger"         , key: "facebookMessenger"},
+    {label: "Week in the Summer", key: "weekInTheSummer"  , type: "checkbox", apiFunction: 18, args: {volunteerFormID: formData.volunteerFormID}},
+    {label: "Bag Decoration"    , key: "bagDecoration"    , type: "checkbox", apiFunction: 19, args: {volunteerFormID: formData.volunteerFormID}},
+    {label: "Fundraising"       , key: "fundraising"      , type: "checkbox", apiFunction: 20, args: {volunteerFormID: formData.volunteerFormID}},
+    {label: "Supply Gathering"  , key: "supplyGathering"  , type: "checkbox", apiFunction: 21, args: {volunteerFormID: formData.volunteerFormID}},
+  ]);
 
   /* Make buttons */
   let button_selectIndividual = $("<button>").text("Select Individual")
@@ -331,7 +322,6 @@ async function inspectVolunteerForm(formData) {
       div.remove(); checkBlur();
     })
   ;
-
 
   // Add buttons to the notification
   div.append( $("<center>").append(button_selectIndividual, button_delete, button_viewIndividual, button_close) );

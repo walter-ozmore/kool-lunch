@@ -168,6 +168,7 @@ input[type=checkbox] {
 
 .notification {
   color: black;
+  max-width: min(50em, 90%);
 }
 
 .footer-links a {
