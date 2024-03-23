@@ -48,7 +48,6 @@ function basicRowItems(parentElement, data, items) {
     // If the code has gotten here then no element must have been append via
     // other means, we will just print the value out
     let displayString = data[("value" in item)? item.value: item.key];
-    console.log(item, displayString, "value" in item)
 
     if("href" in item) {
       parentElement.append(
@@ -391,7 +390,7 @@ async function inspectForm(formData) {
   }
 
 
-  { // Draw the individuals in a table
+  if("freshFormData" in freshFormData) { // Draw the individuals in a table
     let table = $("<table>");
 
     // Create the header for the table
@@ -475,11 +474,11 @@ function inspectOrganization(orgData) {
   div.append( $("<h2>").text("Inspect Organizations"), divGrid );
 
   // Apply items to div grid
-  basicRowItems(divGrid, individualData, [
+  basicRowItems(divGrid, orgData, [
     {label: "Organization ID", key: "orgID"},
     {label: "Name"           , key: "orgName"    , type: "text"    , apiFunction: 25, args: {orgID: orgData.orgID}},
-    {label: "Main Contact"   , key: "mainContact"},
-    {label: "Signup Contact" , key: "signupContact"},
+    {label: "Main Contact"   , key: "mainContact", href: ()=>{inspectIndividual(orgData.mainContactID)}},
+    {label: "Signup Contact" , key: "signupContact", href: ()=>{inspectIndividual(orgData.signupContactID)}},
   ]);
 
   // Make buttons
@@ -487,7 +486,6 @@ function inspectOrganization(orgData) {
     .text("Change Main Contact")
     .click(async ()=>{
       searchIndividuals(async (result)=>{
-        console.log(result);
         // TODO: Update our main contact
         await post("/ajax/admin.php", {
           function: 25,
