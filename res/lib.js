@@ -47,14 +47,20 @@ function basicRowItems(parentElement, data, items) {
 
     // If the code has gotten here then no element must have been append via
     // other means, we will just print the value out
-    if("value" in item) {
-      parentElement.append($("<p>").text(data[item.value]))
+    let displayString = data[("value" in item)? item.value: item.key];
+    console.log(item, displayString, "value" in item)
+
+    if("href" in item) {
+      parentElement.append(
+        $("<a>", {href: "javascript:void(0)"})
+          .text(displayString)
+          .click(item.href)
+      );
       continue
     }
-    parentElement.append($("<p>").text(data[item.key]))
+    parentElement.append($("<p>").text(displayString));
   }
 }
-
 
 /**
  * Using the given element this function will send a post request to the server
@@ -113,7 +119,6 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
     ele.prop("disabled", false);
   });
 }
-
 
 /**
  * Opens up a notification window that shows the individual and allows the user
@@ -239,17 +244,16 @@ async function inspectIndividual(arg) {
   div.append( $("<center>").append(button_delete, button_close) );
 }
 
-
-async function inspectVolunteerForm(formData) {
+async function inspectVolunteerForm(volunteerFormData) {
   // Check if this data need to be fetched
-  if (typeof formData === 'number' || typeof formData === 'string') {
-    let uniqueID = formData;
+  if (typeof volunteerFormData === 'number' || typeof volunteerFormData === 'string') {
+    let uniqueID = volunteerFormData;
     let data = await post("/ajax/admin.php", {
       function: 1,
       volunteerFormID: uniqueID
     });
     if(data.code < 100 || data.code > 200) return;
-    formData = data["data"];
+    volunteerFormData = data["data"];
   }
 
   // Create, add and check blur of notification object
@@ -259,20 +263,22 @@ async function inspectVolunteerForm(formData) {
 
   // Create a grid to align the items for style
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
+
+  // Create title
   div.append( $("<h2>").text("Inspect Volunteer Form"), divGrid );
 
   // Apply items to div grid
-  basicRowItems(divGrid, formData, [
+  basicRowItems(divGrid, volunteerFormData, [
     {label: "Vounteer Form ID"  , key: "volunteerFormID"},
-    {label: "Individual Name"   , key: "individualName"},
-    {label: "Time Submitted"    , value: unixToHuman(formData.timeSubmitted)},
+    {label: "Individual Name"   , key: "individualName", href: ()=>{inspectIndividual(volunteerFormData.individualID)}},
+    {label: "Time Submitted"    , value: unixToHuman(volunteerFormData.timeSubmitted)},
     {label: "Phone Number"      , key: "phoneNumber"      },
     {label: "Email"             , key: "email"            },
     {label: "Messenger"         , key: "facebookMessenger"},
-    {label: "Week in the Summer", key: "weekInTheSummer"  , type: "checkbox", apiFunction: 18, args: {volunteerFormID: formData.volunteerFormID}},
-    {label: "Bag Decoration"    , key: "bagDecoration"    , type: "checkbox", apiFunction: 19, args: {volunteerFormID: formData.volunteerFormID}},
-    {label: "Fundraising"       , key: "fundraising"      , type: "checkbox", apiFunction: 20, args: {volunteerFormID: formData.volunteerFormID}},
-    {label: "Supply Gathering"  , key: "supplyGathering"  , type: "checkbox", apiFunction: 21, args: {volunteerFormID: formData.volunteerFormID}},
+    {label: "Week in the Summer", key: "weekInTheSummer"  , type: "checkbox", apiFunction: 18, args: {volunteerFormID: volunteerFormData.volunteerFormID}},
+    {label: "Bag Decoration"    , key: "bagDecoration"    , type: "checkbox", apiFunction: 19, args: {volunteerFormID: volunteerFormData.volunteerFormID}},
+    {label: "Fundraising"       , key: "fundraising"      , type: "checkbox", apiFunction: 20, args: {volunteerFormID: volunteerFormData.volunteerFormID}},
+    {label: "Supply Gathering"  , key: "supplyGathering"  , type: "checkbox", apiFunction: 21, args: {volunteerFormID: volunteerFormData.volunteerFormID}},
   ]);
 
   /* Make buttons */
@@ -280,18 +286,18 @@ async function inspectVolunteerForm(formData) {
     .click(()=>searchIndividuals(async (individual)=>{
       await post("/ajax/admin.php", {
         function: 28,
-        volunteerFormID: formData.volunteerFormID,
+        volunteerFormID: volunteerFormData.volunteerFormID,
         individualID: individual.individualID
       });
-      inspectForm(formData);
       div.remove(); checkBlur();
+      inspectVolunteerForm(volunteerFormData.volunteerFormID);
     }))
   ;
   let button_delete = $("<button>").text("Delete")
     .click(async ()=>{
       post("/ajax/admin.php", {
         function: 6,
-        formID: formData.volunteerFormID
+        formID: volunteerFormData.volunteerFormID
       }, (json)=>{
         if(json.code != 110) {
           /* Error */
@@ -303,16 +309,6 @@ async function inspectVolunteerForm(formData) {
       });
     })
   ;
-  let button_viewIndividual = $("<button>")
-    .text("View Individual")
-    .click(()=>{
-      console.log(formData);
-      post("/ajax/admin.php", {
-        function: 17,
-        individualID: formData.individualID
-      }, (obj)=>{inspectIndividual(obj.data);});
-    })
-  ;
   let button_close = $("<button>")
     .text("Close")
     .click(async ()=>{
@@ -322,9 +318,8 @@ async function inspectVolunteerForm(formData) {
   ;
 
   // Add buttons to the notification
-  div.append( $("<center>").append(button_selectIndividual, button_delete, button_viewIndividual, button_close) );
+  div.append( $("<center>").append(button_selectIndividual, button_delete, button_close) );
 }
-
 
 async function inspectForm(formData) {
   console.log("Form data:", formData);
