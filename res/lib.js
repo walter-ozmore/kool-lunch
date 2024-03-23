@@ -475,21 +475,13 @@ function inspectOrganization(orgData) {
   // Create title
   div.append( $("<h2>").text("Inspect Organizations"), divGrid );
 
-  divGrid.append(
-    $("<label>").text("Name:"),
-    $("<input>", {type: "text", value: orgData.orgName})
-      .change(function() {updateServer($(this), 25, "orgName", {orgID: orgData.orgID})}),
-  );
-
-  divGrid.append(
-    $("<label>").text("Main Contact:"),
-    $("<p>").text(orgData.mainContact)
-  );
-
-  divGrid.append(
-    $("<label>").text("Signup Contact:"),
-    $("<p>").text(orgData.signupContact)
-  );
+  // Apply items to div grid
+  basicRowItems(divGrid, individualData, [
+    {label: "Organization ID", key: "orgID"},
+    {label: "Name"           , key: "orgName"    , type: "text"    , apiFunction: 25, args: {orgID: orgData.orgID}},
+    {label: "Main Contact"   , key: "mainContact"},
+    {label: "Signup Contact" , key: "signupContact"},
+  ]);
 
   // Make buttons
   let button_changeMainContact = $("<button>")
