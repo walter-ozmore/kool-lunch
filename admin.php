@@ -170,8 +170,9 @@
   <body>
 		<!-- Dropdown for pages -->
     <div class="admin-container">
-      <div class="sidebar content" id="sidebar">
-        <button onclick="refreshPage()">Refresh</button>
+      <div class="sidebar content">
+        <div id="sidebar"></div>
+        <center><button onclick="refreshPage()">Refresh</button></center>
       </div>
       <div class="view-pane" id="view-pane"></div>
     </div>

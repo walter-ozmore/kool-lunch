@@ -45,6 +45,7 @@ function basicRowItems(parentElement, data, items) {
   }
 }
 
+
 /**
  * Using the given element this function will send a post request to the server
  * in an attempt to update the element. The element will be disabled while the
@@ -103,6 +104,7 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
   });
 }
 
+
 /**
  * Opens up a notification window that shows the individual and allows the user
  * to see where the user is linked too. The user also has access to edit the user
@@ -114,7 +116,8 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
  * @param {obj} individualData
  */
 async function inspectIndividual(individualData) {
-  // Check if this data need to be fetched
+  // Check if the given data is a string or number, if it is then go fetch the
+  // real data
   if (typeof individualData === 'number' || typeof individualData === 'string') {
     let individualID = individualData;
     let data = await post("/ajax/admin.php", {
@@ -125,12 +128,16 @@ async function inspectIndividual(individualData) {
     individualData = data["data"];
   }
 
+  // Create, add and check blur of notification object
   let div = $("<div>", {class: "notification induce-blur"});
+  $("body").append(div); // Add the notification to the page
+  checkBlur(); // Check if the screen should be blured
+
+  // Create a grid to align the items for style
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
-  div.append(
-    $("<h2>").text("Inspect Individual"),
-    divGrid,
-  );
+
+  // Create title
+  div.append( $("<h2>").text("Inspect Individual"), divGrid );
 
   // Apply to div grid
   basicRowItems(divGrid, individualData, [
@@ -143,18 +150,6 @@ async function inspectIndividual(individualData) {
     {label: "Remind Status"          , key: "remindStatus"     , type: "dropdown", apiFunction: -1, args: {individualID: individualData.individualID},
       options: {0:"No Remind Requested", 1:"Remind Requested", 2:"Remind Sended"} },
   ]);
-
-  // Create the delete button ahead of time and enabled it later
-  let deleteButton = $("<button>")
-    .text("Delete")
-    .click(async ()=>{post("/ajax/admin.php", {
-      function: 8,
-      individualID: individualData.individualID
-    }, (data)=>{
-      // console.log(data);
-      if(data.code == 0) location.reload();
-    })})
-  ;
 
   // Add links for the user, like if they are atttached to a form or something
   post("/ajax/admin.php", {
@@ -211,15 +206,27 @@ async function inspectIndividual(individualData) {
     }
   });
 
-  // Add a close button so the user isnt stuck
-  div.append( $("<center>").append(
-    deleteButton,
-    $("<button>")
-      .text("OK")
-      .click(async ()=>{ div.remove(); checkBlur(); }),
-  ));
-  $("body").append(div);
-  checkBlur();
+  // Make buttons
+  let button_delete = $("<button>").text("Delete")
+    .click(async ()=>{post("/ajax/admin.php", {
+      function: 8,
+      individualID: individualData.individualID
+    }, (data)=>{
+      console.log(data);
+      if(data.code == 0) location.reload();
+    })})
+  ;
+
+  let button_close = $("<button>")
+    .text("OK")
+    .click(()=>{
+      // Close Window
+      div.remove(); checkBlur();
+    })
+  ;
+
+  // Add buttons to the notification
+  div.append( $("<center>").append(button_delete, button_close) );
 }
 
 
@@ -235,12 +242,14 @@ async function inspectVolunteerForm(formData) {
     formData = data["data"];
   }
 
+  // Create, add and check blur of notification object
   let div = $("<div>", {class: "notification induce-blur"});
+  $("body").append(div);
+  checkBlur();
+
+  // Create a grid to align the items for style
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
-  div.append(
-    $("<h2>").text("Inspect Volunteer Form"),
-    divGrid,
-  );
+  div.append( $("<h2>").text("Inspect Volunteer Form"), divGrid );
 
   // Apply to div grid
   divGrid.append(
@@ -277,53 +286,55 @@ async function inspectVolunteerForm(formData) {
   if(formData.supplyGathering == "1") checkbox.prop('checked', true);
   div.append( checkbox, $("<label>").text("Supply Gathering"), $("<br>"), );
 
-  // Add a close button so the user isnt stuck
-  div.append( $("<center>").append(
-    $("<button>")
-      .text("Select Individual")
-      .click(()=>searchIndividuals(async (individual)=>{
-        await post("/ajax/admin.php", {
-          function: 28,
-          volunteerFormID: formData.volunteerFormID,
-          individualID: individual.individualID
-        });
-        inspectForm(formData);
-        div.remove(); checkBlur();
-      })),
-    $("<button>")
-      .text("Delete")
-      .click(async ()=>{
-        post("/ajax/admin.php", {
-          function: 6,
-          formID: formData.volunteerFormID
-        }, (json)=>{
-          if(json.code == 110) {
-            // Success
+  /* Make buttons */
+  let button_selectIndividual = $("<button>").text("Select Individual")
+    .click(()=>searchIndividuals(async (individual)=>{
+      await post("/ajax/admin.php", {
+        function: 28,
+        volunteerFormID: formData.volunteerFormID,
+        individualID: individual.individualID
+      });
+      inspectForm(formData);
+      div.remove(); checkBlur();
+    }))
+  ;
+  let button_delete = $("<button>").text("Delete")
+    .click(async ()=>{
+      post("/ajax/admin.php", {
+        function: 6,
+        formID: formData.volunteerFormID
+      }, (json)=>{
+        if(json.code != 110) {
+          /* Error */
+          return;
+        }
+        // Success
+        div.remove(); checkBlur(); // Close the window
+        refreshPage("Volunteer Forms") // Reload table
+      });
+    })
+  ;
+  let button_viewIndividual = $("<button>")
+    .text("View Individual")
+    .click(()=>{
+      console.log(formData);
+      post("/ajax/admin.php", {
+        function: 17,
+        individualID: formData.individualID
+      }, (obj)=>{inspectIndividual(obj.data);});
+    })
+  ;
+  let button_close = $("<button>")
+    .text("Close")
+    .click(async ()=>{
+      // Close window
+      div.remove(); checkBlur();
+    })
+  ;
 
-            // Close the window
-            div.remove();
-            checkBlur();
 
-            // Reload table
-            window.location.href = window.location.origin + "/admin?page=Volunteer Forms";
-          }
-        });
-      }),
-    $("<button>")
-      .text("View Individual")
-      .click(()=>{
-        console.log(formData);
-        post("/ajax/admin.php", {
-          function: 17,
-          individualID: formData.individualID
-        }, (obj)=>{inspectIndividual(obj.data);});
-      }),
-    $("<button>")
-      .text("Close")
-      .click(async ()=>{ div.remove(); checkBlur(); }),
-  ));
-  $("body").append(div);
-  checkBlur();
+  // Add buttons to the notification
+  div.append( $("<center>").append(button_selectIndividual, button_delete, button_viewIndividual, button_close) );
 }
 
 
@@ -339,15 +350,14 @@ async function inspectForm(formData) {
     return;
   }
 
-  // Display data for testing purposes
-  // console.log(freshFormData);
-
+  // Create, add and check blur of notification object
   let div = $("<div>", {class: "notification induce-blur"});
+  $("body").append(div); // Add the notification to the page
+  checkBlur(); // Check if the screen should be blured
+
+  // Create a grid to align the items for style
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
-  div.append(
-    $("<h2>").text("Inspect Form"),
-    divGrid,
-  );
+  div.append( $("<h2>").text("Inspect Form"), divGrid );
 
   // Apply to div grid
   divGrid.append(
@@ -468,35 +478,43 @@ async function inspectForm(formData) {
     div.append(table);
   }
 
+  // Make buttons
+  let button_addIndividual = $("<button>")
+    .text("Add an Individual")
+    .click(()=>searchIndividuals(async (individual)=>{
+      // console.log(individual);
+      await post("/ajax/admin.php", {
+        function: 27,
+        formID: formData.formID,
+        individualID: individual.individualID
+      });
+      inspectForm(formData);
+      div.remove(); checkBlur();
+    }))
+  ;
+  let button_close = $("<button>")
+    .text("Close")
+    .click(async ()=>{
+      // Close Window
+      div.remove(); checkBlur();
+    })
+  ;
+
   // Add a close button so the user isnt stuck
-  div.append( $("<center>").append(
-    $("<button>")
-      .text("Add an Individual")
-      .click(()=>searchIndividuals(async (individual)=>{
-        // console.log(individual);
-        await post("/ajax/admin.php", {
-          function: 27,
-          formID: formData.formID,
-          individualID: individual.individualID
-        });
-        inspectForm(formData);
-        div.remove(); checkBlur();
-      })),
-    $("<button>")
-      .text("Close")
-      .click(async ()=>{ div.remove(); checkBlur(); }),
-  ));
-  $("body").append(div);
-  checkBlur();
+  div.append( $("<center>").append( button_addIndividual, button_close ));
 }
 
 function inspectOrganization(orgData) {
+  // Create, add and check blur of notification object
   let div = $("<div>", {class: "notification induce-blur"});
+  $("body").append(div); // Add the notification to the page
+  checkBlur(); // Check if the screen should be blured
+
+  // Create a grid to align the items for style
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
-  div.append(
-    $("<h2>").text("Inspect Organizations"),
-    divGrid,
-  );
+
+  // Create title
+  div.append( $("<h2>").text("Inspect Organizations"), divGrid );
 
   divGrid.append(
     $("<label>").text("Name:"),
@@ -514,31 +532,44 @@ function inspectOrganization(orgData) {
     $("<p>").text(orgData.signupContact)
   );
 
+  // Make buttons
+  let button_changeMainContact = $("<button>")
+    .text("Change Main Contact")
+    .click(async ()=>{
+      searchIndividuals(async (result)=>{
+        console.log(result);
+        // TODO: Update our main contact
+        await post("/ajax/admin.php", {
+          function: 25,
+          orgID: orgData.orgID,
+          mainContact: result.individualID
+        });
+        inspectOrganization(orgData);
+        div.remove(); checkBlur();
+      })
+    })
+  ;
+  let button_close = $("<button>")
+    .text("OK")
+    .click(()=>{
+      // Close Window
+      div.remove(); checkBlur();
+    })
+  ;
+
   // Add a close button so the user isnt stuck
-  div.append( $("<center>").append(
-    $("<button>")
-      .text("Change Main Contact")
-      .click(async ()=>{
-        searchIndividuals(async (result)=>{
-          console.log(result);
-          // TODO: Update our main contact
-          await post("/ajax/admin.php", {
-            function: 25,
-            orgID: orgData.orgID,
-            mainContact: result.individualID
-          });
-          inspectOrganization(orgData);
-          div.remove(); checkBlur();
-        })
-      }),
-    $("<button>")
-      .text("OK")
-      .click(async ()=>{ div.remove(); checkBlur(); }),
-  ));
-  $("body").append(div);
-  checkBlur();
+  div.append( $("<center>").append(button_changeMainContact, button_close) );
 }
 
+
+/**
+ * Creates a notification object with a search input, when an individual is
+ * selected the returnFunction will be called with the individual ID of the
+ * selected user
+ *
+ * @param returnFunction The function that will be called when the individual is
+ * selected.
+ */
 function searchIndividuals(returnFunction) {
   let searchTimeout;
   let div = $("<div>", {class: "notification induce-blur"});
