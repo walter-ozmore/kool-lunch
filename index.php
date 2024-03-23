@@ -107,8 +107,11 @@
   <body>
     <div class="content">
       <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSxBW-X_1GKybMlrA-B4kD5QTEGf0UYux56FmcT3Ei7NEAMfisy6M9lkadUfErssLJBVUKpsElRjCFx/embed?start=true&loop=true&delayms=3000&amp;rm=minimal" frameborder="0" onload="resizeIframe(this)"></iframe>
-
-      <p style="padding-top: 1em;">
+      <center>
+        <a href="/sign-up" class="button">SIGNUP</a>
+        <a href="/volunteer-sign-up" class="button">VOLUNTEER</a>
+      </center>
+      <p>
         The Kool Lunches Program was started by the Fannin Community Foundation in 1999 and was coordinated by Ray and Ruth Havins who acted as co-chair Presidents of the program. The program began offering sack lunches that summer to students who were eligible for the free lunch program during the school year. Throughout their time of running the program, they served lunches to students in Bonham, Trenton, Leonard and Dodd City with the help of numerous volunteers. Unfortunately, the program was forced to end in 2007 due to lack of funding and loss of staff and necessary facilities to help feed the children of Fannin County.
       </p>
 
