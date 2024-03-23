@@ -1227,6 +1227,43 @@
       $data = [];
       $order = [];
       $rawData = [];
+      
+      // First get the Forms that do not have individuals
+      $query = "SELECT * FROM Form WHERE formID NOT IN (SELECT DISTINCT formID FROM FormLink) ORDER BY timeSubmitted DESC;";
+      $result = $conn->query($query);
+      if ($result == FALSE) {
+        $returnData = [
+          "code"    => 310,
+          "message" => "Query error"
+        ];
+        return $returnData;
+      } else if ($result->num_rows == 0){
+        $returnData = [
+          "numRows" => $result->num_rows,
+          "code"    => 120,
+          "message" => "No entries found"
+        ];
+        return $returnData;
+      } else {
+        while ($row = $result->fetch_assoc()){
+          $order[] = $row["formID"];
+          $rawData[$row["formID"]] = [
+            "formID"        => $row["formID"],
+            "pickupMon"     => $row["pickupMon"],
+            "pickupTue"     => $row["pickupTue"],
+            "pickupWed"     => $row["pickupWed"],
+            "pickupThu"     => $row["pickupThu"],
+            "pickupFri"     => $row["pickupFri"],
+            "timeSubmitted" => $row["timeSubmitted"],
+            "location"      => $row["location"],
+            "isEnabled"     => $row["isEnabled"],
+            "allowPhotos"   => $row["allowPhotos"],
+            "lunchesNeeded" => $row["lunchesNeeded"],
+            "allergies"     => $row["allergies"],
+            "individuals"   => []
+          ];
+        }
+      }
 
       // Query
       $query = "SELECT f.*, i.individualID, i.individualName"
@@ -1257,7 +1294,7 @@
           // If the formID is not already in $data, add it
           if (!isset($rawData[$formID])) {
             $rawData[$formID] = [
-              "formID"        => $row["formID"],
+              "formID"        => $formID,
               "pickupMon"     => $row["pickupMon"],
               "pickupTue"     => $row["pickupTue"],
               "pickupWed"     => $row["pickupWed"],
@@ -1266,6 +1303,7 @@
               "timeSubmitted" => $row["timeSubmitted"],
               "location"      => $row["location"],
               "isEnabled"     => $row["isEnabled"],
+              "allowPhotos"   => $row["allowPhotos"],
               "lunchesNeeded" => $row["lunchesNeeded"],
               "allergies"     => $row["allergies"]
             ];
@@ -1280,7 +1318,9 @@
 
         // Place in final array with correct order
         foreach ($order as $formID) {
-          $data[] = $rawData[$formID];
+          if (isset($rawData[$formID])) {
+            $data[] = $rawData[$formID];
+          }
         }
 
         // Set return data
