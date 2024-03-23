@@ -125,17 +125,19 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
  *
  * @param {obj, string, number} individualData
  */
-async function inspectIndividual(individualData) {
+async function inspectIndividual(arg) {
   // Check if the given data is a string or number, if it is then go fetch the
   // real data
-  if (typeof individualData === 'number' || typeof individualData === 'string') {
-    let individualID = individualData;
+  let individualData = undefined;
+  if (typeof arg === 'number' || typeof arg === 'string') {
     let data = await post("/ajax/admin.php", {
       function: 17,
-      individualID: individualID
+      individualID: arg
     });
     if(data.code < 100 || data.code > 200) return;
     individualData = data["data"];
+  } else {
+    individualData = arg;
   }
 
   // Create, add and check blur of notification object
@@ -161,69 +163,19 @@ async function inspectIndividual(individualData) {
       options: {0:"No Remind Requested", 1:"Remind Requested", 2:"Remind Sended"} },
   ]);
 
-  // Add links for the user, like if they are atttached to a form or something
-  post("/ajax/admin.php", {
-    function: 7,
-    individualID: individualData.individualID
-  }, (json)=>{
-    let data = json.data;
-    let formIDEle = $("<p>");
-    let volunteerFormIDEle = $("<p>");
-    divGrid.append($("<label>").text("Signup Forms:"), formIDEle);
-    divGrid.append($("<label>").text("Volunteer Forms:"), volunteerFormIDEle);
-
-    // console.log("Data:", data)
-
-    // Create links for each form that is clickable
-    for(let form of data.Form) {
-      if(form.formID == null) continue;
-
-      formIDEle.append(
-        $("<a>", {style: "display: inline; margin-right: .5em;", class: "clickable", href: ""})
-          .text(form.formID)
-          .click(async ()=>{
-            // Fetch and inspect the form
-            let returnForm = await post("/ajax/admin.php", {
-              function: 3,
-              formID: form.formID
-            });
-
-            inspectForm(returnForm);
-          })
-      );
-    }
-
-    // Create links for each volunteer form that is clickable
-    for(let form of data.FormVolunteer) {
-      if(form.volunteerFormID == null) continue;
-      volunteerFormIDEle.append(
-        $("<a>", {style: "display: inline; margin-right: .5em;", class: "clickable"})
-          .text(form.volunteerFormID)
-          .click(async ()=>{
-            // Fetch and inspect the form
-            let volunteerForm = await post("/ajax/admin.php", {
-              function: 1,
-              volunteerFormID: form.volunteerFormID
-            });
-
-            inspectVolunteerForm(volunteerForm);
-          })
-      );
-    }
-
-    if(data.FormVolunteer.length + data.Form.length <= 0) {
-      deleteButton.prop("disabled", false);
-    }
-  });
-
   // Make buttons
-  let button_delete = $("<button>").text("Delete")
+  let button_delete = $("<button>", {disabled: true}).text("Delete")
     .click(async ()=>{post("/ajax/admin.php", {
       function: 8,
       individualID: individualData.individualID
     }, (data)=>{
       console.log(data);
-      if(data.code == 0) location.reload();
+      if(data.code != 110) {
+        return
+      }
+      refreshPage("Individuals");
+      // Close Window
+      div.remove(); checkBlur();
     })})
   ;
 
@@ -234,6 +186,54 @@ async function inspectIndividual(individualData) {
       div.remove(); checkBlur();
     })
   ;
+
+  // Add links for the user, like if they are atttached to a form or something
+  post("/ajax/admin.php", { function: 7, individualID: individualData.individualID },
+  (json)=>{
+    let data = json.data;
+    let formIDEle = $("<p>");
+    let volunteerFormIDEle = $("<p>");
+    divGrid.append($("<label>").text("Signup Forms:"), formIDEle);
+    divGrid.append($("<label>").text("Volunteer Forms:"), volunteerFormIDEle);
+
+    // Create links for each form that is clickable
+    for(let form of data.Form) {
+      if(form.formID == null) continue;
+
+      formIDEle.append(
+        $("<a>", {style: "display: inline; margin-right: .5em;", class: "clickable", href: "javascript:void(0)"})
+          .text(form.formID)
+          .click(async ()=>{
+            // Fetch and inspect the form
+            let returnForm = await post("/ajax/admin.php", {
+              function: 3, formID: form.formID
+            });
+            inspectForm(returnForm.data);
+          })
+      );
+    }
+
+    // Create links for each volunteer form that is clickable
+    for(let form of data.FormVolunteer) {
+      if(form.volunteerFormID == null) continue;
+      volunteerFormIDEle.append(
+        $("<a>", {style: "display: inline; margin-right: .5em;", class: "clickable", href:"javascript:void(0)"})
+          .text(form.volunteerFormID)
+          .click(async ()=>{
+            // Fetch and inspect the form
+            let volunteerForm = await post("/ajax/admin.php", {
+              function: 1, volunteerFormID: form.volunteerFormID
+            });
+
+            inspectVolunteerForm(volunteerForm.data);
+          })
+      );
+    }
+
+    if(data.FormVolunteer.length + data.Form.length <= 0) {
+      button_delete.prop("disabled", false);
+    }
+  });
 
   // Add buttons to the notification
   div.append( $("<center>").append(button_delete, button_close) );
@@ -365,7 +365,7 @@ async function inspectForm(formData) {
   }
 
   // Apply items to div grid
-  basicRowItems(divGrid, individualData, [
+  basicRowItems(divGrid, formData, [
     {label: "Form ID"       , key: "formID"},
     {label: "Time Submitted", value: unixToHuman(formData.timeSubmitted)},
     {label: "Location"      , key: "location"     , type: "dropdown", apiFunction: 13, args: {formID: formData.formID}, options: locationOptions},
