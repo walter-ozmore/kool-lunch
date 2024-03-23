@@ -261,8 +261,6 @@ async function inspectVolunteerForm(formData) {
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
   div.append( $("<h2>").text("Inspect Volunteer Form"), divGrid );
 
-  // Convert some data for display
-
   // Apply items to div grid
   basicRowItems(divGrid, formData, [
     {label: "Vounteer Form ID"  , key: "volunteerFormID"},
@@ -347,16 +345,13 @@ async function inspectForm(formData) {
 
   // Create a grid to align the items for style
   let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
+
+  // Create title
   div.append( $("<h2>").text("Inspect Form"), divGrid );
 
-  // Apply to div grid
-  divGrid.append(
-    $("<label>").text("Form ID:"), $("<p>").text(formData.formID),
-    $("<label>").text("Time Submitted:"), $("<p>").text(unixToHuman(formData.timeSubmitted)),
-  );
-
-  {// Add location dropdown
-    let locationDropdown = $("<select>");
+  // Prepare data
+  locationOptions = [];
+  {
     let locations = [
       "T.E.A.M. Center Housing Authority",
       "Williams Building",
@@ -365,50 +360,24 @@ async function inspectForm(formData) {
       "Powder Creak Park"
     ]; // This should be retrieved from the backend
 
-    for(let location of locations) {
-      let option = $("<option>", {value: location}).text(location);
-      locationDropdown.append(option);
-    }
-    locationDropdown.val( formData.location );
-    locationDropdown.change(function() {updateServer($(this), 13, "location", {formID: formData.formID})});
-
-
-    divGrid.append(
-      $("<label>").text("Location:"),
-      locationDropdown,
-    );
+    for(let location of locations)
+      locationOptions[location] = location;
   }
 
-  // Add allergies
-  divGrid.append(
-    $("<label>").text("Allergies:"),
-    $("<input>", {type: "text", value: formData.allergies})
-      .change(function() {updateServer($(this), 12, "allergies", {formID: formData.formID})})
-    ,
-  );
-
-  // Add lunches need input
-  divGrid.append(
-    $("<label>").text("lunchesNeeded:"),
-    $("<input>", {type: "number", value: formData.lunchesNeeded})
-      .change(function() {updateServer($(this), 11, "numLunches", {formID: formData.formID})}),
-  );
-
-  // Add enabled checkbox
-  divGrid.append(
-    $("<label>").text("Enabled:"),
-    $("<input>", {type: "checkbox", style: "margin-right: auto;"})
-      .prop("checked", (freshFormData.isEnabled == 1)? true: false)
-      .change(function() {updateServer($(this), 10, "isEnabled", {formID: formData.formID})})
-  )
-
-  {
-    let checkbox;
-    checkbox = $("<input>", {type: "checkbox", style: "margin-right: auto;"});
-    checkbox.change(function() { updateServer($(this), 24, "allowPhotos", {formID: formData.formID}); });
-    if(formData.allowPhotos == "1") checkbox.prop('checked', true);
-    divGrid.append( $("<label>").text("Allow Photos:"), checkbox );
-  }
+  // Apply items to div grid
+  basicRowItems(divGrid, individualData, [
+    {label: "Form ID"       , key: "formID"},
+    {label: "Time Submitted", value: unixToHuman(formData.timeSubmitted)},
+    {label: "Location"      , key: "location"     , type: "dropdown", apiFunction: 13, args: {formID: formData.formID}, options: locationOptions},
+    {label: "Allergies"     , key: "allergies"    , type: "text"    , apiFunction: 12, args: {formID: formData.formID}},
+    {label: "Lunches Needed", key: "lunchesNeeded", type: "text"    , apiFunction: 11, args: {formID: formData.formID}},
+    {label: "Enabled"       , key: "isEnabled"    , type: "checkbox", apiFunction: 10, args: {formID: formData.formID}},
+    {label: "Allow Photos"  , key: "allowPhotos"  , type: "checkbox", apiFunction: 24, args: {formID: formData.formID}},
+    // {label: "Monday"        , key: "pickupMon"    , type: "checkbox", apiFunction:  9, args: {formID: formData.formID}},
+    // {label: "Tuesday"       , key: "pickupTue"    , type: "checkbox", apiFunction:  9, args: {formID: formData.formID}},
+    // {label: "Wed"           , key: "pickupWed"    , type: "checkbox", apiFunction:  9, args: {formID: formData.formID}},
+    // {label: "Thursday"      , key: "pickupThu"    , type: "checkbox", apiFunction:  9, args: {formID: formData.formID}},
+  ]);
 
   // Add date checkboxes
   for(let dateStr of ["Mon", "Tue", "Wed", "Thu"]) {
