@@ -327,11 +327,15 @@ async function inspectVolunteerForm(formData) {
 
 
 async function inspectForm(formData) {
+  console.log("Form data:", formData);
   // Fetch some fresh data to work with
-  let freshFormData = (await post("/ajax/admin.php", {
+  let tempObj = (await post("/ajax/admin.php", {
     function: 3,
     formID: formData.formID
-  })).data;
+  }));
+  console.log("Temp return:", tempObj);
+  let freshFormData = tempObj.data;
+
 
   if(freshFormData == null) {
     displayError("Missing fresh form data");
@@ -424,9 +428,9 @@ async function inspectForm(formData) {
             individualID: individual.individualID
           });
           if(obj.code >= 100 && obj.code < 200) {
-            inspectForm(formData);
-            div.remove();
-            checkBlur();
+            console.log("Inspecting form with this data:", freshFormData);
+            inspectForm(freshFormData);
+            div.remove(); checkBlur();
           }
         })
       ;
