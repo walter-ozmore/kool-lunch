@@ -12,6 +12,7 @@ $(document).ready(async function() {
         delete row.mainContact;
         row.mainContact = name;
         row.mainContactID = id;
+        delete row.mainContactID;
       }
       if("signupContact" in row) {
         let id = row.signupContact.individualID;
@@ -19,6 +20,7 @@ $(document).ready(async function() {
         delete row.signupContact;
         row.signupContact = name;
         row.signupContactID = id;
+        delete row.signupContactID;
       }
     }
 

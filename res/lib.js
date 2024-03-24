@@ -576,6 +576,14 @@ function searchIndividuals(returnFunction) {
   $("body").append(div);
 }
 
+function displayPhoneNumber(phoneNumber) {
+  if(phoneNumber.length != 10) return phoneNumber;
+  phoneNumberString = "("+phoneNumber.substring(0, 3)+") ";
+  phoneNumberString += phoneNumber.substring(3,6)+"-";
+  phoneNumberString += phoneNumber.substring(6);
+  return phoneNumberString;
+}
+
 // Old code
 
 function blink() {

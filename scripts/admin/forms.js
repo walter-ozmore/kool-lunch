@@ -3,7 +3,6 @@ $(document).ready(async function() {
 		let data = (await post("/ajax/admin.php", {
 			function: 3
 		})).data;
-    console.log(data);
 
     for(let row of data) {
       // Trim days to match the format of M Tu W Th F
@@ -45,9 +44,9 @@ $(document).ready(async function() {
           row.css({"background-color":"#B9B8B5"})
         }
       },
+      ignore: ["isEnabled"],
       onContext: {
         "Delete": async (row)=>{
-          console.log(row);
           // Delete form
           let obj = await post("/ajax/admin.php", {
             function: 16,
