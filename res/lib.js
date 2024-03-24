@@ -17,6 +17,7 @@ function basicRowItems(parentElement, data, items) {
 
       if(item.type == "dropdown") {
         ele = $("<select>");
+        console.log(data);
 
         // Add options to the select
         for(let key in item.options) {
@@ -25,7 +26,10 @@ function basicRowItems(parentElement, data, items) {
 
           let optionEle = $("<option>", {value: value}).text(label);
           ele.append(optionEle);
+
         }
+
+        ele.val(data[item.key]);
       }
 
       if(item.type == "checkbox") {
@@ -132,17 +136,19 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
 async function inspectIndividual(arg) {
   // Check if the given data is a string or number, if it is then go fetch the
   // real data
-  let individualData = undefined;
+  let individualID = undefined;
   if (typeof arg === 'number' || typeof arg === 'string') {
-    let data = await post("/ajax/admin.php", {
-      function: 17,
-      individualID: arg
-    });
-    if(data.code < 100 || data.code > 200) return;
-    individualData = data["data"];
+    individualID = arg;
   } else {
-    individualData = arg;
+    individualID = arg.individualID;
   }
+
+  let data = await post("/ajax/admin.php", {
+    function: 17,
+    individualID: individualID
+  });
+  if(data.code < 100 || data.code > 200) return;
+  let individualData = data["data"];
 
   // Create, add and check blur of notification object
   let div = $("<div>", {class: "notification induce-blur"});
@@ -163,7 +169,7 @@ async function inspectIndividual(arg) {
     {label: "Phone Number"           , key: "phoneNumber"      , type: "text"    , apiFunction: 24, args: {individualID: individualData.individualID}},
     {label: "Email"                  , key: "email"            , type: "text"    , apiFunction: 24, args: {individualID: individualData.individualID}},
     {label: "Messenger"              , key: "facebookMessenger", type: "text"    , apiFunction: 24, args: {individualID: individualData.individualID}},
-    {label: "Remind Status"          , key: "remindStatus"     , type: "dropdown", apiFunction: -1, args: {individualID: individualData.individualID},
+    {label: "Remind Status"          , key: "remindStatus"     , type: "dropdown", apiFunction: 24, args: {individualID: individualData.individualID},
       options: {0:"No Remind Requested", 1:"Remind Requested", 2:"Remind Sended"} },
   ]);
 
@@ -324,13 +330,11 @@ async function inspectVolunteerForm(arg) {
 }
 
 async function inspectForm(formData) {
-  console.log("Form data:", formData);
   // Fetch some fresh data to work with
   let tempObj = (await post("/ajax/admin.php", {
     function: 3,
     formID: formData.formID
   }));
-  console.log("Temp return:", tempObj);
   let freshFormData = tempObj.data;
 
 

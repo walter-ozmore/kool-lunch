@@ -36,8 +36,8 @@
       }
 
 
-      if(isset($args["location"     ])) {
-        $insertArgs["location"     ] = $args["location"];
+      if(isset($args["location"])) {
+        $insertArgs["location"] = $args["location"];
       } else {
         $returnData = [
           "code"    => 200,
@@ -1183,7 +1183,7 @@
             "message" => "Success"
           ];
         }
-        
+
         return $returnData;
       }
 
@@ -1261,7 +1261,7 @@
       $data = [];
       $order = [];
       $rawData = [];
-      
+
       // First get the Forms that do not have individuals
       $query = "SELECT * FROM Form WHERE formID NOT IN (SELECT DISTINCT formID FROM FormLink) ORDER BY timeSubmitted DESC;";
       $result = $conn->query($query);

@@ -80,7 +80,7 @@
       break;
     case 8: // Delete an individual
       $code = Database::deleteIndividual($_POST["individualID"]);
-      echo json_encode(["code"=>$code]);
+      echo json_encode($code);
       break;
     case 9: // Updates a pickup day for a specific form
       // Get all args for update
