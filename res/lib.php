@@ -913,7 +913,7 @@
 
       $data["FormVolunteer"] = [];
       $query = "SELECT volunteerFormID, timeSubmitted FROM FormVolunteer"
-              ." WHERE volunteerFormID ="
+              ." WHERE volunteerFormID IN"
               ." (SELECT volunteerFormID FROM FormVolunteerLink WHERE individualID = $individualID);";
 
       $result = $conn->query($query);
