@@ -20,3 +20,4 @@
 
 # Rayna's
  - [ ] Fix new individuals not having remind status set in the database
+ - [ ] Make the getAllLinks function also include links to orgs
