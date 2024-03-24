@@ -3,6 +3,7 @@ $(document).ready(async function() {
 		let data = (await post("/ajax/admin.php", {
 			function: 3
 		})).data;
+    console.log(data);
 
     for(let row of data) {
       // Trim days to match the format of M Tu W Th F

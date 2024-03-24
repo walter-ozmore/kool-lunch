@@ -390,7 +390,7 @@ async function inspectForm(formData) {
   }
 
 
-  if("freshFormData" in freshFormData) { // Draw the individuals in a table
+  if("individuals" in freshFormData) { // Draw the individuals in a table
     let table = $("<table>");
 
     // Create the header for the table

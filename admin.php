@@ -172,7 +172,7 @@
     <div class="admin-container">
       <div class="sidebar content">
         <div id="sidebar"></div>
-        <center><button onclick="refreshPage()">Refresh</button></center>
+        <center><button onclick="refreshPage()">Refresh Table</button></center>
       </div>
       <div class="view-pane" id="view-pane"></div>
     </div>
