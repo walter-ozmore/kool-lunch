@@ -3,8 +3,8 @@
  - [ ] Merge function -> Given individualID old and new, replace all individualID-old links with individualID-new (next year)
  - [ ] Inspecting a form with multiple individuals attached shows no individuals in the data
  - [ ] Search individual UI need elements searched
- - [ ] No current way for a user to delete orgs
- - [ ] No current way for a user to delete a form
+ - [ ] No current way for a user to delete orgs -> function exists
+ - [ ] No current way for a user to delete a form -> function exists, case 16
  - [ ] Typing in a text box then closing the notification object without clicking anywhere else first will not send the update request to the server
        to update the given element
 
