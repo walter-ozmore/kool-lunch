@@ -969,6 +969,39 @@
         $returnData["message"] = "Success";
       }
 
+      // Start third query
+      $data["Org"] = [];
+      $query = "SELECT orgID FROM Organization WHERE mainContact = $individualID OR signupContact = $individualID;";
+      $result = $conn->query($query);
+
+      // Check results for second query
+      if ($result == FALSE) {
+        $returnData = [
+          "code" => 310,
+          "message" => "Query error"
+        ];
+
+        return $returnData;
+      } else if ($result->num_rows == 0) {
+        // If no links were found for individual, set message/code
+        if (isset($returnData["message"])) {
+          $returnData = [
+            "code"    => 120,
+            "message" => "No links"
+          ];
+        } else {
+          $returnData["code"]    = 130;
+          $returnData["message"] = "No linked forms";
+        }
+      } else {
+        while ($row = $result->fetch_assoc())  {
+          $data["Org"][] = $row;
+        }
+
+        $returnData["code"]    = 110;
+        $returnData["message"] = "Success";
+      }
+
       $returnData["data"] = $data;
 
       return $returnData;
