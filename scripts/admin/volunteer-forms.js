@@ -8,10 +8,10 @@ $(document).ready(async function() {
     for(let volForm of data) {
       // Merge our volunteer options
       let string = "";
-      string += "For a Week:"+volForm.weekInTheSummer+"<br>";
-      string += "Bag Decoration:"+volForm.bagDecoration+"<br>";
-      string += "Fundraising:"+volForm.fundraising+"<br>";
-      string += "Supply Gathering:"+volForm.supplyGathering+"<br>";
+      if(volForm["weekInTheSummer"] == "1") string += "For a Week<br>";
+      if(volForm["bagDecoration"] == "1") string += "Bag Decoration<br>";
+      if(volForm["fundraising"] == "1") string += "Fundraising<br>";
+      if(volForm["supplyGathering"] == "1") string += "Supply Gathering<br>";
       volForm.volOptions = string;
 
       delete volForm.weekInTheSummer;
@@ -33,16 +33,13 @@ $(document).ready(async function() {
       delete volForm.email;
       delete volForm.phoneNumber;
       delete volForm.facebookMessenger;
-
-      // Delete mostly debug data
-      delete volForm.orgID;
-      delete volForm.individualID;
     }
 
 		let tableDiv = mktable(data, {
 			headerNames: tableHeaderNames,
 			triggers: tableTriggers,
-      onRowClick: inspectVolunteerForm
+      onRowClick: inspectVolunteerForm,
+      ignore: ["individualID", "orgID"]
 		});
 		page.append(tableDiv);
 	});
