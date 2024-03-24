@@ -243,17 +243,20 @@ async function inspectIndividual(arg) {
   div.append( $("<center>").append(button_delete, button_close) );
 }
 
-async function inspectVolunteerForm(volunteerFormData) {
+async function inspectVolunteerForm(arg) {
   // Check if this data need to be fetched
+  let volunteerFormID;
   if (typeof volunteerFormData === 'number' || typeof volunteerFormData === 'string') {
-    let uniqueID = volunteerFormData;
-    let data = await post("/ajax/admin.php", {
-      function: 1,
-      volunteerFormID: uniqueID
-    });
-    if(data.code < 100 || data.code > 200) return;
-    volunteerFormData = data["data"];
+    volunteerFormID = arg;
+  } else {
+    volunteerFormID = arg.volunteerFormID;
   }
+  let data = await post("/ajax/admin.php", {
+    function: 1,
+    volunteerFormID: volunteerFormID
+  });
+  if(data.code < 100 || data.code > 200) return;
+  volunteerFormData = data["data"];
 
   // Create, add and check blur of notification object
   let div = $("<div>", {class: "notification induce-blur"});
