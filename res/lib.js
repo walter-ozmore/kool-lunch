@@ -51,7 +51,7 @@ function basicRowItems(parentElement, data, items) {
 
     // If the code has gotten here then no element must have been append via
     // other means, we will just print the value out
-    let displayString = data[("value" in item)? item.value: item.key];
+    let displayString = ("value" in item)? item.value: data[item.key];
 
     if("href" in item) {
       parentElement.append(
