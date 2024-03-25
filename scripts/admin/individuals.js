@@ -1,8 +1,15 @@
 $(document).ready(async function() {
 	addPage("Individuals", async (page)=>{
-		let data = (await post("/ajax/admin.php", {
+		let rawData = (await post("/ajax/admin.php", {
 			function: 2
-		})).data;
+		}));
+
+    console.log("Individuals:", rawData);
+    if(rawData.data == undefined) {
+      displayError(JSON.stringify(rawData));
+      return;
+    }
+    let data = rawData.data;
 
     // Alter the data so it shows on the table a little better
     for(let individual of data) {

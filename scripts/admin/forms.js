@@ -1,8 +1,15 @@
 $(document).ready(async function() {
 	addPage("Forms", async (page)=>{
-		let data = (await post("/ajax/admin.php", {
+		let rawData = (await post("/ajax/admin.php", {
 			function: 3
-		})).data;
+		}));
+
+    if(rawData.data == undefined) {
+      console.log(rawData);
+      displayError(JSON.stringify(rawData));
+      return;
+    }
+    let data = rawData.data;
 
     for(let row of data) {
       // Trim days to match the format of M Tu W Th F

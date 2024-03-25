@@ -1,8 +1,15 @@
 $(document).ready(async function() {
 	addPage("Volunteer Forms", async (page)=>{
-		let data = (await post("/ajax/admin.php", {
+		let rawData = (await post("/ajax/admin.php", {
 			function: 1
-		})).data;
+		}));
+
+    if(rawData.data == undefined) {
+      console.log(rawData);
+      displayError(JSON.stringify(rawData));
+      return;
+    }
+    let data = rawData.data;
 
     // Alter the data so it shows on the table a little better
     for(let volForm of data) {

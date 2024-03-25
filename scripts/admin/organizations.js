@@ -1,8 +1,15 @@
 $(document).ready(async function() {
 	addPage("Organizations", async (page)=>{
-		let data = (await post("/ajax/admin.php", {
+		let rawData = (await post("/ajax/admin.php", {
 			function: 4
-		})).data;
+		}));
+
+    if(rawData.data == undefined) {
+      console.log(rawData);
+      displayError(JSON.stringify(rawData));
+      return;
+    }
+    let data = rawData.data;
 
     // Pull data out to be one layer
     for(let row of data) {
