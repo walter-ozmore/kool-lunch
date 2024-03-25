@@ -4,8 +4,8 @@ $(document).ready(async function() {
 			function: 3
 		}));
 
+    console.log("Forms Page Data:", rawData);
     if(rawData.data == undefined) {
-      console.log(rawData);
       displayError(JSON.stringify(rawData));
       return;
     }

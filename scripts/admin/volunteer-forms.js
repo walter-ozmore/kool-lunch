@@ -4,8 +4,8 @@ $(document).ready(async function() {
 			function: 1
 		}));
 
+    console.log("Volunteer Forms Data:", rawData);
     if(rawData.data == undefined) {
-      console.log(rawData);
       displayError(JSON.stringify(rawData));
       return;
     }

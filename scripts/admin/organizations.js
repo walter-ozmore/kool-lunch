@@ -4,8 +4,8 @@ $(document).ready(async function() {
 			function: 4
 		}));
 
+    console.log("Organizations Page Data:", rawData);
     if(rawData.data == undefined) {
-      console.log(rawData);
       displayError(JSON.stringify(rawData));
       return;
     }

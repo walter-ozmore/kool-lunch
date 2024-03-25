@@ -4,7 +4,7 @@ $(document).ready(async function() {
 			function: 2
 		}));
 
-    console.log("Individuals:", rawData);
+    console.log("Individuals Page Data:", rawData);
     if(rawData.data == undefined) {
       displayError(JSON.stringify(rawData));
       return;
