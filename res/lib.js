@@ -17,7 +17,6 @@ function basicRowItems(parentElement, data, items) {
 
       if(item.type == "dropdown") {
         ele = $("<select>");
-        console.log(data);
 
         // Add options to the select
         for(let key in item.options) {
@@ -179,7 +178,6 @@ async function inspectIndividual(arg) {
       function: 8,
       individualID: individualData.individualID
     }, (data)=>{
-      console.log(data);
       if(data.code != 110) {
         return
       }
@@ -410,7 +408,6 @@ async function inspectForm(formData) {
       let row = $("<tr>");
       table.append(row);
 
-      // console.log(individual);
       row.append($("<td>").text(individual.individualName));
 
       // Make action buttons
@@ -429,7 +426,6 @@ async function inspectForm(formData) {
             individualID: individual.individualID
           });
           if(obj.code >= 100 && obj.code < 200) {
-            console.log("Inspecting form with this data:", freshFormData);
             inspectForm(freshFormData);
             div.remove(); checkBlur();
           }
@@ -446,7 +442,6 @@ async function inspectForm(formData) {
   let button_addIndividual = $("<button>")
     .text("Add an Individual")
     .click(()=>searchIndividuals(async (individual)=>{
-      // console.log(individual);
       await post("/ajax/admin.php", {
         function: 27,
         formID: formData.formID,
@@ -594,7 +589,6 @@ function displayPhoneNumber(phoneNumber) {
 // Old code
 
 function blink() {
-  // console.log("Blink");
   closeEyes();
   setTimeout(function() {openEyes(); }, 200);
 }
