@@ -1,23 +1,17 @@
-2 Weeks -> SITE WILL BE SENT TO USERS -> Volunteers and orgs should have full functionality.
-
 # Unassigned
  - [ ] Monetary Donations -> Unsure if should show amount, or at all. Ask Brandy next week
  - [ ] Merge function -> Given individualID old and new, replace all individualID-old links with individualID-new (next year)
+ - [ ] Inspecting a form with multiple individuals attached shows no individuals in the data
 
 # Walter's
- - [x] add photo consent to form, disabled by default
- - [x] allowPhotos should be on Form, not Individual
- - [x] Add space between formids when inspecting individuals
- - [ ] When inspecting individuals and click on form linked to that individual, the page is just refreshed instead of displaying linked form
- - [x] Volunteer Form -> checkbox for "is 18 or older" -> if under request that they have their parent/guardian signup for them and kick back to homepage
- - [x] Needs to show all different contact methods
- - [x] Add uids to display frontend for individual search
- - [x] On signup page, pickeruppers -> Continue and Add Adult buttons need to be flipped
+ - [ ] Fix admin menu not refreshing or updating when an individual is deleted
+ - [ ] Changing the main contact on in inspect org does not reload the org or the table
+ - [ ] Typing in a text box then closing the notification object without clicking anywhere else first will not send the update request to the server to update the given element
 
 # Rayna's
- - [x] DeleteFormVolunteer is not working (Wasn't actually broken, as an issue in the JS)
- - [x] createFormLink -> Should verify that that individual is not already linked to that form
- - [x] Delete Form/VolunteerForm should auto delete the FormLink/FormVolunteerLink entries for the form
- - [x] No email for Individual created via Form -> remove that option from the Signup Form frontend
- - [x] Change DB so that allowPhotos in on the form, not the individual
- - [x] The JavaScript in lib.js is not handling refreshing the page after deleting a volunteer form correctly
+ -![ ] Only show data for this current year
+ - [ ] Fix new individuals not have a preferred method of contact
+ - [ ] Admin/Forms does seam to sort by individuals rather than submit time
+ - [ ] Search individual UI need elements centered
+ - [ ] No current way for a user to delete orgs -> function exists
+ - [ ] No current way for a user to delete a form -> function exists, case 16

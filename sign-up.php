@@ -53,8 +53,8 @@
         // Create an object of all the inputs and append it to the array to use
         // later for the submit button
         let pickerUpperLinks = {
-          nameInput: $("<input>", {type: "text"}),
-          phoneInput: $("<input>", {type: "tel", placeholder: "0123456789", pattern: "[0-9]{11}"}),
+          nameInput: $("<input>", {type: "text", placeholder: "John Doe"}),
+          phoneInput: $("<input>", {type: "tel", placeholder: "(123) 456-7890", pattern: "[0-9]{11}"}),
           remindSelection:  $("<input>", {type: "checkbox"}),
           removeButton: $("<button>").text("Remove this individual").click(()=>{
             // Remove the div

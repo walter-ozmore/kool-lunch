@@ -1,6 +1,6 @@
 <?php
-  // error_reporting(E_ALL);
-  // ini_set('display_errors', '1');
+  error_reporting(E_ALL);
+  ini_set('display_errors', '1');
 
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/lib.php";
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
@@ -36,8 +36,8 @@
       }
 
 
-      if(isset($args["location"     ])) {
-        $insertArgs["location"     ] = $args["location"];
+      if(isset($args["location"])) {
+        $insertArgs["location"] = $args["location"];
       } else {
         $returnData = [
           "code"    => 200,
@@ -913,7 +913,7 @@
 
       $data["FormVolunteer"] = [];
       $query = "SELECT volunteerFormID, timeSubmitted FROM FormVolunteer"
-              ." WHERE volunteerFormID ="
+              ." WHERE volunteerFormID IN"
               ." (SELECT volunteerFormID FROM FormVolunteerLink WHERE individualID = $individualID);";
 
       $result = $conn->query($query);
@@ -963,6 +963,39 @@
       } else {
         while ($row = $result->fetch_assoc())  {
           $data["Form"][] = $row;
+        }
+
+        $returnData["code"]    = 110;
+        $returnData["message"] = "Success";
+      }
+
+      // Start third query
+      $data["Org"] = [];
+      $query = "SELECT orgID FROM Organization WHERE mainContact = $individualID OR signupContact = $individualID;";
+      $result = $conn->query($query);
+
+      // Check results for second query
+      if ($result == FALSE) {
+        $returnData = [
+          "code" => 310,
+          "message" => "Query error"
+        ];
+
+        return $returnData;
+      } else if ($result->num_rows == 0) {
+        // If no links were found for individual, set message/code
+        if (isset($returnData["message"])) {
+          $returnData = [
+            "code"    => 120,
+            "message" => "No links"
+          ];
+        } else {
+          $returnData["code"]    = 130;
+          $returnData["message"] = "No linked forms";
+        }
+      } else {
+        while ($row = $result->fetch_assoc())  {
+          $data["Org"][] = $row;
         }
 
         $returnData["code"]    = 110;
@@ -1154,6 +1187,39 @@
         return $returnData;
       }
 
+      // See if form has individuals
+      $checkQuery = "SELECT COUNT(*) FROM FormLink WHERE formID = $formID;";
+      $checkResult = $conn->query($checkQuery);
+      $check = $checkResult->fetch_assoc()["COUNT(*)"];
+
+      if ($check != 1) {
+        $query = "SELECT * FROM Form WHERE formID = $formID;";
+        $result = $conn->query($query);
+
+        if ($result == FALSE) {
+          $returnData = [
+            "code"    => 310,
+            "message" => "Query error"
+          ];
+        } else if ($result->num_rows == 0){
+          $returnData = [
+            "numRows" => $result->num_rows,
+            "code"    => 120,
+            "message" => "No entries found"
+          ];
+        } else {
+          // Set return data
+          $returnData = [
+            "data"    => $result->fetch_assoc(),
+            "numRows" => $result->num_rows,
+            "code"    => 110,
+            "message" => "Success"
+          ];
+        }
+
+        return $returnData;
+      }
+
       // Query
       $query = "SELECT f.*, i.individualID, i.individualName"
                ." FROM FormLink fl"
@@ -1190,6 +1256,7 @@
               "timeSubmitted" => $row["timeSubmitted"],
               "location"      => $row["location"],
               "isEnabled"     => $row["isEnabled"],
+              "allowPhotos"   => $row["allowPhotos"],
               "lunchesNeeded" => $row["lunchesNeeded"],
               "allergies"     => $row["allergies"]
             ];
@@ -1228,6 +1295,43 @@
       $order = [];
       $rawData = [];
 
+      // First get the Forms that do not have individuals
+      $query = "SELECT * FROM Form WHERE formID NOT IN (SELECT DISTINCT formID FROM FormLink) ORDER BY timeSubmitted DESC;";
+      $result = $conn->query($query);
+      if ($result == FALSE) {
+        $returnData = [
+          "code"    => 310,
+          "message" => "Query error"
+        ];
+        return $returnData;
+      } else if ($result->num_rows == 0){
+        $returnData = [
+          "numRows" => $result->num_rows,
+          "code"    => 120,
+          "message" => "No entries found"
+        ];
+        return $returnData;
+      } else {
+        while ($row = $result->fetch_assoc()){
+          $order[] = $row["formID"];
+          $rawData[$row["formID"]] = [
+            "formID"        => $row["formID"],
+            "pickupMon"     => $row["pickupMon"],
+            "pickupTue"     => $row["pickupTue"],
+            "pickupWed"     => $row["pickupWed"],
+            "pickupThu"     => $row["pickupThu"],
+            "pickupFri"     => $row["pickupFri"],
+            "timeSubmitted" => $row["timeSubmitted"],
+            "location"      => $row["location"],
+            "isEnabled"     => $row["isEnabled"],
+            "allowPhotos"   => $row["allowPhotos"],
+            "lunchesNeeded" => $row["lunchesNeeded"],
+            "allergies"     => $row["allergies"],
+            "individuals"   => []
+          ];
+        }
+      }
+
       // Query
       $query = "SELECT f.*, i.individualID, i.individualName"
                ." FROM FormLink fl"
@@ -1257,7 +1361,7 @@
           // If the formID is not already in $data, add it
           if (!isset($rawData[$formID])) {
             $rawData[$formID] = [
-              "formID"        => $row["formID"],
+              "formID"        => $formID,
               "pickupMon"     => $row["pickupMon"],
               "pickupTue"     => $row["pickupTue"],
               "pickupWed"     => $row["pickupWed"],
@@ -1266,6 +1370,7 @@
               "timeSubmitted" => $row["timeSubmitted"],
               "location"      => $row["location"],
               "isEnabled"     => $row["isEnabled"],
+              "allowPhotos"   => $row["allowPhotos"],
               "lunchesNeeded" => $row["lunchesNeeded"],
               "allergies"     => $row["allergies"]
             ];
@@ -1280,7 +1385,9 @@
 
         // Place in final array with correct order
         foreach ($order as $formID) {
-          $data[] = $rawData[$formID];
+          if (isset($rawData[$formID])) {
+            $data[] = $rawData[$formID];
+          }
         }
 
         // Set return data

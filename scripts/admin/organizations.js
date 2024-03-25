@@ -25,7 +25,8 @@ $(document).ready(async function() {
 		let tableDiv = mktable(data, {
 			headerNames: tableHeaderNames,
 			triggers: tableTriggers,
-      onRowClick: inspectOrganization
+      onRowClick: inspectOrganization,
+      ignore: ["signupContactID", "mainContactID"]
 		});
 		page.append(tableDiv);
 	});

@@ -44,9 +44,9 @@ $(document).ready(async function() {
           row.css({"background-color":"#B9B8B5"})
         }
       },
+      ignore: ["isEnabled"],
       onContext: {
         "Delete": async (row)=>{
-          console.log(row);
           // Delete form
           let obj = await post("/ajax/admin.php", {
             function: 16,

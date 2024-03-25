@@ -88,6 +88,17 @@
           .addClass("content")
         ;
         pages[index].func(page);
+        selectedPageIndex = index;
+      }
+
+      /**
+       * Refreshes the page if the selected page matches the given index, if the
+       * index is undefined then it will always refresh
+       */
+      function refreshPage(expectedIndex=undefined) {
+        if(expectedIndex != undefined && expectedIndex != selectedPageIndex)
+          return
+        selectPage(selectedPageIndex);
       }
 
       let autoSelected = false;
@@ -95,8 +106,9 @@
         individualID: "ID",
         formID: "ID",
         orgID: "ID",
-        individualName: "Name",
-        orgName: "Name",
+        volunteerFormID: "ID",
+        individualName: "Individual Name",
+        orgName: "Organization Name",
         timeSubmitted: "Submit Time",
         weekInTheSummer: "For a Week",
         bagDecoration: "Bag Decoration",
@@ -109,18 +121,26 @@
         isEnabled: "Enabled",
         lunchesNeeded: "Lunches Needed",
         allergies: "Allergies",
-        pickupDays: "pickupDays",
+        pickupDays: "Days",
         location: "Pickup Location",
+        remindStatus: "Remind Status",
+        contacts: "Contacts",
+        individuals: "Individuals",
+        allowPhotos: "Photos"
 			};
       let tableTriggers = [
-				{ case: ["weekInTheSummer", "bagDecoration", "fundraising", "supplyGathering", "isEnabled"],
-					func: function(data) { return (data == "1")? "Yes": "No"; }
+				{ case: ["weekInTheSummer", "bagDecoration", "fundraising", "supplyGathering", "isEnabled", "allowPhotos"],
+					func: function(data) {
+            return "<input type='checkbox' "+((data == "1")?"checked":"")+" disabled>";
+            // return (data == "1")? "Yes": "No";
+          }
 				},
 				{ case: ["timeSubmitted"],
 					func: function(data) { return unixToHuman(data); }
 				}
 			];
 
+      let selectedPageIndex = undefined;
       let page = undefined;
       $(document).ready(async function() {
         // Check if we have a user logged in
@@ -158,7 +178,10 @@
   <body>
 		<!-- Dropdown for pages -->
     <div class="admin-container">
-      <div class="sidebar content" id="sidebar"></div>
+      <div class="sidebar content">
+        <div id="sidebar"></div>
+        <center><button onclick="refreshPage()">Refresh Table</button></center>
+      </div>
       <div class="view-pane" id="view-pane"></div>
     </div>
 

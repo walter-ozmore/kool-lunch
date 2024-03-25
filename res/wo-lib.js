@@ -167,7 +167,7 @@ function checkBlur() {
 function mktable(data, args = {}) {
   let ht = args.headerNames;
   let varTriggers = args.triggers;
-  let ignore = ["uid", "entryID", "volunteerFormID"];
+  let ignore = ("ignore" in args)? args.ignore: [];
 
   let table = $("<table>");
   let header = $("<tr>");
