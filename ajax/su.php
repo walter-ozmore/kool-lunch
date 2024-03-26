@@ -66,9 +66,10 @@
   foreach ($adults as $adult => $adultValues) {
     // Get values for individuals
     $args = [
-      "name"         => $adultValues["name"],
-      "phoneNumber"  => $adultValues["phoneNumber"],
-      "remindStatus" => $adultValues["wantsRemind"]
+      "name"             => $adultValues["name"],
+      "phoneNumber"      => $adultValues["phoneNumber"],
+      "remindStatus"     => $adultValues["wantsRemind"],
+      "preferredContact" => "call"
     ];
 
     $result = Database::createIndividual($args);

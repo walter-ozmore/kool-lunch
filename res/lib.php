@@ -1310,7 +1310,6 @@
           "code"    => 120,
           "message" => "No entries found"
         ];
-        return $returnData;
       } else {
         while ($row = $result->fetch_assoc()){
           $order[] = $row["formID"];
