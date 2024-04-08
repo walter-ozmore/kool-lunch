@@ -257,13 +257,13 @@
         <center><h1>Sign Up</h1></center>
 
         <center>
-          <p><b><u>Dates served are May 31st - August 4th Monday-Thursdays</u></b></p>
+          <p><b><u>Dates served are May 28st - August 1st Monday-Thursdays</u></b></p>
         </center>
         <p>Sack lunches will be prepared for pick up at local parks and areas in Bonham. Lunches will be four days a week, Monday through Thursday, with the exception of July 4th in order to observe Independence Day.</p>
-        <p>If you are interested in your child or children participating please fill out the questionnaire at the bottom and submit.</p>
+        <p>If you are interested in your child or children participating please fill out the questionnaire and submit.</p>
         <p>If you have any questions, please contact The Kool Lunches Program at thekoollunchesprogram@gmail.com or message us on Facebook @ Kool Lunches.</p>
         <br>
-        <p>I understand that I do not let the Kool Lunches Program know before 10:55 that I will not be picking up lunches that day, my name will removed until ontact the Kool Lunches Program to begin receiving lunches again.</p>
+        <p>I understand that I do not let the Kool Lunches Program know before 10:55 that I will not be picking up lunches that day, my name will removed until I contact the Kool Lunches Program to begin receiving lunches again.</p>
       </div>
       <center>
         <button onclick="showMiddleSec()" class="large-button">I understand</button>
