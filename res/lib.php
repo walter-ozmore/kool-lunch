@@ -1285,10 +1285,12 @@
      * Get all Form entries and all Individual entries linked to
      * those Form entries.
      *
+     * @param  startTime  0 if not needed, otherwise the starting UNIX timestamp.
+     * @param  endTime    0 if not needed, oteherwise the ending UNIX timestamp.
      * @return returnData An array with code, message, relevant metadata,
      *   and any data retrieved.
      */
-    public static function getForms() {
+    public static function getForms($startTime, $endTime) {
       $conn = Secret::connectDB("lunch");
       $returnData = [];
       $data = [];
@@ -1296,7 +1298,26 @@
       $rawData = [];
 
       // First get the Forms that do not have individuals
-      $query = "SELECT * FROM Form WHERE formID NOT IN (SELECT DISTINCT formID FROM FormLink) ORDER BY timeSubmitted DESC;";
+      $query = "SELECT * FROM Form WHERE formID NOT IN (SELECT DISTINCT formID FROM FormLink)";
+
+      // Check whether this query needs either a start or end time
+      if ($startTime != 0 || $endTime != 0)
+      {
+        $query .= " AND timeSubmitted";
+
+        if ($startTime == 0) {
+          $query .= " <= $endTime";
+        }
+        else if ($endTime == 0) {
+          $query .= " >= $startTime";
+        }
+        else {
+          $query .= " BETWEEN $startTime AND $endTime";
+        }
+      }
+
+      $query .= " ORDER BY timeSubmitted DESC;";
+
       $result = $conn->query($query);
       if ($result == FALSE) {
         $returnData = [
@@ -1335,9 +1356,26 @@
       $query = "SELECT f.*, i.individualID, i.individualName"
                ." FROM FormLink fl"
                ." INNER JOIN Form f ON f.formID = fl.formID"
-               ." INNER JOIN Individual i ON fl.individualID = i.individualID"
-               ." ORDER BY f.timeSubmitted DESC;";
+               ." INNER JOIN Individual i ON fl.individualID = i.individualID";
 
+      // Check whether this query needs either a start or end time
+      if ($startTime != 0 || $endTime != 0)
+      {
+        $query .= " WHERE f.timeSubmitted";
+
+        if ($startTime == 0) {
+          $query .= " <= $endTime";
+        }
+        else if ($endTime == 0) {
+          $query .= " >= $startTime";
+        }
+        else {
+          $query .= " BETWEEN $startTime AND $endTime";
+        }
+      }
+
+      $query .= " ORDER BY f.timeSubmitted DESC;";
+    
       $result = $conn->query($query);
 
       if ($result == FALSE) {
@@ -1781,16 +1819,16 @@
       // Check whether this query needs either a start or end time
       if ($startTime != 0 || $endTime != 0)
       {
-        $query .= " WHERE";
+        $query .= " WHERE fv.timeSubmitted";
 
         if ($startTime == 0) {
-          $query .= " fv.timeSubmitted <= $endTime";
+          $query .= " <= $endTime";
         }
         else if ($endTime == 0) {
-          $query .= " fv.timeSubmitted >= $startTime";
+          $query .= " >= $startTime";
         }
         else {
-          $query .= " fv.timeSubmitted BETWEEN $startTime AND $endTime";
+          $query .= " BETWEEN $startTime AND $endTime";
         }
       }
 

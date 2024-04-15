@@ -32,12 +32,8 @@
         break;
       }
 
-      if (isset($_POST["startTime"])) {
-        $startTime = $_POST["startTime"];
-      } else {$startTime = 0;}
-      if (isset($_POST["endTime"])) {
-        $endTime = $_POST["endTime"];
-      } else {$endTime = 0;}
+      $startTime = (isset($_POST["startTime"]))? $_POST["startTime"]: 0;
+      $endTime = (isset($_POST["endTime"  ]))? $_POST["endTime"  ]: 0;
 
 			echo json_encode(Database::getVolunteers($startTime, $endTime));
 			break;
@@ -53,8 +49,10 @@
         break;
       }
 
+      $startTime = (isset($_POST["startTime"]))? $_POST["startTime"]: 0;
+      $endTime = (isset($_POST["endTime"  ]))? $_POST["endTime"  ]: 0;
 
-      echo json_encode(Database::getForms());
+      echo json_encode(Database::getForms($startTime, $endTime));
       break;
     case 4: // Fetch orgs
       echo json_encode(Database::getOrganizations());
