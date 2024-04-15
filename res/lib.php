@@ -1502,24 +1502,25 @@
 
       $query = "SELECT * FROM Individual";
       
+      // TODO: Make sure to include FormVolunteerLInk.
       // Check if query needs start or end time
-      if ($startTime != 0 || $endTime != 0)
-      {
-        $query .= " WHERE individualID IN (SELECT fl.individualID FROM FormLink fl";
-        $query .= " INNER JOIN Form f WHERE f.formID = fl.formID AND f.timeSubmitted";
+      // if ($startTime != 0 || $endTime != 0)
+      // {
+      //   $query .= " WHERE individualID IN (SELECT fl.individualID FROM FormLink fl";
+      //   $query .= " INNER JOIN Form f WHERE f.formID = fl.formID AND f.timeSubmitted";
 
-        if ($startTime == 0) {
-          $query .= " <= $endTime";
-        }
-        else if ($endTime == 0) {
-          $query .= " >= $startTime";
-        }
-        else {
-          $query .= " BETWEEN $startTime AND $endTime";
-        }
+      //   if ($startTime == 0) {
+      //     $query .= " <= $endTime";
+      //   }
+      //   else if ($endTime == 0) {
+      //     $query .= " >= $startTime";
+      //   }
+      //   else {
+      //     $query .= " BETWEEN $startTime AND $endTime";
+      //   }
 
-        $query .= ")";
-      }
+      //   $query .= ")";
+      // }
 
       $query .= " ORDER BY individualID DESC;";
 
