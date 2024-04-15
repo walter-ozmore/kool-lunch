@@ -1,7 +1,9 @@
 $(document).ready(async function() {
 	addPage("Individuals", async (page)=>{
 		let rawData = (await post("/ajax/admin.php", {
-			function: 2
+			function: 2,
+      startTime: 1704088800,
+      endTime: 1735711200-1
 		}));
 
     console.log("Individuals Page Data:", rawData);
