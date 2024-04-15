@@ -68,15 +68,6 @@
 
       echo json_encode(Database::getDayMeals($date));
       break;
-    case 5: // Check a checkbox for the tracker
-      // $args = [
-      //   "formID"     => $_POST["formID"],
-      //   "pickupTime" => time(),
-      //   "amount"     => $_POST["amount"]
-      // ];
-
-      // echo json_encode(Database::createPickup($args));
-      break;
     case 6:
       // $code = Database::deleteFormVolunteer($_POST["formID"]);
       echo json_encode(Database::deleteFormVolunteer($_POST["formID"]));

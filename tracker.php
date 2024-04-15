@@ -80,11 +80,15 @@
         let storage = {};
 
         // Grab our data from the database
-        let data = await post("/ajax/admin.php", {
+        let obj = await post("/ajax/admin.php", {
           function: 5,
-          date: 1717445432,
+          date: Math.floor(Date.parse("4-15-2024")/1000),
+          startTime: 1704088800,
+          endTime: 1735711200-1
         });
-        console.log(data);
+        console.log("Obj:", obj);
+        let data = obj["data"];
+        console.log("Data:", data);
         for(let row of data) {
           let div; // Stores the div that we put the rows in to
 
@@ -104,7 +108,6 @@
             $("<input>", {type: "checkbox", checked: row.pickedUp, disabled: true}).click(clickCheckbox),
           ));
         }
-        console.log(data);
       });
     </script>
   </head>
