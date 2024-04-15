@@ -1489,16 +1489,40 @@
 
     /**
      * Get all Individual entries.
-     *
+     * 
+     * @param  startTime  0 if not needed, otherwise the starting UNIX timestamp.
+     * @param  endTime    0 if not needed, oteherwise the ending UNIX timestamp.
      * @return returnData An array with code, message, relevant metadata,
      *   and any data retrieved.
      */
-    public static function getIndividuals() {
+    public static function getIndividuals($startTime, $endTime) {
       $conn = Secret::connectDB("lunch");
       $returnData = [];
       $data = [];
 
-      $query = "SELECT * FROM Individual ORDER BY individualID DESC;";
+      $query = "SELECT * FROM Individual";
+      
+      // Check if query needs start or end time
+      if ($startTime != 0 || $endTime != 0)
+      {
+        $query .= " WHERE individualID IN (SELECT fl.individualID FROM FormLink fl";
+        $query .= " INNER JOIN Form f WHERE f.formID = fl.formID AND f.timeSubmitted";
+
+        if ($startTime == 0) {
+          $query .= " <= $endTime";
+        }
+        else if ($endTime == 0) {
+          $query .= " >= $startTime";
+        }
+        else {
+          $query .= " BETWEEN $startTime AND $endTime";
+        }
+
+        $query .= ")";
+      }
+
+      $query .= " ORDER BY individualID DESC;";
+
       $result = $conn->query($query);
 
       if ($result == FALSE) {

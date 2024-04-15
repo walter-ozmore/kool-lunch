@@ -38,7 +38,10 @@
 			echo json_encode(Database::getVolunteers($startTime, $endTime));
 			break;
     case 2: // Fetch individuals
-      echo json_encode(Database::getIndividuals());
+      $startTime = (isset($_POST["startTime"]))? $_POST["startTime"]: 0;
+      $endTime = (isset($_POST["endTime"  ]))? $_POST["endTime"  ]: 0;
+
+      echo json_encode(Database::getIndividuals($startTime, $endTime));
       break;
     case 3: // Fetch Forms
       if(isset($_POST["formID"])) {
