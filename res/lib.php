@@ -1763,10 +1763,12 @@
     /**
      * Get all Volunteer entries and the information in the linked Individual entries.
      *
+     * @param  startTime  0 if not needed, otherwise the starting UNIX timestamp.
+     * @param  endTime    0 if not needed, oteherwise the ending UNIX timestamp.
      * @return returnData An array with code, message, relevant metadata,
      *   and any data retrieved.
      */
-    public static function getVolunteers() {
+    public static function getVolunteers($startTime, $endTime) {
       $conn = Secret::connectDB("lunch");
       $data = [];
       $returnData = [];
@@ -1774,8 +1776,25 @@
       $query = "SELECT fv.*, i.individualID, i.individualName, i.phoneNumber, i.email, i.facebookMessenger, i.preferredContact"
               ." FROM FormVolunteerLink as fvl"
               ." INNER JOIN FormVolunteer fv ON fv.volunteerFormID = fvl.volunteerFormID"
-              ." INNER JOIN Individual i ON i.IndividualID = fvl.individualID"
-              ." ORDER BY fv.volunteerFormID DESC;";
+              ." INNER JOIN Individual i ON i.IndividualID = fvl.individualID";
+
+      // Check whether this query needs either a start or end time
+      if ($startTime != 0 || $endTime != 0)
+      {
+        $query .= " WHERE";
+
+        if ($startTime == 0) {
+          $query .= " fv.timeSubmitted <= $endTime";
+        }
+        else if ($endTime == 0) {
+          $query .= " fv.timeSubmitted >= $startTime";
+        }
+        else {
+          $query .= " fv.timeSubmitted BETWEEN $startTime AND $endTime";
+        }
+      }
+
+      $query .= " ORDER BY fv.volunteerFormID DESC;";
 
       $result = $conn->query($query);
 
