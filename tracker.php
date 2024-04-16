@@ -50,39 +50,16 @@
 
     <script src="/scripts/tracker.js"></script>
     <script>
-      $(document).ready(async function() {
-        // Check if we have a user logged in
-        let user = await account_getUser();
-        if(user == null) {
-          Account.createWindow();
-          return;
-        }
-
-        let clickCheckbox = async ()=>{
-          let checkbox = $(this); // Grab jquery object
-          checkbox.prop('disabled', true); // Disable the checkbox to prevent double request
-
-          // Submit the request and if there is an error then undo the checkbox
-          await $.ajax({ type: "POST", url: "/ajax/admin.php",
-            data: JSON.stringify({ function: 6 }),
-            contentType: "application/json",
-            error: function() {
-              // Flip the checkbox back if it fails
-              $('#myCheckbox').prop('checked', !checkbox.is(':checked'));
-            }
-          });
-
-          // Enable the checkbox
-          checkbox.prop('disabled', false);
-        };
-
+      async function loadFreshData(unixTime) {
+        $("#display").empty();
+        // Math.floor(Date.parse("4-15-2024")/1000) // Test data
         // Stores jquery object to use later with a key of the location
         let storage = {};
 
         // Grab our data from the database
         let obj = await post("/ajax/admin.php", {
           function: 5,
-          date: Math.floor(Date.parse("4-15-2024")/1000),
+          date: unixTime,
           startTime: 1704088800,
           endTime: 1735711200-1
         });
@@ -108,6 +85,60 @@
             $("<input>", {type: "checkbox", checked: row.pickedUp, disabled: true}).click(clickCheckbox),
           ));
         }
+      }
+
+      async function clickCheckbox () {
+        let checkbox = $(this); // Grab jquery object
+        checkbox.prop('disabled', true); // Disable the checkbox to prevent double request
+
+        // Submit the request and if there is an error then undo the checkbox
+        await $.ajax({ type: "POST", url: "/ajax/admin.php",
+          data: JSON.stringify({ function: 6 }),
+          contentType: "application/json",
+          error: function() {
+            // Flip the checkbox back if it fails
+            $('#myCheckbox').prop('checked', !checkbox.is(':checked'));
+          }
+        });
+
+        // Enable the checkbox
+        checkbox.prop('disabled', false);
+      }
+
+      $(document).ready(async function() {
+        // Check if we have a user logged in
+        let user = await account_getUser();
+        if(user == null) {
+          Account.createWindow();
+          return;
+        }
+
+        var today = new Date(); // Get today's date
+        // Format the date as yyyy-MM-dd (required format for input type="date")
+        var formattedDate = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+        $('#set-date').val(formattedDate);
+
+
+        $('#set-date').change(function() {
+          let unixTime = 0;
+
+          if(currentDateValue === formattedDate) {
+            var currentDate = new Date(); // Get the current date and time
+            var unixTimeMilliseconds = currentDate.getTime(); // Get the current Unix time (in milliseconds)
+            unixTime = Math.floor(unixTimeMilliseconds / 1000); // Convert milliseconds to seconds (Unix time is typically in seconds)
+          } else {
+            let currentDateValue = $(this).val(); // Get the value of the input element
+            let selectedDate = new Date(currentDateValue); // Convert selected date to a Date object
+            unixTime = Math.floor(selectedDate.getTime() / 1000); // Convert selected date to Unix timestamp
+          }
+
+          loadFreshData(unixTime);
+        });
+
+        let currentDateValue = $(this).val(); // Get the value of the input element
+        let selectedDate = new Date(currentDateValue); // Convert selected date to a Date object
+        unixTime = Math.floor(selectedDate.getTime() / 1000); // Convert selected date to Unix timestamp
+        loadFreshData(unixTime);
       });
     </script>
   </head>
@@ -117,6 +148,10 @@
   </header>
 
   <body>
+    <center>
+      <label></label>
+      <input id="set-date" type="date">
+    </center>
     <div id="selectors" style="text-align: center; display: none;">
       <!-- <select id="location-selector" onchange="checkSelector()"></select><br> -->
       <input type="date" id="date-selector">

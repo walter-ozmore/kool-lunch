@@ -63,9 +63,10 @@
     case 5: // Fetch for tracker
       $data = [];
 
-      $timestamp = $_POST["date"];
+      date_default_timezone_set('GMT');
+      $timestamp = (int)($_POST["date"]);
       $date = substr(date("l", $timestamp), 0, 3);
-      
+
       $startTime = (isset($_POST["startTime"]))? $_POST["startTime"]: 0;
       $endTime = (isset($_POST["endTime"  ]))? $_POST["endTime"  ]: 0;
 
@@ -290,7 +291,7 @@
 
         echo json_encode(Database::createPickup($args));
       }
-      
+
       if ($_POST["setTo"] == False) {
         $formID = $_POST["formID"];
 
