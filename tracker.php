@@ -43,6 +43,15 @@
         text-align: right;
       }
 
+      .display {
+        margin: 1em auto;
+        max-width: 45em;
+      }
+
+      .display h2:not(:first-of-type) {
+        margin-top: 2em;
+      }
+
       #selectors input {
         font-size: 1.5em;
       }
@@ -159,7 +168,7 @@
     </div>
 
 
-    <div id="display"></div>
+    <div id="display" class="display"></div>
   </body>
 
   <?php require realpath($_SERVER["DOCUMENT_ROOT"])."/res/footer.php"; ?>
