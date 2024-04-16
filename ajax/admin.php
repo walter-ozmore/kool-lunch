@@ -277,5 +277,30 @@
 
       echo json_encode(Database::updateAllowPhotos($args));
       break;
+    case 30: // Delete/Create pickup
+      if ($_POST["setTo"] == True) {
+        $args = [
+          "formID"     => $_POST["formID"],
+          "pickupTime" => $_POST["date"]
+        ];
+
+        if (isset($_POST["amount"])) {
+          $args["amount"] = $_POST["amount"];
+        }
+
+        echo json_encode(Database::createPickup($args));
+      }
+      
+      if ($_POST["setTo"] == False) {
+        $formID = $_POST["formID"];
+
+        // Get the start and end time for the date
+        $date = date('Y-m-d', $_POST["date"]);
+
+        $startTime = strtotime($date);
+        $endTime = strtotime("$date +1 Day") - 1;
+
+        echo json_encode(Database::deletePickup($formID, $startTime, $endTime));
+      }
 	}
 ?>

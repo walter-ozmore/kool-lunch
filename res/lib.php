@@ -868,24 +868,44 @@
     }
 
     /**
-     * Deletes a Pickup entry based on the passed ID. Verifies the
-     * ID is numeric, and limits the deletion to one entry.
+     * Deletes a Pickup entry based on the passed formID and UNIX time. Verifies 
+     * the ID is numeric, and limits the deletion to one entry.
      *
-     * @param pickupID The ID of the target row.
+     * @param  formID     The ID of the target form.
+     * @param  startTime  0 if not needed, otherwise the starting UNIX timestamp.
+     * @param  endTime    0 if not needed, oteherwise the ending UNIX timestamp.
      * @return returnData An array with code, message, and relevant metadata.
      */
-    public static function deletePickup($pickupID) {
+    public static function deletePickup($formID, $startTime, $endTime) {
       $conn = Secret::connectDB("lunch");
-      if (!is_numeric($pickupID)) {
+
+
+      if (!is_numeric($formID)) {
         $returnData = [
           "code"    => 220,
-          "message" => "Invalid pickupID"
+          "message" => "Invalid formID"
+        ];
+
+        return $returnData;
+      }
+      if (!is_numeric($startTime)) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid start time"
+        ];
+
+        return $returnData;
+      }
+      if (!is_numeric($endTime)) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid end time"
         ];
 
         return $returnData;
       }
 
-      $query = "DELETE FROM Pickup WHERE pickupID = $pickupID LIMIT 1;";
+      $query = "DELETE FROM Pickup WHERE formID = $formID AND pickupTime BETWEEN $startTime AND $endTime LIMIT 1;";
       $result = $conn->query($query);
 
       if ($result == FALSE) {
