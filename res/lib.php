@@ -1715,12 +1715,14 @@
     /**
      * Get all meals for a specific pickup day.
      *
-     * @param date The day of the week to check for in three letter format.
+     * @param date      The day of the week to check for in three letter format.
+     * @param startTime 0 if not needed, otherwise the starting UNIX timestamp.
+     * @param endTime   0 if not needed, oteherwise the ending UNIX timestamp.
      *
      * @return returnData An array with code, message, relevant metadata,
      *   and any data retrieved.
      */
-    public static function getDayMeals($date) {
+    public static function getDayMeals($date, $startTime, $endTime) {
       $conn = Secret::connectDB("lunch");
       $returnData = [];
       $data = [];
@@ -1738,8 +1740,25 @@
               ." FROM FormLink fl"
               ." INNER JOIN Form f ON f.formID = fl.formID"
               ." INNER JOIN Individual i ON i.individualID = fl.individualID"
-              ." WHERE isEnabled=1 AND pickup$date = 1"
-              ." ORDER BY f.location, i.individualName;";
+              ." WHERE isEnabled=1 AND pickup$date = 1";
+
+      // Check whether this query needs either a start or end time
+      if ($startTime != 0 || $endTime != 0)
+      {
+        $query .= " AND f.timeSubmitted";
+
+        if ($startTime == 0) {
+          $query .= " <= $endTime";
+        }
+        else if ($endTime == 0) {
+          $query .= " >= $startTime";
+        }
+        else {
+          $query .= " BETWEEN $startTime AND $endTime";
+        }
+      }
+
+      $query .= " ORDER BY f.location, i.individualName;";
 
       $result = $conn->query($query);
 

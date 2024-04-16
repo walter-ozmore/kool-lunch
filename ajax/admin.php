@@ -65,8 +65,11 @@
 
       $timestamp = $_POST["date"];
       $date = substr(date("l", $timestamp), 0, 3);
+      
+      $startTime = (isset($_POST["startTime"]))? $_POST["startTime"]: 0;
+      $endTime = (isset($_POST["endTime"  ]))? $_POST["endTime"  ]: 0;
 
-      echo json_encode(Database::getDayMeals($date));
+      echo json_encode(Database::getDayMeals($date, $startTime, $endTime));
       break;
     case 6:
       // $code = Database::deleteFormVolunteer($_POST["formID"]);
