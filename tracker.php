@@ -82,24 +82,25 @@
           div.append($("<div>", {class: "row"}).append(
             $("<p>").text(row.individualName),
             $("<span>", {class: "quantity"}).text(("lunchesNeeded" in row)? row.lunchesNeeded + "x": "-"),
-            $("<input>", {type: "checkbox", checked: row.pickedUp, disabled: true}).click(clickCheckbox),
+            $("<input>", {type: "checkbox", checked: row.pickedUp}).click(function (){
+              clickCheckbox($(this), row.formID, unixTime);
+            }),
           ));
         }
       }
 
-      async function clickCheckbox () {
-        let checkbox = $(this); // Grab jquery object
+      async function clickCheckbox(checkbox, formID, unixTime) {
+        // let checkbox = $(this); // Grab jquery object
         checkbox.prop('disabled', true); // Disable the checkbox to prevent double request
 
         // Submit the request and if there is an error then undo the checkbox
-        await $.ajax({ type: "POST", url: "/ajax/admin.php",
-          data: JSON.stringify({ function: 6 }),
-          contentType: "application/json",
-          error: function() {
-            // Flip the checkbox back if it fails
-            $('#myCheckbox').prop('checked', !checkbox.is(':checked'));
-          }
+        let obj = await post("/ajax/admin.php", {
+          function: 30,
+            formID: formID,
+            setTo: checkbox.is(':checked'),
+            date: unixTime
         });
+        console.log("Return data", obj);
 
         // Enable the checkbox
         checkbox.prop('disabled', false);
