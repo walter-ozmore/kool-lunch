@@ -63,6 +63,7 @@
     case 5: // Fetch for tracker
       $data = [];
 
+      date_default_timezone_set('GMT');
       $timestamp = (int)($_POST["date"]);
       $date = substr(date("l", $timestamp), 0, 3);
 
