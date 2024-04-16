@@ -1777,6 +1777,13 @@
         ];
 
         return $returnData;
+      } else if ($date == "Sun" || $date == "Sat" || $date == "Fri") {
+        $returnData = [
+          "code"    => 210,
+          "message" => "Invalid pickup day selected"
+        ];
+
+        return $returnData;
       }
 
       $query = "SELECT f.formID, f.lunchesNeeded, f.location, f.allergies, i.individualName"
