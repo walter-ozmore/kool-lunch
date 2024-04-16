@@ -343,7 +343,7 @@
         $insertArgs["amount"] = $args["amount"];
       } else {
         $formID = $args["formID"];
-        $query = "SELECT amount FROM Form WHERE formID = $formID;";
+        $query = "SELECT lunchesNeeded FROM Form WHERE formID = $formID;";
 
         $result = $conn->query($query);
 
@@ -363,7 +363,7 @@
           
           return $returnData;
         } else {
-          $amount = $result->fetch_assoc()["amount"];
+          $amount = $result->fetch_assoc()["lunchesNeeded"];
         }
       }
 
