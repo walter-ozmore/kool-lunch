@@ -158,13 +158,10 @@
   </header>
 
   <body>
-    <center>
-      <label></label>
-      <input id="set-date" type="date">
-    </center>
-    <div id="selectors" style="text-align: center; display: none;">
+    <div id="selectors" style="text-align: center;">
+      <!-- Maybe we should add a selector for location -->
       <!-- <select id="location-selector" onchange="checkSelector()"></select><br> -->
-      <input type="date" id="date-selector">
+      <input id="set-date" type="date">
     </div>
 
 
