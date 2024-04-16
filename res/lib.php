@@ -342,6 +342,7 @@
         }
         $insertArgs["amount"] = $args["amount"];
       } else {
+        $formID = $args["formID"];
         $query = "SELECT amount FROM Form WHERE formID = $formID;";
 
         $result = $conn->query($query);
