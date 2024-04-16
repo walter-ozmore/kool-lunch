@@ -332,14 +332,38 @@
         return $returnData;
       }
       if (isset($args["amount"]) && (0 <= $args["amount"])) {
+        if (0 <= $args["amount"]) {
+          $returnData = [
+            "code"    => 200,
+            "message" => "Invalid amount"
+          ];
+
+          return $returnData;
+        }
         $insertArgs["amount"] = $args["amount"];
       } else {
-        $returnData = [
-          "code"    => 200,
-          "message" => "Invalid amount"
-        ];
+        $query = "SELECT amount FROM Form WHERE formID = $formID;";
 
-        return $returnData;
+        $result = $conn->query($query);
+
+        if ($result == FALSE) {
+          $returnData = [
+            "code"    => 310,
+            "message" => "Query error"
+          ];
+
+          return $returnData;
+        } else if ($result->num_rows == 0) {
+          $returnData = [
+            "numRows" => $result->num_rows,
+            "code"    => 120,
+            "message" => "No matching entries found"
+          ];
+          
+          return $returnData;
+        } else {
+          $amount = $result->fetch_assoc()["amount"];
+        }
       }
 
       // Get insert string
@@ -347,7 +371,6 @@
 
       // Run query and return the insert id
       $query = "INSERT INTO Pickup $insertStr;";
-      $conn->query($query);
 
       $result = $conn->query($query);
       if ($result == FALSE) {
