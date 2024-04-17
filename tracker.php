@@ -132,12 +132,13 @@
         $('#set-date').change(function() {
           let unixTime = 0;
 
+          let currentDateValue = $(this).val(); // Get the value of the input element
+
           if(currentDateValue === formattedDate) {
             var currentDate = new Date(); // Get the current date and time
             var unixTimeMilliseconds = currentDate.getTime(); // Get the current Unix time (in milliseconds)
             unixTime = Math.floor(unixTimeMilliseconds / 1000); // Convert milliseconds to seconds (Unix time is typically in seconds)
           } else {
-            let currentDateValue = $(this).val(); // Get the value of the input element
             let selectedDate = new Date(currentDateValue); // Convert selected date to a Date object
             unixTime = Math.floor(selectedDate.getTime() / 1000); // Convert selected date to Unix timestamp
           }
