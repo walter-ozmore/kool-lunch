@@ -1760,13 +1760,15 @@
      * Get all meals for a specific pickup day.
      *
      * @param date      The day of the week to check for in three letter format.
-     * @param startTime 0 if not needed, otherwise the starting UNIX timestamp.
-     * @param endTime   0 if not needed, oteherwise the ending UNIX timestamp.
+     * @param startTime 0 if not needed, otherwise the starting UNIX timestamp for forms.
+     * @param endTime   0 if not needed, otherwise the ending UNIX timestamp for forms.
+     * @param rangeStartTime 0 if not needed, otherwise the starting UNIX timestamp for pickups.
+     * @param rangeEndTime   0 if not needed, otherwise the ending UNIX timestamp for pickups.
      *
      * @return returnData An array with code, message, relevant metadata,
      *   and any data retrieved.
      */
-    public static function getDayMeals($date, $startTime, $endTime) {
+    public static function getDayMeals($date, $startTime, $endTime, $rangeStartTime, $rangeEndTime) {
       $conn = Secret::connectDB("lunch");
       $returnData = [];
       $data = [];
@@ -1825,59 +1827,19 @@
           "message" => "No matching entries found"
         ];
       } else {
-        while ($row = $result->fetch_assoc()) { $data[] = $row; }
+        while ($row = $result->fetch_assoc()) {
+          $data[] = $row;
+          // Get whether or not it needs a checked box
+          $formID = $row["formID"];
+          $index = array_key_last($data);
 
-        $returnData = [
-          "data"    => $data,
-          "numRows" => $result->num_rows,
-          "code"    => 110,
-          "message" => "Success"
-        ];
-      }
+          $pickupQuery = "SELECT * FROM Pickup WHERE formID = $formID AND pickupTime BETWEEN $rangeStartTime AND $rangeEndTime;";
+          $pickupResult = $conn->query($pickupQuery);
 
-      return $returnData;
-    }
-
-    /**
-     * Get all entried in Pickup from a specific day.
-     *
-     * @param startTime 0 if not needed, otherwise the starting UNIX timestamp.
-     * @param endTime   0 if not needed, oteherwise the ending UNIX timestamp.
-     *
-     * @return returnData An array with code, message, relevant metadata,
-     *   and any data retrieved.
-     */
-    public static function getPickups($startTime, $endTime) {
-      $conn = Secret::connectDB("lunch");
-      $returnData = [];
-      $data = [];
-
-      if (!isset($startTime) || !isset($endTime)) {
-        $returnData = [
-          "code"    => 220,
-          "message" => "Invalid date range"
-        ];
-
-        return $returnData;
-      }
-
-      $query = "SELECT * FROM Pickup WHERE pickupTime BETWEEN $startTime AND $endTime;";
-
-      $result = $conn->query($query);
-
-      if ($result == FALSE) {
-        $returnData = [
-          "code"    => 310,
-          "message" => "Query error"
-        ];
-      } else if ($result->num_rows == 0) {
-        $returnData = [
-          "numRows" => $result->num_rows,
-          "code"    => 120,
-          "message" => "No matching entries found"
-        ];
-      } else {
-        while ($row = $result->fetch_assoc()) { $data[] = $row; }
+          if ($pickupResult->num_rows != 0) {
+            $data[$index]["checked"] = True;   
+          } else { $data[$index]["checked"] = False;}
+        }
 
         $returnData = [
           "data"    => $data,

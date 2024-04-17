@@ -62,15 +62,18 @@
       break;
     case 5: // Fetch for tracker
       $data = [];
-
-      date_default_timezone_set('GMT');
       $timestamp = (int)($_POST["date"]);
       $date = substr(date("l", $timestamp), 0, 3);
 
       $startTime = (isset($_POST["startTime"]))? $_POST["startTime"]: 0;
       $endTime = (isset($_POST["endTime"  ]))? $_POST["endTime"  ]: 0;
 
-      echo json_encode(Database::getDayMeals($date, $startTime, $endTime));
+      $dateToCalcRange = date('Y-m-d', (int)$_POST["date"]);
+
+      $rangeStartTime = strtotime($dateToCalcRange);
+      $rangeEndTime = strtotime("$dateToCalcRange +1 Day") - 1;
+
+      echo json_encode(Database::getDayMeals($date, $startTime, $endTime, $rangeStartTime, $rangeEndTime));
       break;
     case 6:
       // $code = Database::deleteFormVolunteer($_POST["formID"]);
@@ -309,12 +312,5 @@
         break;
       }
       break;
-    case 31:
-      $date = date('Y-m-d', (int)$_POST["date"]);
-
-      $startTime = strtotime($date);
-      $endTime = strtotime("$date +1 Day") - 1;
-
-      echo json_encode(Database::getPickups($startTime, $endTime));
 	}
 ?>
