@@ -145,8 +145,7 @@
           loadFreshData(unixTime);
         });
 
-        let currentDateValue = $(this).val(); // Get the value of the input element
-        let selectedDate = new Date(currentDateValue); // Convert selected date to a Date object
+        let selectedDate = new Date(); // Convert selected date to a Date object
         unixTime = Math.floor(selectedDate.getTime() / 1000); // Convert selected date to Unix timestamp
         loadFreshData(unixTime);
       });
