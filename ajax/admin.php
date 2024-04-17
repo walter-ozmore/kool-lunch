@@ -301,8 +301,6 @@
 
         // Get the start and end time for the date
         $date = date('Y-m-d', (int)$_POST["date"]);
-        echo $date;
-        break;
 
         $startTime = strtotime($date);
         $endTime = strtotime("$date +1 Day") - 1;
