@@ -9,9 +9,14 @@
  - [ ] Typing in a text box then closing the notification object without clicking anywhere else first will not send the update request to the server to update the given element
 
 # Rayna's
- -![ ] Only show data for this current year
- - [ ] Fix new individuals not have a preferred method of contact
  - [ ] Admin/Forms does seam to sort by individuals rather than submit time
  - [ ] Search individual UI need elements centered
  - [ ] No current way for a user to delete orgs -> function exists
  - [ ] No current way for a user to delete a form -> function exists, case 16
+
+# Settings Page SQL Requirements
+homepage.showSignup boolean true
+homepage.showVolunteer boolean true
+homepage.faq text
+homepage.mentions text
+homepage.text text

@@ -169,6 +169,7 @@
     <script src="/scripts/admin/volunteer-forms.js"></script>
     <script src="/scripts/admin/individuals.js"></script>
     <script src="/scripts/admin/organizations.js"></script>
+    <script src="/scripts/admin/site-settings.js"></script>
   </head>
 
   <header>
