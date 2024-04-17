@@ -363,7 +363,7 @@
           
           return $returnData;
         } else {
-          $amount = $result->fetch_assoc()["lunchesNeeded"];
+          $insertArgs["amount"] = $result->fetch_assoc()["lunchesNeeded"];
         }
       }
 
