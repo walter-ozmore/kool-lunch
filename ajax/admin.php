@@ -308,5 +308,13 @@
         echo json_encode(Database::deletePickup($formID, $startTime, $endTime));
         break;
       }
+      break;
+    case 31:
+      $date = date('Y-m-d', (int)$_POST["date"]);
+
+      $startTime = strtotime($date);
+      $endTime = strtotime("$date +1 Day") - 1;
+
+      echo json_encode(Database::getPickups($startTime, $endTime));
 	}
 ?>

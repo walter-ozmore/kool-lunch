@@ -1839,6 +1839,58 @@
     }
 
     /**
+     * Get all entried in Pickup from a specific day.
+     *
+     * @param startTime 0 if not needed, otherwise the starting UNIX timestamp.
+     * @param endTime   0 if not needed, oteherwise the ending UNIX timestamp.
+     *
+     * @return returnData An array with code, message, relevant metadata,
+     *   and any data retrieved.
+     */
+    public static function getPickups($startTime, $endTime) {
+      $conn = Secret::connectDB("lunch");
+      $returnData = [];
+      $data = [];
+
+      if (!isset($startTime) || !isset($endTime)) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid date range"
+        ];
+
+        return $returnData;
+      }
+
+      $query = "SELECT * FROM Pickup WHERE pickupTime BETWEEN $startTime AND $endTime;";
+
+      $result = $conn->query($query);
+
+      if ($result == FALSE) {
+        $returnData = [
+          "code"    => 310,
+          "message" => "Query error"
+        ];
+      } else if ($result->num_rows == 0) {
+        $returnData = [
+          "numRows" => $result->num_rows,
+          "code"    => 120,
+          "message" => "No matching entries found"
+        ];
+      } else {
+        while ($row = $result->fetch_assoc()) { $data[] = $row; }
+
+        $returnData = [
+          "data"    => $data,
+          "numRows" => $result->num_rows,
+          "code"    => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
      * Get all information for an volunteer from FormVolunteer and Individual given
      * a volunteerFormID.
      *
