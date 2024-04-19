@@ -332,14 +332,39 @@
         return $returnData;
       }
       if (isset($args["amount"]) && (0 <= $args["amount"])) {
+        if (0 <= $args["amount"]) {
+          $returnData = [
+            "code"    => 200,
+            "message" => "Invalid amount"
+          ];
+
+          return $returnData;
+        }
         $insertArgs["amount"] = $args["amount"];
       } else {
-        $returnData = [
-          "code"    => 200,
-          "message" => "Invalid amount"
-        ];
+        $formID = $args["formID"];
+        $query = "SELECT lunchesNeeded FROM Form WHERE formID = $formID;";
 
-        return $returnData;
+        $result = $conn->query($query);
+
+        if ($result == FALSE) {
+          $returnData = [
+            "code"    => 310,
+            "message" => "Query error"
+          ];
+
+          return $returnData;
+        } else if ($result->num_rows == 0) {
+          $returnData = [
+            "numRows" => $result->num_rows,
+            "code"    => 120,
+            "message" => "No matching entries found"
+          ];
+          
+          return $returnData;
+        } else {
+          $insertArgs["amount"] = $result->fetch_assoc()["lunchesNeeded"];
+        }
       }
 
       // Get insert string
@@ -347,7 +372,6 @@
 
       // Run query and return the insert id
       $query = "INSERT INTO Pickup $insertStr;";
-      $conn->query($query);
 
       $result = $conn->query($query);
       if ($result == FALSE) {
@@ -845,24 +869,44 @@
     }
 
     /**
-     * Deletes a Pickup entry based on the passed ID. Verifies the
-     * ID is numeric, and limits the deletion to one entry.
+     * Deletes a Pickup entry based on the passed formID and UNIX time. Verifies 
+     * the ID is numeric, and limits the deletion to one entry.
      *
-     * @param pickupID The ID of the target row.
+     * @param  formID     The ID of the target form.
+     * @param  startTime  0 if not needed, otherwise the starting UNIX timestamp.
+     * @param  endTime    0 if not needed, oteherwise the ending UNIX timestamp.
      * @return returnData An array with code, message, and relevant metadata.
      */
-    public static function deletePickup($pickupID) {
+    public static function deletePickup($formID, $startTime, $endTime) {
       $conn = Secret::connectDB("lunch");
-      if (!is_numeric($pickupID)) {
+
+
+      if (!is_numeric($formID)) {
         $returnData = [
           "code"    => 220,
-          "message" => "Invalid pickupID"
+          "message" => "Invalid formID"
+        ];
+
+        return $returnData;
+      }
+      if (!is_numeric($startTime)) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid start time"
+        ];
+
+        return $returnData;
+      }
+      if (!is_numeric($endTime)) {
+        $returnData = [
+          "code"    => 220,
+          "message" => "Invalid end time"
         ];
 
         return $returnData;
       }
 
-      $query = "DELETE FROM Pickup WHERE pickupID = $pickupID LIMIT 1;";
+      $query = "DELETE FROM Pickup WHERE formID = $formID AND pickupTime BETWEEN $startTime AND $endTime LIMIT 1;";
       $result = $conn->query($query);
 
       if ($result == FALSE) {
@@ -1715,12 +1759,16 @@
     /**
      * Get all meals for a specific pickup day.
      *
-     * @param date The day of the week to check for in three letter format.
+     * @param date      The day of the week to check for in three letter format.
+     * @param startTime 0 if not needed, otherwise the starting UNIX timestamp for forms.
+     * @param endTime   0 if not needed, otherwise the ending UNIX timestamp for forms.
+     * @param rangeStartTime 0 if not needed, otherwise the starting UNIX timestamp for pickups.
+     * @param rangeEndTime   0 if not needed, otherwise the ending UNIX timestamp for pickups.
      *
      * @return returnData An array with code, message, relevant metadata,
      *   and any data retrieved.
      */
-    public static function getDayMeals($date) {
+    public static function getDayMeals($date, $startTime, $endTime, $rangeStartTime, $rangeEndTime) {
       $conn = Secret::connectDB("lunch");
       $returnData = [];
       $data = [];
@@ -1732,14 +1780,38 @@
         ];
 
         return $returnData;
+      } else if ($date == "Sun" || $date == "Sat" || $date == "Fri") {
+        $returnData = [
+          "code"    => 210,
+          "message" => "Invalid pickup day selected"
+        ];
+
+        return $returnData;
       }
 
       $query = "SELECT f.formID, f.lunchesNeeded, f.location, f.allergies, i.individualName"
               ." FROM FormLink fl"
               ." INNER JOIN Form f ON f.formID = fl.formID"
               ." INNER JOIN Individual i ON i.individualID = fl.individualID"
-              ." WHERE isEnabled=1 AND pickup$date = 1"
-              ." ORDER BY f.location, i.individualName;";
+              ." WHERE isEnabled=1 AND pickup$date = 1";
+
+      // Check whether this query needs either a start or end time
+      if ($startTime != 0 || $endTime != 0)
+      {
+        $query .= " AND f.timeSubmitted";
+
+        if ($startTime == 0) {
+          $query .= " <= $endTime";
+        }
+        else if ($endTime == 0) {
+          $query .= " >= $startTime";
+        }
+        else {
+          $query .= " BETWEEN $startTime AND $endTime";
+        }
+      }
+
+      $query .= " ORDER BY f.location, i.individualName;";
 
       $result = $conn->query($query);
 
@@ -1755,7 +1827,19 @@
           "message" => "No matching entries found"
         ];
       } else {
-        while ($row = $result->fetch_assoc()) { $data[] = $row; }
+        while ($row = $result->fetch_assoc()) {
+          $data[] = $row;
+          // Get whether or not it needs a checked box
+          $formID = $row["formID"];
+          $index = array_key_last($data);
+
+          $pickupQuery = "SELECT * FROM Pickup WHERE formID = $formID AND pickupTime BETWEEN $rangeStartTime AND $rangeEndTime;";
+          $pickupResult = $conn->query($pickupQuery);
+
+          if ($pickupResult->num_rows != 0) {
+            $data[$index]["checked"] = True;   
+          } else { $data[$index]["checked"] = False;}
+        }
 
         $returnData = [
           "data"    => $data,

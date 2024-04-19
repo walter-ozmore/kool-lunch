@@ -62,20 +62,18 @@
       break;
     case 5: // Fetch for tracker
       $data = [];
-
-      $timestamp = $_POST["date"];
+      $timestamp = (int)($_POST["date"]);
       $date = substr(date("l", $timestamp), 0, 3);
 
-      echo json_encode(Database::getDayMeals($date));
-      break;
-    case 5: // Check a checkbox for the tracker
-      // $args = [
-      //   "formID"     => $_POST["formID"],
-      //   "pickupTime" => time(),
-      //   "amount"     => $_POST["amount"]
-      // ];
+      $startTime = (isset($_POST["startTime"]))? $_POST["startTime"]: 0;
+      $endTime = (isset($_POST["endTime"  ]))? $_POST["endTime"  ]: 0;
 
-      // echo json_encode(Database::createPickup($args));
+      $dateToCalcRange = date('Y-m-d', (int)$_POST["date"]);
+
+      $rangeStartTime = strtotime($dateToCalcRange);
+      $rangeEndTime = strtotime("$dateToCalcRange +1 Day") - 1;
+
+      echo json_encode(Database::getDayMeals($date, $startTime, $endTime, $rangeStartTime, $rangeEndTime));
       break;
     case 6:
       // $code = Database::deleteFormVolunteer($_POST["formID"]);
@@ -282,6 +280,37 @@
       ];
 
       echo json_encode(Database::updateAllowPhotos($args));
+      break;
+    case 30: // Delete/Create pickup
+
+      $setTo = filter_var($_POST["setTo"], FILTER_VALIDATE_BOOLEAN);
+
+      if ($setTo == True) {
+        $args = [
+          "formID"     => $_POST["formID"],
+          "pickupTime" => $_POST["date"]
+        ];
+
+        if (isset($_POST["amount"])) {
+          $args["amount"] = $_POST["amount"];
+        }
+
+        echo json_encode(Database::createPickup($args));
+        break;
+      }
+
+      if ($setTo == False) {
+        $formID = $_POST["formID"];
+
+        // Get the start and end time for the date
+        $date = date('Y-m-d', (int)$_POST["date"]);
+
+        $startTime = strtotime($date);
+        $endTime = strtotime("$date +1 Day") - 1;
+
+        echo json_encode(Database::deletePickup($formID, $startTime, $endTime));
+        break;
+      }
       break;
 	}
 ?>
