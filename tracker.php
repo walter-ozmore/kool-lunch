@@ -91,7 +91,7 @@
           div.append($("<div>", {class: "row"}).append(
             $("<p>").text(row.individualName),
             $("<span>", {class: "quantity"}).text(("lunchesNeeded" in row)? row.lunchesNeeded + "x": "-"),
-            $("<input>", {type: "checkbox", checked: row.pickedUp}).click(function (){
+            $("<input>", {type: "checkbox", checked: row.checked}).click(function (){
               clickCheckbox($(this), row.formID, unixTime);
             }),
           ));
