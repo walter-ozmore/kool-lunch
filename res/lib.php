@@ -8,26 +8,95 @@
   // Contains functions for easy database interactions
   class Database {
 
-    // function settingsSet($args) {
-    //   $key = $args["key"];
-    //   $value = $args["value"];
-    //   $dataType = null; # Figure it out yourself? Is that posible? No clue.
-    // }
+    /**
+     * Create an entry in Setting using the provided values. 
+     * 
+     * @param args The values to be inserted into the database.
+     * @return returnData An array with code, message, and relevant metadata.
+     */
+    function createSetting($args) {
+      $conn = Secret::connectDB("lunch");
+      $returnData = [];
+      
+      // Data checks
+      if(isset($args["key"]) && is_string($args["key"])) {
+        $dataKey = $args["key"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid key"
+        ];
+        
+        return $returnData;
+      }
+      if(isset($args["value"]) && is_string($args["value"])) {
+        $dataValue = $args["value"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid value"
+        ];
+        
+        return $returnData;
+      }
+      if(isset($args["type"]) && is_string($args["type"])) {
+        $dataType = $args["type"];
+      } else {
+        $returnData = [
+          "code"    => 200,
+          "message" => "Invalid type"
+        ];
+        
+        return $returnData;
+      }
 
-    public static function settingsGet($args) {
+      $query = "INSERT INTO Setting VALUES ($dataKey, $dataValue, $dataType);";
+      $result = $conn->query($query);
+
+
+      if ($result == FALSE) {
+        $returnData = [
+          "code"    => 310,
+          "message" => "Query error"
+        ];
+      }
+      else if ($conn->affected_rows == 0) {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code"    => 120,
+          "message" => "No inserts made"
+        ];
+      }
+      else {
+        $returnData = [
+          "affectedRows" => $conn->affected_rows,
+          "code"    => 110,
+          "message" => "Success"
+        ];
+      }
+
+      return $returnData;
+    }
+
+    /**
+     * 
+     */
+    public static function getSettings($args) {
       $conn = Secret::connectDB("lunch");
 
       if(isset($args["key"])) {
         $data = null;
         $key = $args["key"];
         $query = "SELECT * FROM Setting WHERE dataKey = \"$key\"";
-      } else if(isset($args["keys"]) == False) {
+      } else if(isset($args["keys"]) == True) {
         // Build a query
         $query = "SELECT * FROM Setting WHERE dataKey in (";
         $keys = $args["keys"];
         foreach($keys as $key)
           $query .= "\"$key\", ";
         $query = substr($key, 0, -1) . ")";
+      } else {
+        $query = $query = "SELECT * FROM Setting;";
       }
 
       // Get the data from the server
