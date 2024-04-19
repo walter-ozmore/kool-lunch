@@ -8,6 +8,41 @@
   // Contains functions for easy database interactions
   class Database {
 
+    // function settingsSet($args) {
+    //   $key = $args["key"];
+    //   $value = $args["value"];
+    //   $dataType = null; # Figure it out yourself? Is that posible? No clue.
+    // }
+
+    public static function settingsGet($args) {
+      $conn = Secret::connectDB("lunch");
+
+      if(isset($args["key"])) {
+        $data = null;
+        $key = $args["key"];
+        $query = "SELECT * FROM Setting WHERE dataKey = \"$key\"";
+      } else if(isset($args["keys"]) == False) {
+        // Build a query
+        $query = "SELECT * FROM Setting WHERE dataKey in (";
+        $keys = $args["keys"];
+        foreach($keys as $key)
+          $query .= "\"$key\", ";
+        $query = substr($key, 0, -1) . ")";
+      }
+
+      // Get the data from the server
+      $data = [];
+      $result = $conn->query($query);
+      while($row = $result->fetch_assoc()) {
+        $data[$row["dataKey"]] = ["value"=>$row["dataValue"], "type"=>$row["dataType"]];
+      }
+
+      if(isset($args["key"]))
+        return reset($data);
+
+      return $data;
+    }
+
     /**
      * Creates a Form entry in the database with the given values. It checks for data
      * validity before calling arrayToInsertString and making the query.
@@ -360,7 +395,7 @@
             "code"    => 120,
             "message" => "No matching entries found"
           ];
-          
+
           return $returnData;
         } else {
           $insertArgs["amount"] = $result->fetch_assoc()["lunchesNeeded"];
@@ -869,7 +904,7 @@
     }
 
     /**
-     * Deletes a Pickup entry based on the passed formID and UNIX time. Verifies 
+     * Deletes a Pickup entry based on the passed formID and UNIX time. Verifies
      * the ID is numeric, and limits the deletion to one entry.
      *
      * @param  formID     The ID of the target form.
@@ -1419,7 +1454,7 @@
       }
 
       $query .= " ORDER BY f.timeSubmitted DESC;";
-    
+
       $result = $conn->query($query);
 
       if ($result == FALSE) {
@@ -1533,7 +1568,7 @@
 
     /**
      * Get all Individual entries.
-     * 
+     *
      * @param  startTime  0 if not needed, otherwise the starting UNIX timestamp.
      * @param  endTime    0 if not needed, oteherwise the ending UNIX timestamp.
      * @return returnData An array with code, message, relevant metadata,
@@ -1545,7 +1580,7 @@
       $data = [];
 
       $query = "SELECT * FROM Individual";
-      
+
       // TODO: Make sure to include FormVolunteerLInk.
       // Check if query needs start or end time
       // if ($startTime != 0 || $endTime != 0)
@@ -1837,7 +1872,7 @@
           $pickupResult = $conn->query($pickupQuery);
 
           if ($pickupResult->num_rows != 0) {
-            $data[$index]["checked"] = True;   
+            $data[$index]["checked"] = True;
           } else { $data[$index]["checked"] = False;}
         }
 
