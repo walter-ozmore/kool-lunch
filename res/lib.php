@@ -95,6 +95,8 @@
         foreach($keys as $key)
           $query .= "\"$key\", ";
         $query = substr($key, 0, -1) . ")";
+      } else {
+        $query = $query = "SELECT * FROM Setting;";
       }
 
       // Get the data from the server
