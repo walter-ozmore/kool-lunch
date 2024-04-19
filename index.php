@@ -7,6 +7,8 @@
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
       include realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
       require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
+      require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/Parsedown.php";
+
 
       // Grabs and lists all monitary donations to the screen, if there is any
       // error skip
@@ -51,6 +53,48 @@
 
         echo $drawString;
       }
+
+      function decipher() {
+        $data = [];
+        $setting = Database::settingsGet(["key"=>"questionsAndAnswers"]);
+        $markdown = $setting["value"];
+        // Split this text up by the <Question> and <Answer>
+        while(strlen($markdown) > 0) {
+          // Setup indicators for the questions and answer cause I don't like
+          // to write all that plus makes it more readable
+          $qi = "<Question>\n"; $ai = "<Answer>\n";
+          $qiLen = strlen($qi); $aiLen = strlen($ai);
+
+          $startingIndex = strpos($markdown, $qi)+$qiLen;
+          $length = strpos($markdown, $ai) - $qiLen - 1;
+
+          $question = substr($markdown, $startingIndex, $length);
+          $question = rtrim($question, "\n");
+          // echo "Question: '$question'\n";
+
+          // Cut this question off the markdown
+          $markdown = substr($markdown, $startingIndex+$length);
+
+
+          /* Figure out the answer */
+          $startingIndex = strpos($markdown, $ai)+$aiLen;
+          $length = strpos($markdown, $qi) - $aiLen - 2;
+          $answer = ($length > 0)? substr($markdown, $startingIndex, $length): substr($markdown, $startingIndex);
+          $answer = rtrim($answer, "\n");
+          // echo "Answer: '$answer'\n";
+
+          // Add the data to our return data
+          $data[] = ["question"=>$question, "answer"=>$answer];
+
+          if($length < 0) break;
+
+          // Cut this question off the markdown
+          $markdown = substr($markdown, $startingIndex+$length);
+        }
+        return $data;
+      }
+
+      $Parsedown = new Parsedown();
     ?>
 
     <script>
@@ -92,6 +136,7 @@
         //   "", // Question
         //   ""  // Answer
         // );
+
       });
 
       function resizeIframe(obj) {
@@ -105,32 +150,48 @@
   </header>
 
   <body>
+
     <div class="content">
       <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSxBW-X_1GKybMlrA-B4kD5QTEGf0UYux56FmcT3Ei7NEAMfisy6M9lkadUfErssLJBVUKpsElRjCFx/embed?start=true&loop=true&delayms=3000&amp;rm=minimal" frameborder="0" onload="resizeIframe(this)"></iframe>
       <center>
         <a href="/sign-up" class="button">SIGNUP</a>
         <a href="/volunteer-sign-up" class="button">VOLUNTEER</a>
       </center>
-      <p>
-        The Kool Lunches Program was started by the Fannin Community Foundation in 1999 and was coordinated by Ray and Ruth Havins who acted as co-chair Presidents of the program. The program began offering sack lunches that summer to students who were eligible for the free lunch program during the school year. Throughout their time of running the program, they served lunches to students in Bonham, Trenton, Leonard and Dodd City with the help of numerous volunteers. Unfortunately, the program was forced to end in 2007 due to lack of funding and loss of staff and necessary facilities to help feed the children of Fannin County.
-      </p>
 
-      <p style="padding-top: 1em;">
-        After nine years without the Kool Lunches Program, with the blessing of Mr. and Mrs. Havins, a local coalition of advocates came together to start the program back up under the leadership of Megan Massey. Fannin County had seen an increasing number of students qualifying for free and reduced lunches during the school year and something needed to be done. After the comeback and continued support of our community, Megan passed the torch to Jodi Hunt and Brandy Stockton.
-      </p>
+      <?php
+        $setting = Database::settingsGet(["key"=>"homePageText"]);
+        // echo var_dump($obj);
+        $markdown = $setting["value"];
 
-      <p style="padding-top: 1em;">
-        As it has been the goal of past presidents and board members, we are planning on being able to work alongside volunteer groups to offer our program to smaller towns and communities in Fannin County.
-      </p>
-
-      <p style="padding-top: 1em;">
-        Not a lot has changed from the beginning. We still rely heavily on volunteers and donors and still see the need in our community to help those who may otherwise go hungry. We began the summer with 168 children signed up to receive lunches from our program. The entirety of Bonham ISD students qualify for free and reduced lunch during the past school year and our mission is to help families bridge the gap between school years. This summer, we served over 7000 lunches to our community and with your help, we can ensure that families can continue to benefit from our program.
-      </p>
+        echo $Parsedown->text($markdown);
+      ?>
     </div>
 
     <div class="content">
       <h2 class="center-text" style="color: black">FAQ'S</h2>
-      <div id="faq" class="faq"></div>
+      <div id="faq" class="faq">
+        <?php
+          $qnaData = decipher();
+          foreach($qnaData as $qna) {
+            // $question  = str_replace("\n", "<br>", $qna["question"]);
+            // $answer    = str_replace("\n", "<br>", $qna["answer"]);
+
+            $question = $Parsedown->text( $qna["question"] );
+            $answer   = $Parsedown->text( $qna["answer"] );
+
+            // $question = var_dump($qna);
+
+            echo "<div class='faqElement'>
+              <div class='question' style='display: flex; justify-content: space-between;'>
+                $question
+                <p style='text-align: right;'>+</p>
+              </div>
+              <p class='answer' style='display: none'>Test Answer</p>
+            </div>";
+          }
+          // echo $Parsedown->text($markdown);
+        ?>
+      </div>
 
       <p class="center-text" style="margin-bottom: 0em;">
         All other questions can be sent through
