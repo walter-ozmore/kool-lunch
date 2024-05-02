@@ -15,14 +15,15 @@
    * @param args The arguments to provide to the function
    */
   function determineFunction($functionIndex, $args) {
-    $allowedFunctions = [];
+    $allowedFunctions = ["Database::getSettings"];
 
-    if(in_array($functionIndex, $allowedFunctions) == False)
-      return;
-    if(function_exists($functionIndex) == False)
-      return;
+    if(in_array($functionIndex, $allowedFunctions) == False)  return;
+    if(function_exists($functionIndex) == False) return;
 
-    $obj = call_user_func($functionIndex, $args);
+    $functionArray = explode("::", $functionIndex);
+
+    // Call function
+    $obj = call_user_func($functionArray, $args);
 
     // Check to see if the returned object meets our standards
     $meetsStandards = True;
@@ -70,7 +71,7 @@
   determineFunction($functionIndex, $_POST);
 
   // Actual code
-	switch($_POST["function"]) {
+	switch($functionIndex) {
 		case 1: // Fetch volunteer forms
       if(isset($_POST["volunteerFormID"])) {
         $volunteerFormID = $_POST["volunteerFormID"];
