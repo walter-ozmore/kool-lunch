@@ -122,7 +122,6 @@
 
       echo json_encode(Database::updateLunchesNeeded($args));
       break;
-      break;
     case 12: // Update allergies for a specific form
       $args = [
         "formID"    => $_POST["formID"],
