@@ -171,11 +171,10 @@
     case 11: // Update lunches needed for a specific form
       $args = [
         "formID"    => $_POST["formID"],
-        "numLunches" => $_POST["numLunches"]
+        "lunchesNeeded" => (int)$_POST["lunchesNeeded"]
       ];
 
       echo json_encode(Database::updateLunchesNeeded($args));
-      break;
       break;
     case 12: // Update allergies for a specific form
       $args = [

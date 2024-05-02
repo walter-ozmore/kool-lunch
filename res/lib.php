@@ -2668,14 +2668,14 @@
         ];
         return $returnData;
       }
-      if (!is_numeric($args["numLunches"]) || $args["numLunches"] < 0) {
+      if (!is_numeric($args["lunchesNeeded"]) || $args["lunchesNeeded"] < 0) {
         $returnData = [
           "code"    => 220,
           "message" => "Invalid number of lunches"
         ];
         return $returnData;
       }
-      $lunchesNeeded = $args["numLunches"];
+      $lunchesNeeded = $args["lunchesNeeded"];
       $formID = $args["formID"];
 
       $query = "UPDATE Form SET lunchesNeeded = $lunchesNeeded WHERE formID = $formID LIMIT 1;";
