@@ -15,6 +15,10 @@ function basicRowItems(parentElement, data, items) {
         ele = $("<input>", {type: "text", value: data[item.key]});
       }
 
+      if(item.type == "number") {
+        ele = $("<input>", {type: "number", value: data[item.key]});
+      }
+
       if(item.type == "dropdown") {
         ele = $("<select>");
 
@@ -99,8 +103,9 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
   postArgs[valueKey] = value;
 
   // Send the data to the server
-  post("/ajax/admin", postArgs, (json)=>{
-    let isSuccessfull = json.code >= 100 || json.code < 200;
+  let url = "/ajax/admin";
+  post(url, postArgs, (json)=>{
+    let isSuccessfull = json.code >= 100 && json.code < 200;
 
     // Update the value to the server value if it exists
     if(isSuccessfull && "value" in json)
@@ -110,12 +115,15 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
         ele.val(json.value)
 
     // Failed, set input back
-    if(!isSuccessfull)
+    if(!isSuccessfull) {
       if (ele.is(":checkbox"))
         ele.prop("checked", !ele.val());
       // else
         // Somehow make this the value the input had before they updated it
         // ele.val(setValue)
+
+      console.log("Ajax to \""+url+"\" failed\nSent: ", postArgs, "\nReceived: ", json);
+    }
 
     // TODO: Set the checkbox to the returned value that the server has
     ele.prop("disabled", false);
@@ -373,7 +381,7 @@ async function inspectForm(formData) {
     {label: "Time Submitted", value: unixToHuman(formData.timeSubmitted)},
     {label: "Location"      , key: "location"     , type: "dropdown", apiFunction: 13, args: {formID: formData.formID}, options: locationOptions},
     {label: "Allergies"     , key: "allergies"    , type: "text"    , apiFunction: 12, args: {formID: formData.formID}},
-    {label: "Lunches Needed", key: "lunchesNeeded", type: "text"    , apiFunction: 11, args: {formID: formData.formID}},
+    {label: "Lunches Needed", key: "lunchesNeeded", type: "number"  , apiFunction: 11, args: {formID: formData.formID}},
     {label: "Enabled"       , key: "isEnabled"    , type: "checkbox", apiFunction: 10, args: {formID: formData.formID}},
     {label: "Allow Photos"  , key: "allowPhotos"  , type: "checkbox", apiFunction: 24, args: {formID: formData.formID}},
     // {label: "Monday"        , key: "pickupMon"    , type: "checkbox", apiFunction:  9, args: {formID: formData.formID}},
