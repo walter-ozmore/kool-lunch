@@ -122,8 +122,7 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
         // Somehow make this the value the input had before they updated it
         // ele.val(setValue)
 
-      console.log("Sent to "+url+": ", postArgs);
-      console.log("Failed: ", json);
+      console.log("Ajax to \""+url+"\" failed\nSent: ", postArgs, "\nReceived: ", json);
     }
 
     // TODO: Set the checkbox to the returned value that the server has
