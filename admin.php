@@ -78,6 +78,11 @@
         $("#sidebar").find(".highlight").removeClass("highlight");
         pages[index].sidebarEle.addClass("highlight");
 
+        // add page to url
+        var url = new URL(window.location.href);
+        url.searchParams.set("page", index);
+        window.history.replaceState({}, '', url);
+
         // Clear view pane and make a new page to prevent content from one page
         // from loading on the other
         let page = $("<div>");
