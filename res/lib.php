@@ -9,9 +9,10 @@
   class Database {
 
     /**
-     * Create an entry in Setting using the provided values. 
+     * If an dataKey does not yet exist, create an entry in Setting using the provided values.
+     * Otherwise, update the entry's information.
      * 
-     * @param args The values to be inserted into the database.
+     * @param args The values to be inserted/updated.
      * @return returnData An array with code, message, and relevant metadata.
      */
     function createSetting($args) {
@@ -50,29 +51,60 @@
         return $returnData;
       }
 
-      $query = "INSERT INTO Setting VALUES ($dataKey, $dataValue, $dataType);";
-      $result = $conn->query($query);
+      $checkQuery = "SELECT * FROM Setting WHERE dataKey = $dataKey;";
+      $checkResult = $conn->query($checkQuery);
 
-
-      if ($result == FALSE) {
+      if ($checkQuery == FALSE) {
         $returnData = [
           "code"    => 310,
           "message" => "Query error"
         ];
-      }
-      else if ($conn->affected_rows == 0) {
-        $returnData = [
-          "affectedRows" => $conn->affected_rows,
-          "code"    => 120,
-          "message" => "No inserts made"
-        ];
-      }
-      else {
-        $returnData = [
-          "affectedRows" => $conn->affected_rows,
-          "code"    => 110,
-          "message" => "Success"
-        ];
+      } else if ($checkResult->num_rows == 0) { // Create an entry
+  
+        $query = "INSERT INTO Setting VALUES ($dataKey, $dataValue, $dataType);";
+        $result = $conn->query($query);
+  
+        if ($result == FALSE) {
+          $returnData = [
+            "code"    => 310,
+            "message" => "Query error"
+          ];
+        } else if ($conn->affected_rows == 0) {
+          $returnData = [
+            "affectedRows" => $conn->affected_rows,
+            "code"    => 120,
+            "message" => "No inserts made"
+          ];
+        } else {
+          $returnData = [
+            "affectedRows" => $conn->affected_rows,
+            "code"    => 110,
+            "message" => "Successfully created setting"
+          ];
+        }
+      } else { // Update an entry
+
+        $query = "UPDATE Setting SET dataValue = $dataValue, dataType = $dataType WHERE dataKey = $dataKey LIMIT 1;";
+        $result = $conn->query($query);
+        
+        if ($result == FALSE) {
+          $returnData = [
+            "code" => 310,
+            "message" => "Query error"
+          ];
+        } else if ($conn->affected_rows == 0){
+          $returnData = [
+            "affectedRows" => $conn->affected_rows,
+            "code" => 120,
+            "message" => "No matching entries found"
+          ];
+        } else {
+          $returnData = [
+            "affectedRows" => $conn->affected_rows,
+            "code" => 110,
+            "message" => "Successfully updated setting"
+          ];
+        }
       }
 
       return $returnData;
