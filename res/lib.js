@@ -103,7 +103,8 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
   postArgs[valueKey] = value;
 
   // Send the data to the server
-  post("/ajax/admin", postArgs, (json)=>{
+  let url = "/ajax/admin";
+  post(url, postArgs, (json)=>{
     let isSuccessfull = json.code >= 100 && json.code < 200;
 
     // Update the value to the server value if it exists
@@ -120,7 +121,9 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
       // else
         // Somehow make this the value the input had before they updated it
         // ele.val(setValue)
-      console.log("Failed.", json);
+
+      console.log("Sent to "+url+": ", postArgs);
+      console.log("Failed: ", json);
     }
 
     // TODO: Set the checkbox to the returned value that the server has
