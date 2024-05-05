@@ -1188,11 +1188,11 @@
       }
 
       // See if form has individuals
-      $checkQuery = "SELECT COUNT(*) FROM FormLink WHERE formID = $formID;";
+      $checkQuery = "SELECT * FROM FormLink WHERE formID = $formID;";
       $checkResult = $conn->query($checkQuery);
-      $check = $checkResult->fetch_assoc()["COUNT(*)"];
+      $check = $checkResult->num_rows;
 
-      if ($check != 1) {
+      if ($check < 1) { // Get forms with no individuals
         $query = "SELECT * FROM Form WHERE formID = $formID;";
         $result = $conn->query($query);
 
@@ -1216,7 +1216,6 @@
             "message" => "Success"
           ];
         }
-
         return $returnData;
       }
 
