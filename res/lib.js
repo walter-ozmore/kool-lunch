@@ -416,15 +416,26 @@ async function inspectForm(formData) {
       let row = $("<tr>");
       table.append(row);
 
-      row.append($("<td>").text(individual.individualName));
+      row.append(
+        $("<td>").append(
+          $("<p class='js-link'>")
+            .text(individual.individualName))
+            .click(()=>{
+              post("/ajax/admin.php", {
+                function: 17,
+                individualID: individual.individualID
+              }, (obj)=>{inspectIndividual(obj.data);})
+            }
+        )
+      );
 
       // Make action buttons
-      let viewButton = $("<button>").text("Inspect").click(()=>{
-        post("/ajax/admin.php", {
-          function: 17,
-          individualID: individual.individualID
-        }, (obj)=>{inspectIndividual(obj.data);});
-      });
+      // let viewButton = $("<button>").text("Inspect").click(()=>{
+      //   post("/ajax/admin.php", {
+      //     function: 17,
+      //     individualID: individual.individualID
+      //   }, (obj)=>{inspectIndividual(obj.data);});
+      // });
       let removeButton = $("<button>")
         .text("Remove from Form")
         .click(async ()=>{
@@ -440,7 +451,8 @@ async function inspectForm(formData) {
         })
       ;
       row.append($("<td>").append(
-        viewButton, removeButton
+        // viewButton,
+        removeButton
       ));
     }
     div.append(table);

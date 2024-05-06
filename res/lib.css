@@ -36,6 +36,12 @@ iframe {
   border-radius: 10px;
 }
 
+.js-link {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .content {
   padding: 1em 3em;
   margin: 1.5em auto 0em auto;
