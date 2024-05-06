@@ -6,53 +6,6 @@
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/account/lib.php";
   require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
 
-  /**
-   * Figures out what function should be called, then calls it if its allowed
-   * in the allowed function field. Exits the program after the function is
-   * called.
-   *
-   * @param functionIndex A string that is the name of the function to be called
-   * @param args The arguments to provide to the function
-   */
-  function determineFunction($functionIndex, $args) {
-    $allowedFunctions = ["Database::getSettings"];
-
-    if(in_array($functionIndex, $allowedFunctions) == False)  return;
-    if(function_exists($functionIndex) == False) return;
-
-    $functionArray = explode("::", $functionIndex);
-
-    // Call function
-    $obj = call_user_func($functionArray, $args);
-
-    // Check to see if the returned object meets our standards
-    $meetsStandards = True;
-    $requiredKeys = ["code", "message", "data"];
-    foreach($requiredKeys as $key) {
-      if(isset($obj[$key])) continue;
-      $meetsStandards = False;
-      break;
-    }
-
-    if($meetsStandards == False) {
-      $obj = [
-        "data"    => null,
-        "code"    => "-1",
-        "message" => "Function $functionIndex failed to meet standard, no data returned"
-      ];
-      echo json_encode( $obj );
-      exit();
-    }
-
-    echo json_encode( $obj );
-    exit();
-  }
-
-	/**
-	 * All admin fetches start here, we check the function code then
-	 * send it too the correct function. POST only.
-	 */
-
   // Check if an admin is logged in
   $user = Account::getCurrentUser("uid, password");
   if($user == null) exit();
@@ -64,14 +17,15 @@
     // Continue the code
   } else { exit(); }
 
-  $functionIndex = $_POST["function"];
+  $function = $_POST["function"];
   unset($_POST["function"]);
+  $args = $_POST;
 
   // The only thing left in $_POST at this point should be args
-  determineFunction($functionIndex, $_POST);
+  // determineFunction($functionIndex, $args);
 
   // Actual code
-	switch($functionIndex) {
+	switch($function) {
 		case 1: // Fetch volunteer forms
       if(isset($_POST["volunteerFormID"])) {
         $volunteerFormID = $_POST["volunteerFormID"];
@@ -359,5 +313,15 @@
         break;
       }
       break;
+    case "getSetting" :
+    case "getSettings":
+      $value = Database::getSettings($args)["value"];
+
+      echo json_encode([
+        "data"=>$value
+      ]);
+      break;
+    default:
+      echo json_encode(["message"=>"Function $function not found"]);
 	}
 ?>

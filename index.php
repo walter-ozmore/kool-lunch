@@ -62,7 +62,7 @@
        */
       function loadFAQ() {
         $data = [];
-        $setting = Database::getSettings(["key"=>"questionsAndAnswers"]);
+        $setting = Database::getSettings(["key"=>"faqText"]);
         $markdown = $setting["value"];
 
         // Split the string into an array of lines using the newline character (\n) as the delimiter

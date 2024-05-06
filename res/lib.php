@@ -11,14 +11,14 @@
     /**
      * If an dataKey does not yet exist, create an entry in Setting using the provided values.
      * Otherwise, update the entry's information.
-     * 
+     *
      * @param args The values to be inserted/updated.
      * @return returnData An array with code, message, and relevant metadata.
      */
     function createSetting($args) {
       $conn = Secret::connectDB("lunch");
       $returnData = [];
-      
+
       // Data checks
       if(isset($args["key"]) && is_string($args["key"])) {
         $dataKey = $args["key"];
@@ -27,7 +27,7 @@
           "code"    => 200,
           "message" => "Invalid key"
         ];
-        
+
         return $returnData;
       }
       if(isset($args["value"]) && is_string($args["value"])) {
@@ -37,7 +37,7 @@
           "code"    => 200,
           "message" => "Invalid value"
         ];
-        
+
         return $returnData;
       }
       if(isset($args["type"]) && is_string($args["type"])) {
@@ -47,7 +47,7 @@
           "code"    => 200,
           "message" => "Invalid type"
         ];
-        
+
         return $returnData;
       }
 
@@ -60,10 +60,10 @@
           "message" => "Query error"
         ];
       } else if ($checkResult->num_rows == 0) { // Create an entry
-  
+
         $query = "INSERT INTO Setting VALUES ($dataKey, $dataValue, $dataType);";
         $result = $conn->query($query);
-  
+
         if ($result == FALSE) {
           $returnData = [
             "code"    => 310,
@@ -86,7 +86,7 @@
 
         $query = "UPDATE Setting SET dataValue = $dataValue, dataType = $dataType WHERE dataKey = $dataKey LIMIT 1;";
         $result = $conn->query($query);
-        
+
         if ($result == FALSE) {
           $returnData = [
             "code" => 310,
@@ -111,7 +111,7 @@
     }
 
     /**
-     * 
+     *
      */
     public static function getSettings($args) {
       $conn = Secret::connectDB("lunch");
