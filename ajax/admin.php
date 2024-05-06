@@ -216,7 +216,7 @@
       echo json_encode(Database::updateVolunteerPhoneNumber($args));
       break;
     case 24: // updateIndividual
-      $args = ["individualID" => $_POST["individualID"]];
+      $args = ["individualID" => (int)$_POST["individualID"]];
       if (isset($_POST["individualName"])) {
         $args["individualName"] = $_POST["individualName"];
       }

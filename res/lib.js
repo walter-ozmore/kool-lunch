@@ -342,7 +342,7 @@ async function inspectForm(formData) {
     formID: formData.formID
   }));
   let freshFormData = tempObj.data;
-
+  console.log("Inspect Form Data:", freshFormData);
 
   if(freshFormData == null) {
     displayError("Missing fresh form data");
