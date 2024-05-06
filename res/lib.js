@@ -418,7 +418,7 @@ async function inspectForm(formData) {
 
       row.append(
         $("<td>").append(
-          $("<p class='js-link'>")
+          $("<a href='javascript:void(0)'>")
             .text(individual.individualName))
             .click(()=>{
               post("/ajax/admin.php", {
