@@ -1,8 +1,10 @@
 $(document).ready(async function() {
 	addPage("Organizations", async (page)=>{
+    page.append($("<center>").append(("<p>Loading Please Wait...</p>")))
 		let rawData = (await post("/ajax/admin.php", {
 			function: 4,
 		}));
+    page.empty();
 
     console.log("Organizations Page Data:", rawData);
     if(rawData.data == undefined) {

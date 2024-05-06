@@ -1,10 +1,12 @@
 $(document).ready(async function() {
 	addPage("Forms", async (page)=>{
+    page.append($("<center>").append(("<p>Loading Please Wait...</p>")))
 		let rawData = (await post("/ajax/admin.php", {
 			function: 3,
       startTime: 1704088800,
       endTime: 1735711200-1
 		}));
+    page.empty();
 
     console.log("Forms Page Data:", rawData);
     if(rawData.data == undefined) {
