@@ -15,7 +15,7 @@
      * @param args The values to be inserted/updated.
      * @return returnData An array with code, message, and relevant metadata.
      */
-    function createSetting($args) {
+    function setSetting($args) {
       $conn = Secret::connectDB("lunch");
       $returnData = [];
 
