@@ -15,7 +15,7 @@
      * @param args The values to be inserted/updated.
      * @return returnData An array with code, message, and relevant metadata.
      */
-    function setSetting($args) {
+    public static function setSetting($args) {
       $conn = Secret::connectDB("lunch");
       $returnData = [];
 
@@ -51,7 +51,7 @@
         return $returnData;
       }
 
-      $checkQuery = "SELECT * FROM Setting WHERE dataKey = $dataKey;";
+      $checkQuery = "SELECT * FROM Setting WHERE dataKey = '$dataKey';";
       $checkResult = $conn->query($checkQuery);
 
       if ($checkQuery == FALSE) {
@@ -83,8 +83,8 @@
           ];
         }
       } else { // Update an entry
-
-        $query = "UPDATE Setting SET dataValue = $dataValue, dataType = $dataType WHERE dataKey = $dataKey LIMIT 1;";
+        $sDataValue = addslashes($dataValue);
+        $query = "UPDATE Setting SET dataValue = \"$sDataValue\", dataType = \"$dataType\" WHERE dataKey = \"$dataKey\" LIMIT 1;";
         $result = $conn->query($query);
 
         if ($result == FALSE) {

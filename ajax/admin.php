@@ -321,6 +321,9 @@
         "data"=>$value
       ]);
       break;
+    case "setSetting":
+      echo json_encode( Database::setSetting($args) );
+      break;
     default:
       echo json_encode(["message"=>"Function $function not found"]);
 	}

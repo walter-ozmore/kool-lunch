@@ -4,12 +4,18 @@ $(document).ready(async function() {
       .css({width: "100%", height: "15em"})
       .text("Loading...")
       .prop('disabled', true)
+      .change(function() {
+        updateServer($(this), "setSetting", "value", { key: "homePageText", type: "markdown" })
+      })
     ;
 
     let faqText = $("<textarea>")
       .css({width: "100%", height: "15em"})
       .text("Loading...")
       .prop('disabled', true)
+      .change(function() {
+        updateServer($(this), "setSetting", "value", { key: "faqText", type: "markdown" })
+      })
     ;
 
 		page.append( $("<input>", {type: "checkbox", disabled: true}), $("<label>").text("Show donations on home page:"), $("<br>"));
