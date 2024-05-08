@@ -120,6 +120,11 @@ header {
   text-align: center;
 }
 
+textarea  {
+  width: 100%;
+  height: 15em;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -193,7 +198,9 @@ input[type=checkbox] {
   margin: 0em .25em;
 }
 
-
+.disabled {
+  background-color: #B9B8B5;
+}
 
 .form label {
   display: block;
@@ -312,4 +319,14 @@ button:disabled {
   .content {
     padding: .5em 2vw;
   }
+}
+
+.markdown h3 {
+  margin: .5em auto 0em auto;
+  max-width: 20em;
+}
+
+.markdown div {
+  margin: .5em auto 0em auto;
+  max-width: 80em;
 }

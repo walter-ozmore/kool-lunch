@@ -52,7 +52,8 @@ $(document).ready(async function() {
       onRowClick: inspectForm,
       rowTrigger: function(row, rowData) {
         if(rowData.isEnabled != 1) {
-          row.css({"background-color":"#B9B8B5"})
+          // row.css({"background-color":"#B9B8B5"})
+          row.addClass("disabled");
         }
       },
       ignore: ["isEnabled"],
