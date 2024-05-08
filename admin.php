@@ -7,54 +7,6 @@
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
       require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
     ?>
-    <style>
-      .admin-container {
-        display: flex;
-        margin: 0em auto;
-      }
-
-      .sidebar {
-        margin: .5em;
-        padding: 10px 0em;
-        min-width: fit-content;
-        height: fit-content;
-      }
-
-      .sidebar p {
-        padding: .25em .5em;
-        margin: 0em;
-      }
-
-      .view-pane {
-        padding: .5em;
-        margin: .5em;
-        width: 100%;
-        max-width: unset;
-        overflow: auto;
-        /* padding: .5em 0em 5em 0em; */
-      }
-
-      .highlight {
-        background-color: gray;
-        color: white;
-      }
-
-      #results {
-        list-style-type: none;
-        padding: 0;
-      }
-
-      #results li {
-        cursor: pointer;
-        padding: 5px;
-        border: 1px solid #ccc;
-        margin: 2px;
-      }
-
-      #loadingMessage {
-        display: none;
-      }
-    </style>
 
     <script>
       let pages = {};

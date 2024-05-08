@@ -150,7 +150,7 @@
     <div class="content form">
       <div class="description">
         <h2>Want to get involved?</h2>
-        <p style="color: rgb(50,50,50)">The KOOL Lunches Program is growing and we are finding more ways for you to get involved! If you wish to get involved, please fill out this form and we will get in touch.</p>
+        <p>The KOOL Lunches Program is growing and we are finding more ways for you to get involved! If you wish to get involved, please fill out this form and we will get in touch.</p>
       </div>
 
       <div class="section">

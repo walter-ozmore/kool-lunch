@@ -16,9 +16,9 @@
 
         $drawString = "";
         $result = [];
-        // $result = Database::getCollections();
+        $result = Database::getCollections();
         if ($result["code"] != 110) {return;}
-        $drawString .= '<div style="margin-bottom: 1em"> <h2 class="center-text" style="color: black">Monetary Donations</h2>';
+        $drawString .= '<div> <h2 class="center-text">Monetary Donations</h2>';
         $drawStringColData = "<center><h3>Unable to retrieve donation information at this time.</h3></center>";
 
         $data = $result["data"];
@@ -30,7 +30,7 @@
           }
 
           $drawString .= $drawStringColData;
-          $drawString .=  "<table style='margin: 0em auto;'>";
+          $drawString .=  "<table>";
 
           $result = Database::getCollectionDonations($col["coll"]);
 
@@ -49,7 +49,7 @@
           $drawString.=  "</table>";
         }
 
-        $drawString.=  '</div>';
+        $drawString.=  '<br></div>';
 
         echo $drawString;
       }
@@ -159,9 +159,9 @@
             $answer   = $Parsedown->text( $qna["answer"] );
 
             echo "<div class='faqElement'>
-              <div class='question' style='display: flex; justify-content: space-between;' onclick='faqClick(this)'>
+              <div class='question' onclick='faqClick(this)'>
                 $question
-                <p style='text-align: right;'>+</p>
+                <p>+</p>
               </div>
               <div class='answer' style='display: none'>
                 $answer

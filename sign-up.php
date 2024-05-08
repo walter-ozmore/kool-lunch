@@ -230,18 +230,6 @@
         addPickerUpper();
       });
     </script>
-
-    <style>
-      .subdiv {
-        margin-left: 2em;
-      }
-
-      .error {
-        color: red;
-        margin: 0px;
-        padding: 0px;
-      }
-    </style>
   </head>
 
   <header>

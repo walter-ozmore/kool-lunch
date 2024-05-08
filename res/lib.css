@@ -13,6 +13,16 @@ h1 h2 h3 h4 {
   font-family: 'Shadows Into Light Two';
 }
 
+.subdiv {
+  margin-left: 2em;
+}
+
+.error {
+  color: red;
+  margin: 0px;
+  padding: 0px;
+}
+
 footer {
   /* position: absolute; */
   bottom: 0;
@@ -85,6 +95,57 @@ iframe {
 .answer {
   color: black;
   margin: 0em 1em .5em 1em;
+}
+
+.description p {
+  color: rgb(50,50,50);
+}
+
+.admin-container {
+  display: flex;
+  margin: 0em auto;
+}
+
+.sidebar {
+  margin: .5em;
+  padding: 10px 0em;
+  min-width: fit-content;
+  height: fit-content;
+}
+
+.sidebar p {
+  padding: .25em .5em;
+  margin: 0em;
+}
+
+.view-pane {
+  padding: .5em;
+  margin: .5em;
+  width: 100%;
+  max-width: unset;
+  overflow: auto;
+  /* padding: .5em 0em 5em 0em; */
+}
+
+.highlight {
+  background-color: gray;
+  color: white;
+}
+
+#results {
+  list-style-type: none;
+  padding: 0;
+}
+
+#results li {
+  cursor: pointer;
+  padding: 5px;
+  border: 1px solid #ccc;
+  margin: 2px;
+}
+
+#loadingMessage {
+  display: none;
 }
 
 /* Header */
