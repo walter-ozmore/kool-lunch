@@ -70,6 +70,12 @@ iframe {
   margin: 0em .5em;
   color: black;
   font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+}
+
+.question p {
+  text-align: left;
 }
 
 .question:hover {
@@ -329,4 +335,10 @@ button:disabled {
 .markdown div {
   margin: .5em auto 0em auto;
   max-width: 80em;
+}
+
+.inspect {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  margin-bottom: 1em;
 }

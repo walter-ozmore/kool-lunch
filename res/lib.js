@@ -163,7 +163,7 @@ async function inspectIndividual(arg) {
   checkBlur(); // Check if the screen should be blured
 
   // Create a grid to align the items for style
-  let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
+  let divGrid = $("<div>", {class: "inspect"})
 
   // Create title
   div.append( $("<h2>").text("Inspect Individual"), divGrid );
@@ -276,7 +276,7 @@ async function inspectVolunteerForm(arg) {
   checkBlur();
 
   // Create a grid to align the items for style
-  let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
+  let divGrid = $("<div>", {class: "inspect"});
 
   // Create title
   div.append( $("<h2>").text("Inspect Volunteer Form"), divGrid );
@@ -355,7 +355,7 @@ async function inspectForm(formData) {
   checkBlur(); // Check if the screen should be blured
 
   // Create a grid to align the items for style
-  let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
+  let divGrid = $("<div>", {class: "inspect"});
 
   // Create title
   div.append( $("<h2>").text("Inspect Form"), divGrid );
@@ -490,7 +490,7 @@ function inspectOrganization(orgData) {
   checkBlur(); // Check if the screen should be blured
 
   // Create a grid to align the items for style
-  let divGrid = $("<div>", {style: "display: grid; grid-template-columns: 1fr 2fr; margin-bottom: 1em;"})
+  let divGrid = $("<div>", {class: "inspect"});
 
   // Create title
   div.append( $("<h2>").text("Inspect Organizations"), divGrid );
