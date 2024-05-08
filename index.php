@@ -92,6 +92,13 @@
           if($num == 1) $question .= $line."\n\n";
           if($num == 2) $answer   .= $line."\n\n";
         }
+
+        if(strlen($question) > 0 && strlen($answer)) {
+          // This is the start of another question append to data
+          $data[] = ["question"=>$question, "answer"=>$answer];
+          $question = ""; $answer = "";
+        }
+
         return $data;
       }
 
