@@ -208,7 +208,7 @@
         // Later on we will fetch this info from the database
         let locationRadioDiv = $("#location-radio");
 
-        let locations = ["Pizza Hut", "Simpson Park", "Powder Creak Park", "T.E.A.M. Center Housing Authority"];
+        let locations = ["Pizza Hut", "Simpson Park", "Powder Creek Park", "T.E.A.M. Center Housing Authority"];
         for(let location of locations) {
           locationRadioDiv.append(
             $("<input>", {type: "radio", value: location, name: "location"}),
