@@ -368,7 +368,7 @@ async function inspectForm(formData) {
       "Williams Building",
       "Pizza Hut",
       "Simpson Park",
-      "Powder Creak Park"
+      "Powder Creek Park"
     ]; // This should be retrieved from the backend
 
     for(let location of locations)
