@@ -4,8 +4,6 @@
     <title>Kool Lunches</title>
 
     <?php
-      error_reporting(E_ALL);
-      ini_set('display_errors', '1');
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
       include realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
       require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
