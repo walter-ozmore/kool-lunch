@@ -314,12 +314,11 @@
       }
       break;
     case "getSetting" :
+      $key = $args;
+      echo json_encode([ "data"=>Database::getSetting($key) ]);
+      break;
     case "getSettings":
-      $value = Database::getSettings($args)["value"];
-
-      echo json_encode([
-        "data"=>$value
-      ]);
+      echo json_encode([ "data"=>Database::getSettings() ]);
       break;
     case "setSetting":
       echo json_encode( Database::setSetting($args) );

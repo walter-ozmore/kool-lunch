@@ -23,125 +23,145 @@
       if(isset($args["key"]) && is_string($args["key"])) {
         $dataKey = $args["key"];
       } else {
-        $returnData = [
+        return [
           "code"    => 200,
           "message" => "Invalid key"
         ];
-
-        return $returnData;
       }
       if(isset($args["value"]) && is_string($args["value"])) {
         $dataValue = $args["value"];
       } else {
-        $returnData = [
+        return [
           "code"    => 200,
           "message" => "Invalid value"
         ];
-
-        return $returnData;
       }
-      if(isset($args["type"]) && is_string($args["type"])) {
-        $dataType = $args["type"];
-      } else {
-        $returnData = [
-          "code"    => 200,
-          "message" => "Invalid type"
-        ];
 
-        return $returnData;
-      }
+
+      // if(isset($args["type"]) && is_string($args["type"])) {
+      //   $dataType = $args["type"];
+      // }
+      $dataType = (isset($args["type"]) && is_string($args["type"]))? $args["type"]: null;
+      // else {
+      //   return [
+      //     "code"    => 200,
+      //     "message" => "Invalid type"
+      //   ];
+      // }
 
       $checkQuery = "SELECT * FROM Setting WHERE dataKey = '$dataKey';";
       $checkResult = $conn->query($checkQuery);
 
       if ($checkQuery == FALSE) {
-        $returnData = [
+        return [
           "code"    => 310,
           "message" => "Query error"
         ];
-      } else if ($checkResult->num_rows == 0) { // Create an entry
+      }
+
+      if ($checkResult->num_rows == 0) { // Create an entry
+        if($dataType == null) {
+          return [
+            "code"    => 200,
+            "message" => "Invalid type"
+          ];
+        }
 
         $query = "INSERT INTO Setting VALUES ($dataKey, $dataValue, $dataType);";
         $result = $conn->query($query);
 
         if ($result == FALSE) {
-          $returnData = [
+          return [
             "code"    => 310,
             "message" => "Query error"
           ];
-        } else if ($conn->affected_rows == 0) {
-          $returnData = [
+        }
+
+        if ($conn->affected_rows == 0) {
+          return [
             "affectedRows" => $conn->affected_rows,
             "code"    => 120,
             "message" => "No inserts made"
           ];
-        } else {
-          $returnData = [
-            "affectedRows" => $conn->affected_rows,
-            "code"    => 110,
-            "message" => "Successfully created setting"
-          ];
         }
-      } else { // Update an entry
-        $sDataValue = addslashes($dataValue);
-        $query = "UPDATE Setting SET dataValue = \"$sDataValue\", dataType = \"$dataType\" WHERE dataKey = \"$dataKey\" LIMIT 1;";
-        $result = $conn->query($query);
 
-        if ($result == FALSE) {
-          $returnData = [
-            "code" => 310,
-            "message" => "Query error"
-          ];
-        } else if ($conn->affected_rows == 0){
-          $returnData = [
-            "affectedRows" => $conn->affected_rows,
-            "code" => 120,
-            "message" => "No matching entries found"
-          ];
-        } else {
-          $returnData = [
-            "affectedRows" => $conn->affected_rows,
-            "code" => 110,
-            "message" => "Successfully updated setting"
-          ];
-        }
+        return [
+          "affectedRows" => $conn->affected_rows,
+          "code"    => 110,
+          "message" => "Successfully created setting"
+        ];
       }
 
-      return $returnData;
+      $sDataValue = addslashes($dataValue);
+      if($dataType != null) {
+        $query = "UPDATE Setting SET dataValue = \"$sDataValue\", dataType = \"$dataType\" WHERE dataKey = \"$dataKey\" LIMIT 1;";
+      } else {
+        $query = "UPDATE Setting SET dataValue = \"$sDataValue\" WHERE dataKey = \"$dataKey\" LIMIT 1;";
+      }
+      $result = $conn->query($query);
+
+      if ($result == FALSE) {
+        return [
+          "code" => 310,
+          "message" => "Query error"
+        ];
+      }
+
+      if ($conn->affected_rows == 0){
+        return [
+          "affectedRows" => $conn->affected_rows,
+          "code" => 120,
+          "message" => "No matching entries found"
+        ];
+      }
+
+      return [
+        "affectedRows" => $conn->affected_rows,
+        "code" => 110,
+        "message" => "Successfully updated setting"
+      ];
     }
 
-    /**
-     *
-     */
-    public static function getSettings($args) {
-      $conn = Secret::connectDB("lunch");
 
-      if(isset($args["key"])) {
-        $data = null;
-        $key = $args["key"];
-        $query = "SELECT * FROM Setting WHERE dataKey = \"$key\"";
-      } else if(isset($args["keys"]) == True) {
-        // Build a query
-        $query = "SELECT * FROM Setting WHERE dataKey in (";
-        $keys = $args["keys"];
+    /**
+     * Returns an array of the values and types of the settings that match the
+     * given keys. If no keys array is provided return the entire setting
+     * database
+     *
+     * @param keys Array of strings
+     */
+    public static function getSettings($keys = null) {
+      $conn = Secret::connectDB("lunch"); // Connect to database
+
+      // Base query
+      $query = "SELECT * FROM Setting";
+
+      // If the args is set, lets break it & add it to the query
+      if($keys != null) {
+        $query .= " WHERE dataKey IN (";
+        // Add each keys to the query with commas and spaces in between
         foreach($keys as $key)
           $query .= "\"$key\", ";
-        $query = substr($key, 0, -1) . ")";
-      } else {
-        $query = $query = "SELECT * FROM Setting;";
+        $query = substr($query, 0, -2); // Remove the last comma and space
+        $query.= ")"; // Cap the end of the query
       }
 
-      // Get the data from the server
-      $data = [];
-      $result = $conn->query($query);
+      // Run the query
+      $data = []; // To store the data
+      $result = $conn->query($query); // Run the query
       while($row = $result->fetch_assoc()) {
         $data[$row["dataKey"]] = ["value"=>$row["dataValue"], "type"=>$row["dataType"]];
       }
 
-      if(isset($args["key"]))
-        return reset($data);
-
       return $data;
+    }
+
+    /**
+     * returns a single setting from the database that maches the key
+     */
+    public static function getSetting($key) {
+      $array = Database::getSettings([$key]);
+      return $array[$key];
     }
 
     /**

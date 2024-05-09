@@ -62,7 +62,7 @@
        */
       function loadFAQ() {
         $data = [];
-        $setting = Database::getSettings(["key"=>"faqText"]);
+        $setting = Database::getSetting("faqText");
         $markdown = $setting["value"];
 
         // Split the string into an array of lines using the newline character (\n) as the delimiter
@@ -129,25 +129,22 @@
       <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSxBW-X_1GKybMlrA-B4kD5QTEGf0UYux56FmcT3Ei7NEAMfisy6M9lkadUfErssLJBVUKpsElRjCFx/embed?start=true&loop=true&delayms=3000&amp;rm=minimal" frameborder="0" onload="resizeIframe(this)"></iframe>
       <center>
         <?php
-          $value = Database::getSettings(["key"=>"showSignUp"])["value"];
+          $value = Database::getSetting("showSignUp")["value"];
           $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
           if($value) {
             echo "<a href='/sign-up' class='button'>SIGNUP</a>";
           }
 
-          $value = Database::getSettings(["key"=>"showVolunteer"])["value"];
+          $value = Database::getSetting("showVolunteer")["value"];
           $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
           if($value) {
             echo "<a href='/volunteer-sign-up' class='button'>VOLUNTEER</a>";
           }
         ?>
-        <!-- <a href="/sign-up" class="button">SIGNUP</a> -->
-        <!-- <a href="/volunteer-sign-up" class="button">VOLUNTEER</a> -->
       </center>
 
       <?php
-        $setting = Database::getSettings(["key"=>"homePageText"]);
-        // echo var_dump($obj);
+        $setting = Database::getSetting("homePageText");
         $markdown = $setting["value"];
 
         echo $Parsedown->text($markdown);

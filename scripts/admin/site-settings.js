@@ -1,67 +1,52 @@
 $(document).ready(async function() {
-	addPage("Settings", async (page)=>{
-    let homePageText = $("<textarea>")
-      .css({width: "100%", height: "15em"})
-      .text("Loading...")
-      .prop('disabled', true)
-      .change(function() {
-        updateServer($(this), "setSetting", "value", { key: "homePageText", type: "markdown" })
-      })
-    ;
+  addPage("Settings", async (page)=>{
+    // Load data for page
+    page.append($("<center>").append(("<p>Loading Please Wait...</p>")))
+    let obj = await post("/ajax/admin.php", {
+			function: "getSettings"
+		});
+    let data = obj["data"];
 
-    let faqText = $("<textarea>")
-      .css({width: "100%", height: "15em"})
-      .text("Loading...")
-      .prop('disabled', true)
-      .change(function() {
-        updateServer($(this), "setSetting", "value", { key: "faqText", type: "markdown" })
-      })
-    ;
+    /**
+     * Future suggestions
+     *  - Mentions Markdown
+     *  - Show donations on home page
+     *  - Signup warning message
+     *  - Volunteer options
+     */
 
-		page.append( $("<input>", {type: "checkbox", disabled: true}), $("<label>").text("Show donations on home page:"), $("<br>"));
-    page.append( $("<input>", {type: "checkbox", disabled: true}), $("<label>").text("Show signup button on home page:"), $("<br>"));
-    page.append( $("<input>", {type: "checkbox", disabled: true}), $("<label>").text("Show volunteer button on home page:"), $("<br>"));
+    // Build our page
+    page.empty().append(
+      $("<input>", {type: "checkbox", checked: data["showSignUp"]["value"]})
+        .change(function() {updateServer($(this), "setSetting", "value", { key: "showSignUp", type: "markdown"}) }),
+      $("<label>").text("Show signup button on home page:"),
+      $("<br>"),
 
-    page.append(
+      $("<input>", {type: "checkbox", checked: data["showVolunteer"]["value"]})
+        .change(function() {updateServer($(this), "setSetting", "value", { key: "showVolunteer", type: "markdown"}) }),
+      $("<label>").text("Show volunteer button on home page:"),
+      $("<br>"),
+
+
       $("<div>", {style: "margin: .5em auto 0em auto; max-width: 80em;"}).append(
         $("<h3>", {style: "margin: .5em auto 0em auto; max-width: 20em;"}).text("Home Page Markdown"),
-        homePageText
-      )
-    );
+        $("<textarea>")
+          .css({width: "100%", height: "15em"})
+          .text(data["homePageText"]["value"])
+          .change(function() {updateServer($(this), "setSetting", "value", { key: "homePageText", type: "markdown"}) }),
 
-    page.append(
-      $("<div>", {style: "margin: .5em auto 0em auto; max-width: 80em;"}).append(
         $("<h3>", {style: "margin: .5em auto 0em auto; max-width: 20em;"}).text("FAQ Markdown"),
-        faqText
-      )
-    );
-
-    page.append(
+        $("<textarea>")
+          .css({width: "100%", height: "15em"})
+          .text(data["faqText"]["value"])
+          .change(function() {updateServer($(this), "setSetting", "value", { key: "faqText", type: "markdown"}) })
+      ),
       $("<center>").append(
         $("<button>", {disabled: true}).text("Edit Mentions"),
         $("<br>"),
         $('<a href="https://markdownlivepreview.com/" target="_blank">Online Markdown Viewer</a>')
-      ));
+      )
+    );
 
-    // Load data for page
-    post("/ajax/admin.php", {
-			function: "getSetting",
-      key: "homePageText"
-		}, (obj)=>{
-      homePageText
-        .text(obj["data"])
-        .prop('disabled', false);
-      ;
-    });
-
-    post("/ajax/admin.php", {
-			function: "getSetting",
-      key: "faqText"
-		}, (obj)=>{
-      faqText
-        .text(obj["data"])
-        .prop('disabled', false);
-      ;
-    });
-	});
+  });
 });
