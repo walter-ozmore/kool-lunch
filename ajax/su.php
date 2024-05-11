@@ -48,19 +48,6 @@
     "amount" => $_POST["lunchesNeeded"]
   ];
 
-  $result = Database::createPickup($args);
-  unset($args);
-
-  // Verify the Pickup entry was successful
-  if ($result["code"] != 110) {
-    Database::deleteForm($formID);
-		echo "Error submitting your form. Please try again later 1.";
-
-    exit();
-	}
-
-  $pickupID = $result["entryID"];
-
   // Create Individual and FormLink entries as needed (based on # adults)
   $adults = $_POST["adults"];
   foreach ($adults as $adult => $adultValues) {
@@ -77,7 +64,6 @@
 
     // Verify the Individual entry was successful
     if ($result["code"] != 110) {
-      Database::deletePickup($pickupID);
       Database::deleteForm($formID);
       echo "Error submitting your form. Please try again later 2.";
       exit();
@@ -95,7 +81,6 @@
     unset($args);
 
     if ($result["code"] != 110) {
-      $pu = Database::deletePickup($pickupID);
       $in = Database::deleteIndividual($individualID);
       $fm = Database::deleteForm($formID);
       echo "Error submitting your form. Please try again later 3.";
