@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Kool Lunches</title>
-
+    <link rel="stylesheet" href="/res/rf-gallery.css"/>
     <?php
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
       include realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
@@ -124,7 +124,21 @@
   <body>
 
     <div class="content">
-      <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSxBW-X_1GKybMlrA-B4kD5QTEGf0UYux56FmcT3Ei7NEAMfisy6M9lkadUfErssLJBVUKpsElRjCFx/embed?start=true&loop=true&delayms=3000&amp;rm=minimal" frameborder="0" onload="resizeIframe(this)"></iframe>
+      <!-- <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSxBW-X_1GKybMlrA-B4kD5QTEGf0UYux56FmcT3Ei7NEAMfisy6M9lkadUfErssLJBVUKpsElRjCFx/embed?start=true&loop=true&delayms=3000&amp;rm=minimal" frameborder="0" onload="resizeIframe(this)"></iframe> -->
+        <div class="img-gallery"><center>
+            <img id="current-img" src="" alt="Gallery loading"></center>
+        </div>
+        <script src="/res/rf-gallery.js"></script>
+        <script>
+          let galleryImages = {
+            "/res/images/kl-1.jpg" : "Kool Lunches Volunteers",
+            "/res/images/kl-2.jpg" : "Kool Lunches Volunteers",
+            "/res/images/kl-3.jpg" : "Kool Lunches Volunteers",
+            "/res/images/kl-4.jpg" : "Kool Lunches Volunteers",
+            "/res/images/kl-5.jpg" : "Kool Lunches Volunteers"
+          };
+          let gallery = new Gallery(galleryImages, "auto", 2000);
+        </script>
       <center>
         <?php
           $value = Database::getSetting("showSignUp")["value"];
