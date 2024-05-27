@@ -326,7 +326,8 @@
     </div> <!-- Form -->
 
     <div class="content" id="submission" style="display: none;">
-      Thank you for your submission.
+      Thank you for your submission.<br>
+      Your name has been added to our list and you start picking up on the next pick up day.
     </div>
   </body>
 
