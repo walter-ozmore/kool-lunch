@@ -56,11 +56,17 @@ function unixToDuration(unixTime, decimalMode = false, showZero = false) {
 
 
 async function post(url, args = {}, returnFunction = null) {
+
   let response;
   try {
     response = await $.ajax({ url: url, method: "POST", data: args });
   } catch (error) {
-    console.error("An error occurred during the AJAX request:", error);
+    console.error(
+      "An error occurred during the AJAX request",
+      "\nURL: "+url,
+      "\nArgs: ", args,
+      "\nError: ", error
+    );
     return null;
   }
 
@@ -163,10 +169,22 @@ function checkBlur() {
   blurScreen(false);
 }
 
-
+/**
+ *
+ * @param {obj} data
+ * @param {obj} args
+ * @returns {JQuery Obj}
+ */
 function mktable(data, args = {}) {
-  let ht = args.headerNames;
-  let varTriggers = args.triggers;
+  // Check that data is an array, if it is not convert it to an array
+  if (typeof data !== 'object' || Array.isArray(data) || data === null) {
+  } else {
+    // Convert object to array
+    data = Object.values(data);
+  }
+
+  let ht = ("headerNames" in args)? args.headerNames: [];
+  let varTriggers = ("triggers" in args)? args.triggers: [];
   let ignore = ("ignore" in args)? args.ignore: [];
 
   let table = $("<table>");
@@ -252,7 +270,17 @@ function mktable(data, args = {}) {
 
       if(head in entry == false) continue;
 
-      let html = entry[head];
+      let html = "";
+
+      value = entry[head];
+      if((typeof value === 'object' && value !== null) || Array.isArray(value)) {
+        for(let index in value) {
+          rowString = (Array.isArray(value))? value[index]: index+": "+value[index];
+          html += rowString+"<br>"
+        }
+      } else {
+        html += value;
+      }
 
       // Run custom actions for items with a specific header
       for(let t of varTriggers) {
