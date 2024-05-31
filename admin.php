@@ -175,6 +175,7 @@
     <script src="/scripts/admin/individuals.js"></script>
     <script src="/scripts/admin/organizations.js"></script>
     <script src="/scripts/admin/site-settings.js"></script>
+    <script src="/scripts/admin/query-builder.js"></script>
   </head>
 
   <header>
