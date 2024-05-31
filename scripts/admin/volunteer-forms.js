@@ -50,7 +50,8 @@ $(document).ready(async function() {
 			headerNames: tableHeaderNames,
 			triggers: tableTriggers,
       onRowClick: inspectVolunteerForm,
-      ignore: ["individualID", "orgID"]
+      ignore: ["individualID", "orgID"],
+      showExport: true
 		});
 		page.append(tableDiv);
 	});

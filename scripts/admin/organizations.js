@@ -35,7 +35,8 @@ $(document).ready(async function() {
 			headerNames: tableHeaderNames,
 			triggers: tableTriggers,
       onRowClick: inspectOrganization,
-      ignore: ["signupContactID", "mainContactID"]
+      ignore: ["signupContactID", "mainContactID"],
+      showExport: true
 		});
 		page.append(tableDiv);
 	});

@@ -170,6 +170,7 @@
 
     <!-- Import Pages -->
     <!-- <script src="/scripts/admin/overview.js"></script> -->
+    <script src="/res/tableToExcel.js"></script>
     <script src="/scripts/admin/forms.js"></script>
     <script src="/scripts/admin/volunteer-forms.js"></script>
     <script src="/scripts/admin/individuals.js"></script>

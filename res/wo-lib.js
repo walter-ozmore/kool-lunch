@@ -308,6 +308,18 @@ function mktable(data, args = {}) {
     return div;
   }
 
+  // Add the table to the div
   div.append(table);
+
+  // Add an export to csv function
+  if('showExport' in args == true) {
+    div.append(
+      $("<center>", {style: "margin-top: .5em; margin-bottom: .5em;"}).append(
+        $("<button>").click(function() {
+          TableToExcel.convert(table[0]);
+        }).text("Export CSV")
+      )
+    );
+  }
   return div;
 }

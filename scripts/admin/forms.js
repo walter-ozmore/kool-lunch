@@ -67,8 +67,11 @@ $(document).ready(async function() {
             location.reload();
           }
         }
-      }
+      },
+      showExport: true
 		});
+
+    console.log(tableDiv)
 		page.append(tableDiv);
 	});
 });
