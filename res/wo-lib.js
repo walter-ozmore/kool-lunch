@@ -115,7 +115,7 @@ function displayAlert(args) {
 
   if("title"   in args) div.append($("<h2>" ).text(args.title));
   if("html"    in args) div.append($("<div>").html(args.html ));
-  if("text"    in args) div.append($("<p>"  ).text(args.text ));
+  if("text"    in args) div.append($("<p>"  ).html(args.text ));
   if("jObj"    in args) div.append(args.jObj);
 
   // Add a close button so the user isnt stuck

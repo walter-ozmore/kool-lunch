@@ -191,7 +191,7 @@
         if(msg === 0) {
           displayAlert({
             title: "Thank You",
-            text: "Your form has been submitted.", // TODO: Write message here
+            text: "<center>Your form has been submitted.<br><br>Your name has been added to our list and you start picking up on the next pick up day.</center>", // TODO: Write message here
             onClose: ()=>{ window.location.href = '/'; }
           });
         } else {
@@ -324,11 +324,6 @@
         <button type="submit" class="large-button" onclick="submit();">Sign Up</button>
       </center>
     </div> <!-- Form -->
-
-    <div class="content" id="submission" style="display: none;">
-      Thank you for your submission.<br>
-      Your name has been added to our list and you start picking up on the next pick up day.
-    </div>
   </body>
 
   <?php require realpath($_SERVER["DOCUMENT_ROOT"])."/res/footer.php"; ?>
