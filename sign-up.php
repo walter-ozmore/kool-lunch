@@ -155,6 +155,11 @@
       async function submit() {
         if(checkMisc() == false) return;
 
+        $("#submit-button")
+          .prop("disabled", true)
+          .text("Submitting...")
+        ;
+
         // This is the json obj that will be submitted to the server
         let submitObj = {};
 
@@ -195,6 +200,11 @@
             onClose: ()=>{ window.location.href = '/'; }
           });
         } else {
+          $("#submit-button")
+            .prop("disabled", false)
+            .text("Sign Up")
+          ;
+
           displayAlert({
             title: "Unknown Error",
             text: "Something went wrong, please try again later",
@@ -321,13 +331,12 @@
 
       <center>
         <button type="submit" class="large-button" onclick="showMiddleSec();">Back</button>
-        <button type="submit" class="large-button" onclick="submit();">Sign Up</button>
+        <button type="submit" class="large-button" onclick="submit();" id="submit-button">Sign Up</button>
       </center>
     </div> <!-- Form -->
 
     <div class="content" id="submission" style="display: none;">
-      Thank you for your submission.<br>
-      Your name has been added to our list and you start picking up on the next pick up day.
+      Thank you for your submission.
     </div>
   </body>
 
