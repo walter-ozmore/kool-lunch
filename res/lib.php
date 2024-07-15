@@ -153,6 +153,8 @@
         $data[$row["dataKey"]] = ["value"=>$row["dataValue"], "type"=>$row["dataType"]];
       }
 
+      $data["users"] = Database::getEmailSettings();
+
       return $data;
     }
 
@@ -2794,7 +2796,7 @@
       return $returnData;
     }
 
-     /**
+    /**
      * Update one of the pickupday fields for target Form entry. Verifies all values in args
      * are valid.
      *
@@ -3070,6 +3072,43 @@
       }
 
       return $returnData;
+    }
+
+    /**
+     * Returns info about the users thats KoolLunches can access as well as their email settings
+     */
+    static function getEmailSettings() {
+      // Connect to KoolLunches database
+      $conn = Secret::connectDB("lunch");
+
+      // Get members from KoolLunches and form a list
+      $users = [];
+      $query = "SELECT * FROM Member";
+      $result = $conn->query($query);
+      while ($row = $result->fetch_assoc()) {
+        $uid = $row["uid"];
+        $users[$uid] = $row;
+      }
+
+      // Create text for the next query
+      $string = "(";
+      foreach ($users as $uid => $user) {
+        // if(is_numeric($uid) == False) return 1;
+        $string .= $uid . ",";
+      }
+      $string = substr($string, 0, -1) . ")";
+
+      // Get more info from accounts database
+      $accountConn = Secret::connectDB("account");
+      $query = "SELECT uid, username, email FROM User WHERE uid IN $string;";
+      $result = $accountConn->query($query);
+      while ($row = $result->fetch_assoc()) {
+        $uid = $row["uid"];
+        $users[$uid] = array_merge($users[$uid], $row);
+      }
+
+      // 
+      return $users;
     }
   }
 

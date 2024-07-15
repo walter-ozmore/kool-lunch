@@ -6,6 +6,7 @@ $(document).ready(async function() {
 			function: "getSettings"
 		});
     let data = obj["data"];
+    console.log(data);
 
     /**
      * Future suggestions
@@ -48,5 +49,42 @@ $(document).ready(async function() {
       )
     );
 
+
+    // Add email settings
+    let table = $("<table>").append(
+      $("<tr>").append(
+        $("<th>").text("User"),
+        $("<th>").text("Email"),
+        $("<th>").text("Sign Up"),
+        $("<th>").text("Volunteer Sign Up"),
+      )
+    );
+    page.append(
+      $("<h2>", {style: "margin-top: 2.5em; text-align: left;"}).text("Emails"),
+      $("<p>").text("This is a test"),
+      table
+    );
+
+    for(let uid in data["users"]) {
+      let user = data["users"][uid];
+      console.log(user);
+
+      let row = $("<tr>");
+      table.append(row.append(
+        $("<td>").text( user.username ),
+        $("<td>").text( user.email ),
+        // $("<td>").text( user.emailSignup ),
+        // $("<td>").text( user.emailVolSignup ),
+      ));
+
+      let checkbox;
+      checkbox = $('<input type="checkbox" disabled>');
+      if(user.emailSignup == 1) checkbox.prop('checked', true);
+      row.append( $("<td>").append(checkbox) );
+
+      checkbox = $('<input type="checkbox" disabled>');
+      if(user.emailVolSignup == 1) checkbox.prop('checked', true);
+      row.append( $("<td>").append(checkbox) );
+    }
   });
 });
