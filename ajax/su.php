@@ -109,15 +109,10 @@
         "A new signup has occurred. $name.",
         "New signup has occurred"
       );
-      // if($user["emailVolSignup"] == 1) {
-      //   sendEmail(
-      //     $user["email"],
-      //     "A new volunteer signup has occurred. $name.",
-      //     "New signup has occurred"
-      //   );
-      // }
     }
-  } catch(Exception $e) {}
+  } catch(Exception $e) {
+    // echo "".$e->getMessage();
+  }
 
 
   echo 0;

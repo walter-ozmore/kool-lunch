@@ -92,6 +92,28 @@
 		echo "Error submitting your form. Please try again later.";
 		exit();
 	}
+
+  // Send an email to all the users that request emails
+  try { // Put this all in a try catch to prevent errors
+    require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/email.php";
+
+    // Get the first adult's name
+    $name = $_POST["firstName"] ." ". $_POST["lastName"];
+
+    $users = Database::getEmailSettings();
+    foreach($users as $uid => $user) {
+      if($user["emailVolSignup"] != 1) continue;
+
+      sendEmail(
+        $user["email"],
+        "A new volunteer signup has occurred. $name.",
+        "New volunteer signup has occurred"
+      );
+    }
+  } catch(Exception $e) {
+    // echo "".$e->getMessage();
+  }
+
 	echo 0;
 	// // Create the individual
 	// $args = [
