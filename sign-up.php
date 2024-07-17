@@ -196,7 +196,7 @@
         if(msg === 0) {
           displayAlert({
             title: "Thank You",
-            text: "Your form has been submitted.", // TODO: Write message here
+            text: "<center>Your form has been submitted.<br><br>Your name has been added to our list and you start picking up on the next pick up day.</center>", // TODO: Write message here
             onClose: ()=>{ window.location.href = '/'; }
           });
         } else {
