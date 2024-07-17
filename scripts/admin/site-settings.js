@@ -73,16 +73,32 @@ $(document).ready(async function() {
       table.append(row.append(
         $("<td>").text( user.username ),
         $("<td>").text( user.email ),
-        // $("<td>").text( user.emailSignup ),
-        // $("<td>").text( user.emailVolSignup ),
       ));
 
       let checkbox;
       checkbox = $('<input type="checkbox" disabled>');
+      checkbox.change(function() {
+        // Sending update to server
+        updateServer(
+          $(this), // Passing the element though
+          "API FUNCTION NAME", // API Function Name
+          "value", // Name of the post argument with the data
+          { uid: uid } // Other data needed with post
+        )
+      });
       if(user.emailSignup == 1) checkbox.prop('checked', true);
       row.append( $("<td>").append(checkbox) );
 
       checkbox = $('<input type="checkbox" disabled>');
+      checkbox.change(function() {
+        // Sending update to server
+        updateServer(
+          $(this), // Passing the element though
+          "API FUNCTION NAME", // API Function Name
+          "value", // Name of the post argument with the data
+          { uid: uid } // Other data needed with post
+        )
+      });
       if(user.emailVolSignup == 1) checkbox.prop('checked', true);
       row.append( $("<td>").append(checkbox) );
     }
