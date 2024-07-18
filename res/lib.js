@@ -116,8 +116,11 @@ function updateServer(ele, apiFunction, valueKey, args={}) {
 
     // Failed, set input back
     if(!isSuccessfull) {
-      if (ele.is(":checkbox"))
-        ele.prop("checked", !ele.val());
+      if (ele.is(":checkbox")) {
+        checkboxValue = ele.val() == "on"
+        console.log("Setting checkbox to "+ (checkboxValue))
+        ele.prop("checked", checkboxValue);
+      }
       // else
         // Somehow make this the value the input had before they updated it
         // ele.val(setValue)
