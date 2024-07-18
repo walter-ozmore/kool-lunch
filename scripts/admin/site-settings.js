@@ -76,27 +76,27 @@ $(document).ready(async function() {
       ));
 
       let checkbox;
-      checkbox = $('<input type="checkbox" disabled>');
+      checkbox = $('<input type="checkbox">');
       checkbox.change(function() {
         // Sending update to server
         updateServer(
           $(this), // Passing the element though
-          "API FUNCTION NAME", // API Function Name
+          "setUserSetting", // API Function Name
           "value", // Name of the post argument with the data
-          { uid: uid } // Other data needed with post
+          { uid: uid, dataKey: "emailSignup" } // Other data needed with post
         )
       });
       if(user.emailSignup == 1) checkbox.prop('checked', true);
       row.append( $("<td>").append(checkbox) );
 
-      checkbox = $('<input type="checkbox" disabled>');
+      checkbox = $('<input type="checkbox">');
       checkbox.change(function() {
         // Sending update to server
         updateServer(
           $(this), // Passing the element though
-          "API FUNCTION NAME", // API Function Name
+          "setUserSetting", // API Function Name
           "value", // Name of the post argument with the data
-          { uid: uid } // Other data needed with post
+          { uid: uid, dataKey: "emailVolSignup" } // Other data needed with post
         )
       });
       if(user.emailVolSignup == 1) checkbox.prop('checked', true);

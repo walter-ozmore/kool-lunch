@@ -323,7 +323,13 @@
     case "setSetting":
       echo json_encode( Database::setSetting($args) );
       break;
+    case "setUserSetting":
+      echo json_encode(Database::setUserSetting($args));
+      break;
     default:
-      echo json_encode(["message"=>"Function $function not found"]);
+      echo json_encode([
+        "code"=>403,
+        "message"=>"Function $function not found"
+      ]);
 	}
 ?>

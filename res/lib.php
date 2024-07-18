@@ -3110,6 +3110,46 @@
       // 
       return $users;
     }
+
+
+    /**
+     * Updates the user setting for a given UID and data key with a new value.
+     *
+     * @param args An array containing the UID, dataKey, and value to update.
+     *
+     * @return returnData An array with code, message, and relevant metadata.
+     */
+    public static function setUserSetting($args) {
+      $uid = $args["uid"];
+      $dataKey = $args["dataKey"];
+      $value = $args["value"];
+
+      $validDataKeys = ["emailSignup", "emailVolSignup"];
+      if (in_array($dataKey, $validDataKeys) == False) {
+        return [
+          "code" => 310,
+          "message" => "Invalid dataKey: $datakey",
+        ];
+      }
+
+      // Connect to KoolLunches database
+      $conn = Secret::connectDB("lunch");
+      $query = "UPDATE Member SET $dataKey=$value WHERE uid = $uid";
+      $conn->query($query);
+
+      if ($conn->error) {
+        return [
+          "code" => 310,
+          "message" => "Query failed.$query",
+        ];
+      }
+
+
+      return [
+        "code" => 100,
+        "message" => "Successfully updated user setting",
+      ];
+    }
   }
 
   /**
