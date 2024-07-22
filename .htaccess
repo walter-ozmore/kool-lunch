@@ -11,3 +11,5 @@ RewriteRule ^(.*)$ https://www.koollunches.org/$1 [R=301,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+RedirectMatch 302 ^/sign-up.php$ /
