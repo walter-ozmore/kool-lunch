@@ -139,6 +139,8 @@
           };
           let gallery = new Gallery(galleryImages, "auto", 2000);
         </script>
+
+      <!-- Remove once header nav is correct -->
       <center>
         <?php
           $value = Database::getSetting("showSignUp")["value"];

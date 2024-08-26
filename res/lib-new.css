@@ -1,0 +1,212 @@
+/* Key colors for reference
+ * Red    - #BC2929
+ * Green  - #2EBD2A 
+ * L Grey - f4f4f4
+ * D Grey - e4e4e4
+*/
+
+/* Global Base Styling */
+body {
+    height: 100vh;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    margin-top: auto;
+    flex-shrink: 0;
+    text-align: center;
+    background-color: #e4e4e4;
+    padding: 0.3em;
+}
+
+footer p {
+    font-size: max(0.5em, 14px);
+}
+
+footer a {
+    font-size: max(0.5em, 14px);
+}
+
+header {
+    background-color: #e4e4e4;
+    display: flex;
+    flex-direction: column;
+    max-height: 12vh;
+}
+
+p, a {
+    font-size: calc(16px + (20 - 16) * ((100vw - 300px) / (1980 - 300)));
+    line-height: 1.5;
+}
+
+a {
+    color:#BC2929;
+}
+
+a:visited {
+    color:#2EBD2A;
+}
+
+a:hover {
+    color:#2EBD2A;
+}
+
+hr {
+    border: 0;
+    height: 3px;
+    background-color: black;
+}
+
+/* Form Items */
+input {
+    padding: 1em;
+    font-size: 16px;
+}
+
+button {
+    background-color:#BC2929;
+    padding: 1em;
+    border: none;
+    text-align: center;
+    font-size: calc(16px + (20 - 16) * ((100vw - 300px) / (1980 - 300)));
+    min-width: 175px;
+}
+
+textarea::placeholder {
+    font-family: "Lexend", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    color: #292929;
+}
+
+/* Body & Content */
+.content {
+    flex: 1 0 auto;
+}
+
+.section {
+    padding: 1em min(15vw, 10em) 0.5em min(15vw, 10em);
+}
+
+.banner {
+    width: 100vw;
+    background-color: #BC2929;
+    color: white;
+    height: 8vh;
+    font-size: 1.5em;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.banner > h1 {
+    margin: auto;
+}
+
+/* Header Nav */
+.title-img {
+    max-height: 10vh;
+}
+.title-img img {
+    height: 90%;
+}
+
+.menu {
+    padding: 1.5em;
+    display: block;
+    margin: auto;
+    float:right;
+}
+
+.menu > a{
+    text-decoration: none;
+    color: black;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+
+/* Utility */
+.center {
+    position: relative;
+    margin: 5% auto;
+    padding: 1em;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 50vw;
+    height: 50vh;
+}
+
+.center-text { text-align: center; }
+
+.flex-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-width: 100vw;
+    min-height: 100vh;
+}
+
+.two-columns {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content: space-evenly;
+}
+
+.two-columns > * {
+    width: 100%;
+    padding: 1rem;
+    margin: 0.5rem;
+}
+
+@media (min-width:1400px) {
+    .two-columns > * {
+        width:calc(85% / 2);
+    }
+}
+
+/* Font classes */
+.lexend-body {
+    font-family: "Lexend", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.lexend-bold {
+    font-family: "Lexend", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.lexend-deca-header {
+    font-family: "Lexend Deca", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 450;
+    font-style: normal;
+}
+
+.stroke {
+    color: white;
+    text-shadow: -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000;
+}
+
+.informative {
+    font-size: calc(10px + (14 - 10) * ((100vw - 300px) / (1980 - 300)));
+    padding: 0;
+    margin: 0;
+    color: #292929;
+}
+
+.informative > img {
+    max-height: 1em;
+}
