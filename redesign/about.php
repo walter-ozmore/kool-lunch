@@ -19,29 +19,36 @@
 
             <div class="section two-columns">
                 <div>
-                    <div id="board-members">
-                        <center><p class="lexend-bold" style="margin-bottom: 0px;">Board Members</p></center>
-                        <hr>
-                        <p>Need to make this pull from backend</p>
-                    </div>
-                    <div id="website-members">
-                        <center><p class="lexend-bold" style="margin-bottom: 0px;">Website</p></center>
-                        <hr>
-                        <p>Need to make this pull from backend</p>
-                    </div>
-                    <div id="buildings">
-                        <center><p class="lexend-bold" style="margin-bottom: 0px;">Building</p></center>
-                        <hr>
-                        <p>Need to make this pull from backend</p>
-                    </div>
-                </div>
-                <div>
-                    <div id="volunteer-members">
-                        <center><p class="lexend-bold" style="margin-bottom: 0px;">Volunteers</p></center>
-                        <hr>
-                        <p>Need to make this pull from backend</p>
-                    </div>
-                </div>
+                    <?php
+                        $setting = Database::getSetting("mentionsText");
+                        $markdown = $setting["value"];
+
+                        // Split the string into an array of lines using the newline character (\n) as the delimiter
+                        $lines = explode("\n", $markdown);
+
+                        $isDivOpen = False;
+                        foreach($lines as $line) {
+                            if( strpos($line, "# ") !== 0 ) {
+                                echo "<p>$line</p>";
+                                continue;
+                            }
+                            
+                            if($isDivOpen) {
+                                echo "</div>";
+                                $isDivOpen = False;
+                            }
+                            $isDivOpen = True;
+
+                            $line = substr($line, 2);
+                            echo "<div>";
+                            echo "<center><p class='lexend-bold' style='margin-bottom: 0px;'>$line</p></center>";
+                            echo "<hr>";
+                        }
+                        if($isDivOpen) {
+                            echo "</div>";
+                            $isDivOpen = False;
+                        }
+                    ?>
             </div>
         </div>
     </body>
