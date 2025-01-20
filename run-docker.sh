@@ -1,3 +1,8 @@
+if ! command -v docker > /dev/null; then
+  echo "Docker is not installed. Please install docker before continuing."
+	exit
+fi
+
 docker build -t apache-php .
 DIR=$(pwd)
 echo $DIR
