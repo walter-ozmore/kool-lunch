@@ -90,12 +90,40 @@ textarea::placeholder {
     flex: 1 0 auto;
 }
 
-.section {
-    padding: 1em min(15vw, 10em) 0.5em min(15vw, 10em);
+@media (min-width: 901px) {
+    .section {
+      padding: 1em min(25vw, 20em) 0.5em min(25vw, 20em);
+    }
+
+    .desktop {
+        visibility: visible;
+    }
+
+    .mobile {
+        visibility: collapse;
+    }
+}
+
+@media (max-width: 900px) {
+    .section {
+      padding: 1em;
+    }
+
+    .mobile {
+        visibility: visible;
+    }
+
+    .desktop {
+        visibility: collapse;
+    }
+
+    header {
+        max-height: 20vh;
+    }
 }
 
 .banner {
-    width: 100vw;
+    width: 100%;
     background-color: #BC2929;
     color: white;
     height: 8vh;
@@ -115,6 +143,10 @@ textarea::placeholder {
 }
 .title-img img {
     height: 90%;
+    max-width: min(100%, 95vw);
+}
+.mobile > .title-img > img {
+    padding: 1em;
 }
 
 .menu {
@@ -129,6 +161,13 @@ textarea::placeholder {
     color: black;
     padding-left: 1em;
     padding-right: 1em;
+}
+
+.mobile-menu {
+    padding: 1.5em;
+    display: block;
+    margin: auto;
+    float:right;
 }
 
 

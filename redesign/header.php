@@ -1,4 +1,4 @@
-<div class="two-columns" style="max-height:12vh;">
+<div class="two-columns desktop" style="max-height: 12vh; visibility: none;">
     <div class="title-img">
         <img id="headerImage" src="/res/images/header.png">
     </div>
@@ -22,6 +22,17 @@
                 }
             ?>
             <a class="lexend-body" href="/redesign/about">About</a>
+        </div>
+    </div>
+</div>
+
+<div class="mobile" style="visibilty: none;">
+    <div class="title-img">
+        <img id="headerImage" src="/res/images/header.png">
+    </div>
+    <div>
+        <div class="mobile-menu">
+            <button class="lexend-body" onclick="dropdown()">Menu</button>
         </div>
     </div>
 </div>
