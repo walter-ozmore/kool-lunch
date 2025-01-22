@@ -1,3 +1,7 @@
+<?php
+	require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
+?>
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -5,8 +9,7 @@
     <link rel="stylesheet" href="/res/rf-gallery.css"/>
     <?php
       require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
-      include realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
-      require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
+      include_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
       require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/Parsedown.php";
 
       /**

@@ -1,13 +1,16 @@
+<?php
+	include_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
+	require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
+?>
 <!DOCTYPE html>
 <html>
     <head>
         <title>Volunteer | Kool Lunches</title>
         <link rel="stylesheet" href="/res/rf-gallery.css"/>
-        <?php
-            require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
-            include realpath($_SERVER["DOCUMENT_ROOT"])."/res/secret.php";
-            require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
-        ?>
+
+				<?php
+					require realpath($_SERVER["DOCUMENT_ROOT"])."/res/head.php";
+				?>
 
         <script>
             document.getElementById("first-name")
