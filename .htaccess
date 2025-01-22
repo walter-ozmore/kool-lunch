@@ -14,4 +14,4 @@ RewriteRule ^([^\.]+)$ $1.php [NC,L]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^(.*[^/])$ /$1/index.php [L]
 
-RedirectMatch 302 ^/sign-up.php$ /
+# RedirectMatch 302 ^/sign-up.php$ /
