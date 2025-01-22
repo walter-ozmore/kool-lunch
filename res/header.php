@@ -4,24 +4,24 @@
     </div>
     <div>
         <div class="menu">
-            <a class="lexend-body" href="/redesign/index">Home</a>
+            <a class="lexend-body" href="/index">Home</a>
 
             <?php 
                 $value = Database::getSetting("showSignUp")["value"];
                 $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
 
                 if ($value) {
-                    echo "<a class='lexend-body' href='/redesign/sign-up'>Signup</a>";
+                    echo "<a class='lexend-body' href='/sign-up'>Signup</a>";
                 }
 
                 $value = Database::getSetting("showVolunteer")["value"];
                 $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
 
                 if ($value) {
-                    echo "<a class='lexend-body' href='/redesign/volunteer-sign-up'>Volunteer</a>";
+                    echo "<a class='lexend-body' href='/volunteer-sign-up'>Volunteer</a>";
                 }
             ?>
-            <a class="lexend-body" href="/redesign/about">About</a>
+            <a class="lexend-body" href="/about">About</a>
         </div>
     </div>
 </div>
