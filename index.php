@@ -9,51 +9,6 @@
       require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/lib.php";
       require_once realpath($_SERVER["DOCUMENT_ROOT"])."/res/Parsedown.php";
 
-
-      // Grabs and lists all monitary donations to the screen, if there is any
-      // error skip
-      function drawMonetaryDonations() {
-
-        $drawString = "";
-        $result = [];
-        // $result = Database::getCollections();
-        if ($result["code"] != 110) {return;}
-        $drawString .= '<div style="margin-bottom: 1em"> <h2 class="center-text" style="color: black">Monetary Donations</h2>';
-        $drawStringColData = "<center><h3>Unable to retrieve donation information at this time.</h3></center>";
-
-        $data = $result["data"];
-        foreach ($data as $col) {
-          if ($col["coll"] != NULL) {
-            $drawStringColData = "<center><h3>".$col["coll"]."</h3></center>";
-          } else {
-            $drawStringColData = "<center><h3>Others</h3></center>";
-          }
-
-          $drawString .= $drawStringColData;
-          $drawString .=  "<table style='margin: 0em auto;'>";
-
-          $result = Database::getCollectionDonations($col["coll"]);
-
-          $data = $result["data"];
-
-          foreach($data as $row) {
-            $name = $row["donatorName"];
-            $amount = $row["amount"];
-            $drawString.=  "
-            <tr>
-              <td>$$amount</td>
-              <td>$name</td>
-            </tr>
-            ";
-          }
-          $drawString.=  "</table>";
-        }
-
-        $drawString.=  '</div>';
-
-        echo $drawString;
-      }
-
       /**
        * Loads and converts the FAQ data in to a more useable array of answer &
        * questions
@@ -107,6 +62,7 @@
       function faqClick(element) {
         let ele = $(element);
         let faqDiv = ele.parent();
+        let questionEle = faqDiv.children().eq(0);
         let answerEle = faqDiv.children().eq(1);
         answerEle.toggle(); // Toggles show/hide on the element
       }
@@ -122,9 +78,8 @@
   </header>
 
   <body>
-
     <div class="content">
-      <!-- <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSxBW-X_1GKybMlrA-B4kD5QTEGf0UYux56FmcT3Ei7NEAMfisy6M9lkadUfErssLJBVUKpsElRjCFx/embed?start=true&loop=true&delayms=3000&amp;rm=minimal" frameborder="0" onload="resizeIframe(this)"></iframe> -->
+        <!-- Gallery -->
         <div class="img-gallery"><center>
             <img id="current-img" src="" alt="Gallery loading"></center>
         </div>
@@ -139,35 +94,20 @@
           };
           let gallery = new Gallery(galleryImages, "auto", 2000);
         </script>
-
-      <!-- Remove once header nav is correct -->
-      <center>
+      <div class="banner"><h1 class="lexend-deca-header stroke">OUR STORY</h2></div>
+      <div class="section lexend-body">
         <?php
-          $value = Database::getSetting("showSignUp")["value"];
-          $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-          if($value) {
-            echo "<a href='/sign-up' class='button'>SIGNUP</a>";
-          }
+          $setting = Database::getSetting("homePageText");
+          $markdown = $setting["value"];
 
-          $value = Database::getSetting("showVolunteer")["value"];
-          $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-          if($value) {
-            echo "<a href='/volunteer-sign-up' class='button'>VOLUNTEER</a>";
-          }
+          echo $Parsedown->text($markdown);
         ?>
-      </center>
-
-      <?php
-        $setting = Database::getSetting("homePageText");
-        $markdown = $setting["value"];
-
-        echo $Parsedown->text($markdown);
-      ?>
+      </div>
     </div>
 
     <div class="content">
-      <h2 class="center-text" style="color: black">FAQ'S</h2>
-      <div id="faq" class="faq">
+      <div class="banner"><h1 class="lexend-deca-header stroke">FAQ'S</h2></div>
+      <div id="faq" class="faq section">
         <?php
           $qnaData = loadFAQ();
           foreach($qnaData as $qna) {
@@ -175,71 +115,25 @@
             $answer   = $Parsedown->text( $qna["answer"] );
 
             echo "<div class='faqElement'>
-              <div class='question' style='display: flex; justify-content: space-between;' onclick='faqClick(this)'>
+              <div class='question lexend-bold' style='display: flex; justify-content: space-between;' onclick='faqClick(this)'>
                 $question
                 <p style='text-align: right;'>+</p>
               </div>
-              <div class='answer' style='display: none'>
+              <div class='answer lexend-body' style='display: none'>
                 $answer
               </div>
+              <hr>
             </div>";
           }
         ?>
-      </div>
-
-      <p class="center-text" style="margin-bottom: 0em;">
-        All other questions can be sent through
-      </p>
-      <p class="link-row">
-        <a href="https://www.facebook.com/koollunches/">Facebook</a>
-        <a href="https://www.remind.com/join/koollunch5">Remind</a>
-        <a href="">Email</a>
-      </p>
-    </div>
-
-    <div class="content">
-      <!-- <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQ15Qlu6CeWJkAIDFFkFgO2MIPIco7-KkOZWg3DJfRJSrrIpordmYhTj-ZnqBoKsDhYiC8ptKGL65NG/embed?start=true&loop=true&delayms=3000&amp;rm=minimal" frameborder="0" class="section"></iframe> -->
-
-      <?php @drawMonetaryDonations();?>
-      <div class="center-text thank-you-grid">
-        <div>
-          <h2>Board Members</h2>
-          <p>Jodi Hunt</p>
-          <p>Brandy Stockton</p>
-          <p>Kristy Agerlid</p>
-          <p>Wendi Lindsey</p>
-          <p>Steve Mohundro</p>
-          <p>Phyllis Kinnaird</p>
-          <p>Mary Karl</p>
-          <p>Tillman Boyd</p>
-        </div>
-
-        <div>
-          <h2>Volunteers</h2>
-          <p>Church of Jesus Christ and Latter Day Saints</p>
-          <p>Fannin County Sheriff's Office</p>
-
-          <p>First Presbyterian Church</p>
-          <p>Northside Church of Christ</p>
-          <p>First Baptist Church</p>
-          <p>Boyd Baptist Church</p>
-          <p>Bethlehem Baptist Church</p>
-          <p>First United Methodist Church</p>
-          <p>7th and Main Baptist Church</p>
-
-          <p>First United Methodist Church</p>
-        </div>
-
-        <div>
-          <h2>Website</h2>
-          <p>Walter Ozmore</p>
-          <p>Rayna Fetters</p>
-        </div>
-
-        <div>
-          <h2>Building</h2>
-          <p>First Presbyterian Church-Bonham</p>
-        </div>
+        <p class="lexend-body center-text" style="margin-bottom: 0em;">
+          All other questions can be sent through
+        </p>
+        <p class="lexend-body link-row center-text">
+          <a href="https://www.facebook.com/koollunches/" target="_blank" rel="noreferrer noopener">Facebook</a>
+          <a href="https://www.remind.com/join/koollunch5" target="_blank" rel="noreferrer noopener">Remind</a>
+          <a href="#">Email</a>
+        </p>
       </div>
     </div>
   </body>

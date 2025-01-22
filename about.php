@@ -11,7 +11,7 @@
         ?>
     </head>
     <header>
-        <?php require realpath($_SERVER["DOCUMENT_ROOT"])."/redesign/header.php"; ?>
+        <?php require realpath($_SERVER["DOCUMENT_ROOT"])."/res/header.php"; ?>
     </header>
     <body>
         <div class="content">
@@ -52,5 +52,5 @@
             </div>
         </div>
     </body>
-    <?php require realpath($_SERVER["DOCUMENT_ROOT"])."/redesign/footer.php"; ?>
+    <?php require realpath($_SERVER["DOCUMENT_ROOT"])."/res/footer.php"; ?>
 </html>
