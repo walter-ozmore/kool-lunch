@@ -90,31 +90,33 @@ textarea::placeholder {
     flex: 1 0 auto;
 }
 
-@media (min-width: 901px) {
+@media (min-width: 1101px) {
     .section {
       padding: 1em min(25vw, 20em) 0.5em min(25vw, 20em);
     }
 
     .desktop {
-        visibility: visible;
+        display: flex !important;
+        flex-wrap:nowrap !important;
     }
 
     .mobile {
-        visibility: collapse;
+        display: none !important;
     }
+
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
     .section {
       padding: 1em;
     }
 
     .mobile {
-        visibility: visible;
+        display: flex !important;
     }
 
     .desktop {
-        visibility: collapse;
+        display: none !important;
     }
 
     header {
