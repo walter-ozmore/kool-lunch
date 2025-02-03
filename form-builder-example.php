@@ -122,7 +122,8 @@
 			}
 
 			$(document).ready(async function() {
-				let formEle = $("#form");
+				let parentEle = $("#form");
+				let formEle = $("<div>");
 				let tmp;
 
 				// Age gate
@@ -131,35 +132,45 @@
 					"value": "I am 18 or older",
 					"desc": "I am 18 or older",
 					"onSelect": ()=>{
-
-					}
+						console.log("onSelect");
+						formEle.show();
+					},
+					"onUnselect": ()=>{
+						console.log("onUnselect");
+						formEle.hide();
+					},
 				});
-				tmp.setLabel("Select Example");
-				tmp.setParent( formEle );
+				tmp.setParent( parentEle );
+
+				parentEle.append(formEle); // Add our form below
 
 				// Group or individual
 				tmp = new CustomMultiSelect({
-					"title": "Are you signing up yourself or your organization?"
+					"title": "Are you signing up yourself or your organization?",
+					
 				});
 				tmp.addOption({
-					"value": "I am an individual"
+					"value": "I am an individual",
+					"onSelect"  : ()=>{ indDiv.show(); },
+					"onUnselect": ()=>{ indDiv.hide(); },
 				});
 				tmp.addOption({
-					"value": "I am a part of a group or organization"
+					"value": "I am a part of a group or organization",
+					"onSelect"  : ()=>{ orgDiv.show(); },
+					"onUnselect": ()=>{ orgDiv.hide(); },
 				});
-				tmp.setLabel("Select Example");
 				tmp.setParent( formEle );
 
 				let indDiv = createIndividualForm();
 				formEle.append(indDiv);
 				indDiv.css("background-color", "rgb(100, 100, 200)"); // Set the background color for dev
-				indDiv.show();
+				// indDiv.show();
 
 				// Organization signup
 				let orgDiv = createOrgForm();
 				formEle.append(orgDiv);
 				orgDiv.css("background-color", "rgb(100, 200, 100)"); // Set the background color for dev
-				orgDiv.show();
+				// orgDiv.show();
 
 				// Add submit button
 				formEle.append(

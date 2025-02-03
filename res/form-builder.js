@@ -60,6 +60,7 @@ class CustomMultiSelect extends CustomInput {
 		super(eleArgs);
 
 		this.selected = []; // A list of selected jquery element
+		this.selectedInfo = []; // A list of selected optionInfo
 		this.maxOptions = ("maxOptions" in eleArgs)? eleArgs["maxOptions"] : 1; // Max selected options
 
 		if("options" in eleArgs) {
@@ -74,16 +75,7 @@ class CustomMultiSelect extends CustomInput {
 		let checkboxEle = $("<input type='checkbox'>");
 
 		// Add click function
-		checkboxEle.click(() => {
-			this.manageInput(checkboxEle);
-
-			if(checkboxEle.prop('checked'))
-				if("onSelect" in optionInfo) optionInfo["onSelect"]();
-			else
-				if("onUnselect" in optionInfo) optionInfo["onUnselect"]();
-			
-			
-		});
+		checkboxEle.click(() => { this.manageInput(checkboxEle, optionInfo); });
 
 		this.div.append(
 			checkboxEle,
@@ -106,27 +98,49 @@ class CustomMultiSelect extends CustomInput {
 	 * Updates the state of the checkbox
 	 * when you pass undefined the checkbox will be flipped
 	 * 
-	 * @param newStatus boolean True False undefined. 
+	 * @param newStatus 
+	 *  - 0: Uncheck
+	 *  - 1: Check
+	 *  - 2: Flip Check
+	 *  - 3: No change
 	 */
-	setSelected(checkboxEle, newStatus, args) {
-		if(newStatus == undefined)
-			newStatus = !checkboxEle.prop('checked');
+	setSelected(checkboxEle, status, optionInfo) {
+		// Update the checkbox
+		switch(status) {
+			case "uncheck": 
+				checkboxEle.prop('checked', false);
+				break;
+			
+			case "check": 
+				checkboxEle.prop('checked', true);
+				break;
 
-		checkboxEle.prop('checked', newStatus); // Update the checkbox
+			case "flip": 
+				checkboxEle.prop('checked', !checkboxEle.prop('checked'));
+				break;
+		}
 
-		if(checkboxEle.prop('checked'))
-			if("onSelect" in args) args["onSelect"]();
-		else
-			if("onUnselect" in args) args["onUnselect"]();
+		// Call functions
+		if(checkboxEle.prop('checked') == true  && "onSelect"   in optionInfo) {
+			optionInfo["onSelect"  ](optionInfo);
+		}
+		if(checkboxEle.prop('checked') == false && "onUnselect" in optionInfo) {
+			optionInfo["onUnselect"](optionInfo);
+		}
 	}
 
-	manageInput(checkboxEle, args) {
-		// Remove 
+	manageInput(checkboxEle, optionInfo) {
+		// Handle the input with the custom functions
+		this.setSelected(checkboxEle, "none", optionInfo);
+
+		// Remove the element from the checked array
 		if(checkboxEle.prop('checked') == false) {
 			// Remove this element from our selected array
 			let index = this.selected.indexOf(checkboxEle);  // Find the index of the first occurrence of 2
-			if (index !== -1)  // Check if the element exists in the array
+			if (index !== -1) {  // Check if the element exists in the array
 				this.selected.splice(index, 1);  // Remove 1 element at the found index
+				this.selectedInfo.splice(index, 1);  // Remove 1 element at the found index
+			}
 			return;
 		}
 
@@ -135,11 +149,16 @@ class CustomMultiSelect extends CustomInput {
 		if(this.maxOptions > 0) {
 			while(this.selected.length >= this.maxOptions) {
 				let ele = this.selected[0];
+				let tmpOptionInfo = this.selectedInfo[0];
+
+				this.setSelected(ele, "uncheck", tmpOptionInfo);
+
 				this.selected.shift(); // Remove the first element of the array
-				ele.prop('checked', false);
+				this.selectedInfo.shift();
 			}
 		}
 		
 		this.selected.push(checkboxEle); // Puts the element on the end
+		this.selectedInfo.push(optionInfo); // Puts the element on the end
 	}
 }
