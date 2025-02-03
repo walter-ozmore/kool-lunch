@@ -123,7 +123,7 @@
 
 			$(document).ready(async function() {
 				let parentEle = $("#form");
-				let formEle = $("<div>");
+				let formEle = $("<div>").hide();
 				let tmp;
 
 				// Age gate
@@ -166,6 +166,15 @@
 				indDiv.css("background-color", "rgb(100, 100, 200)"); // Set the background color for dev
 				// indDiv.show();
 
+				// Add submit button
+				indDiv.append(
+					$("<button>")
+						.text("Submit")
+						.click(function() {
+							console.log( select.collect() )
+						})
+				);
+
 				// Organization signup
 				let orgDiv = createOrgForm();
 				formEle.append(orgDiv);
@@ -173,13 +182,13 @@
 				// orgDiv.show();
 
 				// Add submit button
-				formEle.append(
+				orgDiv.append(
 					$("<button>")
 						.text("Submit")
 						.click(function() {
 							console.log( select.collect() )
 						})
-				)
+				);
 			});
 		</script>
 	</head>
