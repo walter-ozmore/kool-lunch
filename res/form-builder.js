@@ -1,6 +1,7 @@
 
 class CustomInput {
 	constructor(eleArgs={}) {
+		this.name = eleArgs["name"];
 		this.inputEle = undefined;
 		this.labelEle = $("<label>");
 		this.div = $("<div class='form-line'>");
@@ -44,8 +45,8 @@ class CustomKeyInput extends CustomInput {
 	constructor(eleArgs={}) {
 		super(eleArgs);
 
-		let inputEle = $("<input type='text'>");
-		this.div.append(inputEle); // Add the title to our div
+		this.inputEle = $("<input type='text'>");
+		this.div.append(this.inputEle); // Add the title to our div
 
 		// this.selected = []; // A list of selected jquery element
 		// this.maxOptions = ("maxOptions" in eleArgs)? eleArgs["maxOptions"] : 1; // Max selected options
@@ -160,5 +161,37 @@ class CustomMultiSelect extends CustomInput {
 		
 		this.selected.push(checkboxEle); // Puts the element on the end
 		this.selectedInfo.push(optionInfo); // Puts the element on the end
+	}
+}
+
+
+class FormBuilder {
+	constructor(eleArgs={}) {
+		this.formEles = [];
+		this.formDiv = undefined;
+
+		this.formDiv = $("<div style='background-color: blue'>");
+
+		if("parentEle" in eleArgs) {
+			eleArgs["parentEle"].append(this.formDiv);
+		} else {
+			$("body").append(this.formDiv);
+		}
+	}
+
+	addFormEle(formEle) {
+		this.formEles.push(formEle);
+	}
+
+	collect() {
+		let data = {};
+		for(let formEle of this.formEles) {
+			let key = formEle.name;
+			let value = formEle.collect();
+			
+			data[key] = value;
+		}
+
+		return data;
 	}
 }
