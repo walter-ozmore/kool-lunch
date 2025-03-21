@@ -36,8 +36,8 @@
 					"title": "Pick a form",
 					"name": "form.type",
 					"options": [
-						{"desc": "Form A"},
-						{"desc": "Form B"},
+						{"desc": "Form A", "value": "A"},
+						{"desc": "Form B", "value": "B"},
 					]
 				});
 

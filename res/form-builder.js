@@ -53,6 +53,8 @@ class CustomKeyInput extends CustomInput {
 	}
 }
 
+
+
 class CustomMultiSelect extends CustomInput {
 	/**
 	 * This can be multiple things, radio menu primarly or multiple checkboxes dropdown
@@ -161,6 +163,18 @@ class CustomMultiSelect extends CustomInput {
 		
 		this.selected.push(checkboxEle); // Puts the element on the end
 		this.selectedInfo.push(optionInfo); // Puts the element on the end
+	}
+
+	collect() {
+		// Only one option? Return without array!
+		if(this.maxOptions == 1) {
+			// If we have a result return it
+			if(this.selectedInfo.length >= 1)
+				return this.selectedInfo[0]["value"];
+			return undefined;
+		}
+
+		return this.selectedInfo;
 	}
 }
 
