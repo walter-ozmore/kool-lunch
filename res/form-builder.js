@@ -170,7 +170,7 @@ class FormBuilder {
 		this.formEles = [];
 		this.formDiv = undefined;
 
-		this.formDiv = $("<div style='background-color: blue'>");
+		this.formDiv = $("<div style='background-color: rgba(0, 0, 255, .25)'>");
 
 		if("parentEle" in eleArgs) {
 			eleArgs["parentEle"].append(this.formDiv);
@@ -179,10 +179,9 @@ class FormBuilder {
 		}
 	}
 
-	addFormEle(formEle) {
-		this.formEles.push(formEle);
-	}
-
+	/**
+	 * Collects all the custom elements in this form and returns them
+	 */
 	collect() {
 		let data = {};
 		for(let formEle of this.formEles) {
@@ -193,5 +192,21 @@ class FormBuilder {
 		}
 
 		return data;
+	}
+
+	addFormEle(formEle) {
+		this.formEles.push(formEle);
+	}
+
+	addKeyInput(eleArgs) {
+		eleArgs["parentEle"] = this.formDiv;
+		let ele = new CustomKeyInput(eleArgs);
+		this.addFormEle(ele);
+	}
+
+	addMultiSelect(eleArgs) {
+		eleArgs["parentEle"] = this.formDiv;
+		let ele = new CustomMultiSelect(eleArgs);
+		this.addFormEle(ele);
 	}
 }

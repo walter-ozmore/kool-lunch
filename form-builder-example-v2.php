@@ -32,13 +32,21 @@
 					"parentEle": $("#form")
 				});
 
-				fb.addFormEle( new CustomKeyInput({
-					"name": "org.name",
-					"title": "What is the name of your organization?",
-					"parentEle": fb.formDiv
-				}) );
+				fb.addMultiSelect({
+					"title": "Pick a form",
+					"name": "form.type",
+					"options": [
+						{"desc": "Form A"},
+						{"desc": "Form B"},
+					]
+				});
 
-				fb.formDiv.append($("<div>"))
+				fb.addKeyInput({
+					"name": "org.name",
+					"title": "What is the name of your organization?"
+				});
+
+				fb.formDiv.append($("<div>"));
 
 				console.log( fb.collect() );
 			});
