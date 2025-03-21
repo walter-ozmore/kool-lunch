@@ -18,12 +18,12 @@ $(document).ready(async function() {
 
     // Build our page
     page.empty().append(
-      $("<input>", {type: "checkbox", checked: data["showSignUp"]["value"]})
+      $("<input>", {type: "checkbox", checked: data["showSignUp"]["value"] == 'true' } )
         .change(function() {updateServer($(this), "setSetting", "value", { key: "showSignUp", type: "markdown"}) }),
       $("<label>").text("Show signup button on home page:"),
       $("<br>"),
 
-      $("<input>", {type: "checkbox", checked: data["showVolunteer"]["value"]})
+      $("<input>", {type: "checkbox", checked: data["showVolunteer"]["value"] == 'true'})
         .change(function() {updateServer($(this), "setSetting", "value", { key: "showVolunteer", type: "markdown"}) }),
       $("<label>").text("Show volunteer button on home page:"),
       $("<br>"),
