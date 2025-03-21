@@ -61,7 +61,6 @@ $(document).ready(async function() {
     );
     page.append(
       $("<h2>", {style: "margin-top: 2.5em; text-align: left;"}).text("Emails"),
-      $("<p>").text("This is a test"),
       table
     );
 
